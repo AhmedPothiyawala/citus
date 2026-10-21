@@ -83,6 +83,32 @@ for (const vp of [
         );
         expect(brokenImages, `Broken images found on ${route}`).toEqual([]);
 
+        // SVG Audit: assert visible SVGs have valid non-zero bounding box dimensions
+        const svgsWithoutBounds = await page.evaluate(() =>
+          Array.from(document.querySelectorAll('svg')).filter((svg) => {
+            const isVisible = !!(
+              (svg as any).offsetWidth ||
+              (svg as any).offsetHeight ||
+              svg.getClientRects().length
+            );
+            if (!isVisible) return false;
+            const rect = svg.getBoundingClientRect();
+            return rect.width === 0 || rect.height === 0;
+          }).length
+        );
+        expect(svgsWithoutBounds, `Zero-dimension SVGs found on ${route}`).toBe(0);
+
+        // Text Node Integrity: assert zero 'undefined', 'null', or '[object Object]' text
+        const badTextNodes = await page.evaluate(() => {
+          const text = document.body.innerText || '';
+          return (
+            text.includes('[object Object]') ||
+            text.includes('undefined') ||
+            text.includes('NaN')
+          );
+        });
+        expect(badTextNodes, `Corrupted text node detected on ${route}`).toBe(false);
+
         // Verify no console or unhandled page errors
         expect(problems).toEqual([]);
       });

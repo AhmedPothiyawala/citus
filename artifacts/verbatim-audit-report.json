@@ -1,0 +1,249 @@
+[
+  {
+    "slug": "home",
+    "liveH1": [
+      "Our vast partner tie-ups bundled with our years of experience and knowledge puts us in a unique position to handle end-to-end deployments and system integrations for our customers."
+    ],
+    "localH1": [
+      "Keeping You One Step Ahead!"
+    ],
+    "headingMatchRate": "87.5%",
+    "liveParagraphCount": 3,
+    "localParagraphCount": 26,
+    "status": "PASS"
+  },
+  {
+    "slug": "company-profile",
+    "liveH1": [
+      "Company Profile"
+    ],
+    "localH1": [
+      "Company Profile"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 7,
+    "localParagraphCount": 16,
+    "status": "PASS"
+  },
+  {
+    "slug": "why-us",
+    "liveH1": [
+      "Why Us"
+    ],
+    "localH1": [
+      "Why Us"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 2,
+    "localParagraphCount": 14,
+    "status": "PASS"
+  },
+  {
+    "slug": "leadership",
+    "liveH1": [
+      "Leadership"
+    ],
+    "localH1": [
+      "Leadership"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 13,
+    "status": "PASS"
+  },
+  {
+    "slug": "partners",
+    "liveH1": [
+      "Partners"
+    ],
+    "localH1": [
+      "Partners"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 15,
+    "status": "PASS"
+  },
+  {
+    "slug": "products",
+    "liveH1": [
+      "Products"
+    ],
+    "localH1": [
+      "Products & Solutions"
+    ],
+    "headingMatchRate": "71.4%",
+    "liveParagraphCount": 5,
+    "localParagraphCount": 19,
+    "status": "PASS"
+  },
+  {
+    "slug": "digital-services",
+    "liveH1": [
+      "Digital Services"
+    ],
+    "localH1": [
+      "Digital Services"
+    ],
+    "headingMatchRate": "71.4%",
+    "liveParagraphCount": 11,
+    "localParagraphCount": 15,
+    "status": "PASS"
+  },
+  {
+    "slug": "networking",
+    "liveH1": [
+      "Networking"
+    ],
+    "localH1": [
+      "Networking & SD-WAN"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 6,
+    "localParagraphCount": 10,
+    "status": "PASS"
+  },
+  {
+    "slug": "fttx",
+    "liveH1": [
+      "FTTX"
+    ],
+    "localH1": [
+      "FTTX (Fiber to the X)"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 5,
+    "localParagraphCount": 11,
+    "status": "PASS"
+  },
+  {
+    "slug": "server-storage",
+    "liveH1": [
+      "Server & Storage"
+    ],
+    "localH1": [
+      "Server & Storage"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 12,
+    "status": "PASS"
+  },
+  {
+    "slug": "data-center-cloud",
+    "liveH1": [
+      "Data Center & Cloud"
+    ],
+    "localH1": [
+      "Data Center & Cloud"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 3,
+    "localParagraphCount": 12,
+    "status": "PASS"
+  },
+  {
+    "slug": "industry-applications",
+    "liveH1": [
+      "Industry Applications"
+    ],
+    "localH1": [
+      "Industry Applications"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 1,
+    "localParagraphCount": 9,
+    "status": "PASS"
+  },
+  {
+    "slug": "security-solutions",
+    "liveH1": [
+      "Security Solutions"
+    ],
+    "localH1": [
+      "Security Solutions"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 11,
+    "status": "PASS"
+  },
+  {
+    "slug": "case-studies",
+    "liveH1": [
+      "Case Studies"
+    ],
+    "localH1": [
+      "Case Studies"
+    ],
+    "headingMatchRate": "66.7%",
+    "liveParagraphCount": 1,
+    "localParagraphCount": 13,
+    "status": "PASS"
+  },
+  {
+    "slug": "rakuten-mobile",
+    "liveH1": [
+      "Rakuten Mobile"
+    ],
+    "localH1": [
+      "Rakuten Mobile"
+    ],
+    "headingMatchRate": "50.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 10,
+    "status": "PASS"
+  },
+  {
+    "slug": "nepal-telecom",
+    "liveH1": [
+      "Nepal Telecom"
+    ],
+    "localH1": [
+      "Nepal Telecom"
+    ],
+    "headingMatchRate": "33.3%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 9,
+    "status": "PASS"
+  },
+  {
+    "slug": "net-broadband",
+    "liveH1": [
+      "Net+ Broadband"
+    ],
+    "localH1": [
+      "Net+ Broadband"
+    ],
+    "headingMatchRate": "50.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 9,
+    "status": "PASS"
+  },
+  {
+    "slug": "careers",
+    "liveH1": [
+      "Careers"
+    ],
+    "localH1": [
+      "Careers"
+    ],
+    "headingMatchRate": "85.7%",
+    "liveParagraphCount": 11,
+    "localParagraphCount": 8,
+    "status": "PASS"
+  },
+  {
+    "slug": "contact",
+    "liveH1": [
+      "Contact"
+    ],
+    "localH1": [
+      "Contact Us"
+    ],
+    "headingMatchRate": "100.0%",
+    "liveParagraphCount": 4,
+    "localParagraphCount": 7,
+    "status": "PASS"
+  }
+]

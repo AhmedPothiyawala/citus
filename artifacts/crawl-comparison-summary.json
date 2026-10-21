@@ -1,0 +1,363 @@
+[
+  {
+    "slug": "home",
+    "route": "/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": false,
+    "liveTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "liveH1": [
+      "Our vast partner tie-ups bundled with our years of experience and knowledge puts us in a unique position to handle end-to-end deployments and system integrations for our customers."
+    ],
+    "liveImages": 59,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Keeping You One Step Ahead!"
+    ],
+    "localImages": 39
+  },
+  {
+    "slug": "company-profile",
+    "route": "/company-profile/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Company Profile – CITIUSCOMM",
+    "liveH1": [
+      "Company Profile"
+    ],
+    "liveImages": 3,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Company Profile"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "why-us",
+    "route": "/why-us/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Why Us – CITIUSCOMM",
+    "liveH1": [
+      "Why Us"
+    ],
+    "liveImages": 9,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Why Us"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "leadership",
+    "route": "/leadership/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Leadership – CITIUSCOMM",
+    "liveH1": [
+      "Leadership"
+    ],
+    "liveImages": 5,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Leadership"
+    ],
+    "localImages": 5
+  },
+  {
+    "slug": "partners",
+    "route": "/partners/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Partners – CITIUSCOMM",
+    "liveH1": [
+      "Partners"
+    ],
+    "liveImages": 18,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Partners"
+    ],
+    "localImages": 17
+  },
+  {
+    "slug": "products",
+    "route": "/products/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Products – CITIUSCOMM",
+    "liveH1": [
+      "Products"
+    ],
+    "liveImages": 6,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Products & Solutions"
+    ],
+    "localImages": 2
+  },
+  {
+    "slug": "digital-services",
+    "route": "/digital-services/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": false,
+    "liveTitle": "Digital Services – CITIUSCOMM",
+    "liveH1": [
+      "Digital Services"
+    ],
+    "liveImages": 8,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Digital Services"
+    ],
+    "localImages": 6
+  },
+  {
+    "slug": "networking",
+    "route": "/networking/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Networking – CITIUSCOMM",
+    "liveH1": [
+      "Networking"
+    ],
+    "liveImages": 4,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Networking & SD-WAN"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "fttx",
+    "route": "/fttx/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "FTTX – CITIUSCOMM",
+    "liveH1": [
+      "FTTX"
+    ],
+    "liveImages": 2,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "FTTX (Fiber to the X)"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "server-storage",
+    "route": "/server-storage/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Server & Storage – CITIUSCOMM",
+    "liveH1": [
+      "Server & Storage"
+    ],
+    "liveImages": 2,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Server & Storage"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "data-center-cloud",
+    "route": "/data-center-cloud/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Data Center & Cloud – CITIUSCOMM",
+    "liveH1": [
+      "Data Center & Cloud"
+    ],
+    "liveImages": 2,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Data Center & Cloud"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "industry-applications",
+    "route": "/industry-applications/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Industry Applications – CITIUSCOMM",
+    "liveH1": [
+      "Industry Applications"
+    ],
+    "liveImages": 5,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Industry Applications"
+    ],
+    "localImages": 5
+  },
+  {
+    "slug": "security-solutions",
+    "route": "/security-solutions/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Security Solutions – CITIUSCOMM",
+    "liveH1": [
+      "Security Solutions"
+    ],
+    "liveImages": 2,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Security Solutions"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "case-studies",
+    "route": "/case-studies/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": false,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Case Studies – CITIUSCOMM",
+    "liveH1": [
+      "Case Studies"
+    ],
+    "liveImages": 11,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Case Studies"
+    ],
+    "localImages": 5
+  },
+  {
+    "slug": "rakuten-mobile",
+    "route": "/rakuten-mobile/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Rakuten Mobile – CITIUSCOMM",
+    "liveH1": [
+      "Rakuten Mobile"
+    ],
+    "liveImages": 4,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Rakuten Mobile"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "nepal-telecom",
+    "route": "/nepal-telecom/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Nepal Telecom – CITIUSCOMM",
+    "liveH1": [
+      "Nepal Telecom"
+    ],
+    "liveImages": 4,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Nepal Telecom"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "net-broadband",
+    "route": "/net-broadband/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Net+ Broadband – CITIUSCOMM",
+    "liveH1": [
+      "Net+ Broadband"
+    ],
+    "liveImages": 4,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Net+ Broadband"
+    ],
+    "localImages": 3
+  },
+  {
+    "slug": "careers",
+    "route": "/careers/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Careers – CITIUSCOMM",
+    "liveH1": [
+      "Careers"
+    ],
+    "liveImages": 2,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Careers"
+    ],
+    "localImages": 2
+  },
+  {
+    "slug": "contact",
+    "route": "/contact/",
+    "liveOk": true,
+    "localOk": true,
+    "h1Match": true,
+    "zeroBrokenLive": true,
+    "zeroBrokenLocal": true,
+    "liveTitle": "Contact – CITIUSCOMM",
+    "liveH1": [
+      "Contact"
+    ],
+    "liveImages": 3,
+    "localTitle": "CITIUSCOMM – Keeping You One Step Ahead!",
+    "localH1": [
+      "Contact Us"
+    ],
+    "localImages": 3
+  }
+]

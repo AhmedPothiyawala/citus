@@ -53,7 +53,7 @@ export const DigitalServicesPage: React.FC = () => {
       title: 'INTELLIGENT AUTOMATION',
       subtitle: 'AI & Robotic Process Automation (RPA)',
       desc: 'The combination of Artificial Intelligence (AI) and Robotic Process Automation (RPA) technologies which together empower rapid end-to-end business process automation, eliminating human error and accelerating service activation.',
-      image: '/images/INTELLIGENT-AUTOMATION.jpg',
+      image: '/images/INTELLIGENT-AUTOMATION-1.jpg',
       icon: IconCloud,
       points: [
         'Automated subscriber KYC verification and broadband account provisioning',
