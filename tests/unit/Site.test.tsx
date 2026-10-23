@@ -4,11 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { AppContent } from '../../src/App';
 import { Header } from '../../src/components/Header';
 import { Footer } from '../../src/components/Footer';
-import { ContactForm, CareerForm } from '../../src/components/Widgets';
 import {
   LINKS,
   COMPANY_INFO,
-  MAIN_NAV,
   LEADERSHIP_TEAM,
   PARTNERS_LIST,
   CLIENTS_LIST,
@@ -19,24 +17,24 @@ import {
 
 const ALL_ROUTES: [string, RegExp][] = [
   ['/', /Keeping You One Step Ahead!/i],
-  ['/company-profile/', /Company Profile/i],
-  ['/why-us/', /Why Us/i],
-  ['/leadership/', /Leadership/i],
-  ['/partners/', /Partners/i],
-  ['/products/', /Products & Solutions/i],
-  ['/digital-services/', /Digital Services/i],
-  ['/networking/', /Networking & SD-WAN/i],
-  ['/fttx/', /FTTX/i],
-  ['/server-storage/', /Server & Storage/i],
-  ['/data-center-cloud/', /Data Center & Cloud/i],
-  ['/industry-applications/', /Industry Applications/i],
-  ['/security-solutions/', /Security Solutions/i],
-  ['/case-studies/', /Case Studies/i],
-  ['/rakuten-mobile/', /Rakuten Mobile/i],
-  ['/nepal-telecom/', /Nepal Telecom/i],
-  ['/net-broadband/', /Net\+ Broadband/i],
-  ['/careers/', /Careers/i],
-  ['/contact/', /Contact Us/i],
+  ['/company-profile/', /^Company Profile$/i],
+  ['/why-us/', /^Why Us$/i],
+  ['/leadership/', /^Leadership$/i],
+  ['/partners/', /^Partners$/i],
+  ['/products/', /^Products$/i],
+  ['/digital-services/', /^Digital Services$/i],
+  ['/networking/', /^Networking$/i],
+  ['/fttx/', /^FTTX$/i],
+  ['/server-storage/', /^Server & Storage$/i],
+  ['/data-center-cloud/', /^Data Center & Cloud$/i],
+  ['/industry-applications/', /^Industry Applications$/i],
+  ['/security-solutions/', /^Security Solutions$/i],
+  ['/case-studies/', /^Case Studies$/i],
+  ['/rakuten-mobile/', /^Rakuten Mobile$/i],
+  ['/nepal-telecom/', /^Nepal Telecom$/i],
+  ['/net-broadband/', /^Net\+ Broadband$/i],
+  ['/careers/', /^Careers$/i],
+  ['/contact/', /^Contact$/i],
 ];
 
 describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
@@ -54,6 +52,26 @@ describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
     expect(screen.getAllByAltText(/CITIUSCOMM Logo/i).length).toBeGreaterThanOrEqual(1);
     // Verify presence of footer text
     expect(screen.getByText(/developed by/i)).toBeInTheDocument();
+
+    // Verify inner pages have NO breadcrumbs
+    if (path !== '/') {
+      expect(document.body.textContent).not.toMatch(/HOME\s*\/\s*/i);
+    }
+  });
+
+  it('route "/contact/" renders exact Delhi, Mumbai, and Kolkata offices', async () => {
+    render(
+      <MemoryRouter initialEntries={['/contact/']}>
+        <AppContent />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('heading', { level: 1, name: /^Contact$/i })).toBeInTheDocument();
+    expect(screen.getByText('Delhi Office')).toBeInTheDocument();
+    expect(screen.getByText('Mumbai Office')).toBeInTheDocument();
+    expect(screen.getByText('Kolkata Office')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Your Name (required)')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Your Email (required)')).toBeInTheDocument();
   });
 });
 
@@ -68,15 +86,29 @@ describe('Header & Navigation Component', () => {
   it('renders brand email and phone in top secondary header', () => {
     renderHeader();
     expect(screen.getByText(COMPANY_INFO.email)).toBeInTheDocument();
-    expect(screen.getByText(COMPANY_INFO.phone)).toBeInTheDocument();
+    expect(screen.getByText(COMPANY_INFO.phoneFormatted)).toBeInTheDocument();
   });
 
-  it('contains all primary navigation links', () => {
+  it('contains all 7 primary navigation links in exact uppercase order', () => {
     renderHeader();
-    for (const item of MAIN_NAV) {
-      const linkElements = screen.getAllByText(item.label);
+    const expectedLabels = [
+      'HOME',
+      'ABOUT US',
+      'SOLUTIONS',
+      'INDUSTRY APPLICATIONS',
+      'PARTNERS',
+      'CAREERS',
+      'CONTACT',
+    ];
+    for (const label of expectedLabels) {
+      const linkElements = screen.getAllByText(label);
       expect(linkElements.length).toBeGreaterThanOrEqual(1);
     }
+  });
+
+  it('does NOT contain fake Get in Touch button or Case Studies in top bar', () => {
+    renderHeader();
+    expect(screen.queryByText(/Get in Touch/i)).not.toBeInTheDocument();
   });
 
   it('toggles mobile menu drawer on hamburger click', () => {
@@ -86,7 +118,7 @@ describe('Header & Navigation Component', () => {
 
     // Open drawer
     fireEvent.click(toggleBtn);
-    expect(screen.getByText('Contact Us')).toBeInTheDocument();
+    expect(screen.getAllByText('CONTACT').length).toBeGreaterThanOrEqual(1);
 
     // Close drawer
     fireEvent.click(toggleBtn);
@@ -94,17 +126,16 @@ describe('Header & Navigation Component', () => {
 });
 
 describe('Footer Component', () => {
-  it('renders all three branch office locations and copyright', () => {
+  it('renders copyright and developed by', () => {
     render(
       <MemoryRouter>
         <Footer />
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/Head Office/i)).toBeInTheDocument();
-    expect(screen.getByText(/Mumbai & Kolkata/i)).toBeInTheDocument();
     expect(screen.getByText(/2026 CITIUSCOMM/i)).toBeInTheDocument();
     expect(screen.getByText(/WebGyor Technologies/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /CITIUSCOMM LinkedIn/i })).toBeInTheDocument();
   });
 });
 
@@ -173,55 +204,5 @@ describe('Single Source of Truth (site.ts) Data Integrity', () => {
     expect(titles).toContain('Delhi Office');
     expect(titles).toContain('Mumbai Office');
     expect(titles).toContain('Kolkata Office');
-  });
-});
-
-describe('Interactive Forms Validation & Submission', () => {
-  it('submits ContactForm and displays success message', async () => {
-    render(
-      <MemoryRouter>
-        <ContactForm />
-      </MemoryRouter>
-    );
-
-    fireEvent.change(screen.getByPlaceholderText('John Doe'), {
-      target: { value: 'Test User' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('john@example.com'), {
-      target: { value: 'test@example.com' },
-    });
-    fireEvent.change(screen.getByPlaceholderText(/describe your network/i), {
-      target: { value: 'Inquiring about 100G routing and DWDM' },
-    });
-
-    const submitBtn = screen.getByRole('button', { name: /Send Message/i });
-    fireEvent.click(submitBtn);
-
-    const successMsg = await screen.findByText(/Message Sent Successfully!/i);
-    expect(successMsg).toBeInTheDocument();
-  });
-
-  it('submits CareerForm and displays success state', async () => {
-    render(
-      <MemoryRouter>
-        <CareerForm initialPosition="IP Engineers" />
-      </MemoryRouter>
-    );
-
-    fireEvent.change(screen.getByPlaceholderText('Jane Doe'), {
-      target: { value: 'Applicant Name' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('jane@example.com'), {
-      target: { value: 'applicant@example.com' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('+91 XXXXX XXXXX'), {
-      target: { value: '+91 9876543210' },
-    });
-
-    const submitBtn = screen.getByRole('button', { name: /Apply Now/i });
-    fireEvent.click(submitBtn);
-
-    const successMsg = await screen.findByText(/Application Received!/i);
-    expect(successMsg).toBeInTheDocument();
   });
 });

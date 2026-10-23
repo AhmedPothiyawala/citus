@@ -1,19 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SmartLink } from '../components/SmartLink';
+import { LINKS } from '../data/site';
 import {
-  LINKS,
-  COMPANY_INFO,
-  CLIENTS_LIST,
-  CASE_STUDIES,
-} from '../data/site';
-import { SectionTitle, CaseStudyCard, CTASection } from '../components/Widgets';
-import {
-  IconArrowRight,
   IconNetwork,
-  IconShield,
-  IconServer,
-  IconCloud,
   IconCpu,
+  IconServer,
+  IconShield,
+  IconCloud,
 } from '../components/Icons';
 
 export const HomePage: React.FC = () => {
@@ -21,37 +14,32 @@ export const HomePage: React.FC = () => {
     {
       title: 'Networking',
       href: LINKS.networking,
-      desc: 'Partnered with OEMs like Cisco, Juniper, HPE, ZTE, and Huawei for enterprise and carrier routers, network switches, and SD-WAN.',
-      icon: IconNetwork,
       image: '/images/Router-and-Switches-1-1.jpg',
+      icon: IconNetwork,
     },
     {
       title: 'FTTX',
       href: LINKS.fttx,
-      desc: 'Turnkey fiber-to-the-x solutions covering GPON, point-to-point, OLT/ONT deployments with rapid on-ground local support pan-India.',
+      image: '/images/optical-fiber.jpg',
       icon: IconCpu,
-      image: '/images/FTTX.jpg',
     },
     {
       title: 'Server & Storage',
       href: LINKS.serverStorage,
-      desc: 'Mission-critical enterprise compute & storage infrastructure with Dell, HPE, ZTE, and Huawei spanning rack, blade, and high-density servers.',
-      icon: IconServer,
       image: '/images/Servers-and-Storage-1.jpg',
+      icon: IconServer,
     },
     {
       title: 'Security Solutions',
       href: LINKS.securitySolutions,
-      desc: 'Comprehensive multi-layered cyber defense featuring DDoS mitigation, Deep Packet Inspection (DPI), and next-generation firewalls.',
+      image: '/images/Firewall-security-solution.jpg',
       icon: IconShield,
-      image: '/images/Security-2.png',
     },
     {
       title: 'Data Center & Cloud',
       href: LINKS.dataCenterCloud,
-      desc: 'Next-generation data center buildouts in India, cloud migrations, workload modernization, and hybrid cloud operating models.',
+      image: '/images/cloud.jpg',
       icon: IconCloud,
-      image: '/images/Data-Centers-1.jpg',
     },
   ];
 
@@ -59,316 +47,343 @@ export const HomePage: React.FC = () => {
     {
       name: 'Cable & Broadband',
       icon: '/images/Network-and-Broadband.png',
-      desc: 'FTTX, IP MPLS, digital headend, STB/Android TV, and IPTV/OTT architectures for top MSOs and ISPs.',
     },
     {
       name: 'Telecom',
       icon: '/images/Telecom.png',
-      desc: '4G/5G vRAN, DWDM core, optical transport, mobile backhaul, and automated OSS/BSS platforms.',
     },
     {
       name: 'Enterprises',
       icon: '/images/Enterprises.png',
-      desc: 'Private 5G, SD-WAN, campus WiFi, zero-trust cybersecurity, and high-performance compute.',
     },
     {
-      name: 'Data Center & Cloud',
+      name: 'Data Center and Cloud',
       icon: '/images/Data-and-Cloud.png',
-      desc: 'Turnkey facility engineering, hyperconverged server infrastructure, and low-latency cloud interconnects.',
     },
     {
       name: 'Government and PSUs',
       icon: '/images/Government.png',
-      desc: 'Mission-critical nationwide networks, state data centers, secure communications, and smart city infrastructure.',
     },
   ];
 
+  const allClients = [
+    { name: 'Hathway', logo: '/images/Hathway-Logo.jpg' },
+    { name: 'Den', logo: '/images/DEN-Logo.jpg' },
+    { name: 'Fastway', logo: '/images/Fastway-Logo.jpg' },
+    { name: 'Net+', logo: '/images/Net-Logo-1.jpg' },
+    { name: 'Kerala Vision', logo: '/images/Kerala-Vision-Logo.jpg' },
+    { name: 'TCCL', logo: '/images/TCCL-Logo.jpg' },
+    { name: 'VK Digital', logo: '/images/VK-Digital-Logo.jpg' },
+    { name: 'You Broadband', logo: '/images/You-Logo.jpg' },
+    { name: 'Siti Digital', logo: '/images/Siti-Digital.jpg' },
+    { name: 'UCN', logo: '/images/UCN-Logo.jpg' },
+    { name: 'Metrocast', logo: '/images/Metrocast-Logo.jpg' },
+    { name: 'Megh Bela', logo: '/images/Megh-Bela-Logo.jpg' },
+    { name: 'World Link', logo: '/images/World-Link-Logo-1.jpg' },
+    { name: 'Subisu', logo: '/images/Subisu-Logo.jpg' },
+    { name: 'Vianet', logo: '/images/Via-Net-Logo.jpg' },
+    { name: 'Discovery', logo: '/images/Discovery-Logo.jpg' },
+    { name: 'SET', logo: '/images/sony.png' },
+    { name: 'Jio', logo: '/images/Jio-Logo.jpg' },
+    { name: 'Vodafone', logo: '/images/Vi-Logo.jpg' },
+    { name: 'Airtel', logo: '/images/airtel.jpg' },
+    { name: 'Rakuten Mobile', logo: '/images/Rakuten-Logo.jpg' },
+    { name: 'Nepal Telecom', logo: '/images/Nepal-Telecom-Logo-1.jpg' },
+    { name: 'GTPL', logo: '/images/GTPL-Logo.jpg' },
+  ];
+
+  const caseStudies = [
+    {
+      title: 'Rakuten Mobile',
+      href: LINKS.rakutenMobile,
+      image: '/images/rakuten.jpg',
+      desc: 'Rakuten, Inc. is a Japanese electronic commerce and online retailing…',
+    },
+    {
+      title: 'Nepal Telecom',
+      href: LINKS.nepalTelecom,
+      image: '/images/nepal-telecom.jpg',
+      desc: 'Nepal Telecom is a state-owned Telecommunication Service Provider in Nepal…',
+    },
+    {
+      title: 'Net+ Broadband',
+      href: LINKS.netBroadband,
+      image: '/images/net-broadband.jpg',
+      desc: 'Net+ Broadband is 100% subsidiary of Fastway Transmission Pvt Ltd…',
+    },
+  ];
+
+  const [activeSlide, setActiveSlide] = useState(0);
+  // Live slider shows 2 logos per slide on phones, 3 on tablets, 6 on desktop
+  const sizeFor = (w: number) => (w < 690 ? 2 : w < 1000 ? 3 : 6);
+  const [pageSize, setPageSize] = useState(() =>
+    typeof window === 'undefined' ? 6 : sizeFor(window.innerWidth)
+  );
+  useEffect(() => {
+    const update = () => {
+      const next = sizeFor(window.innerWidth);
+      setPageSize((prev) => {
+        if (prev !== next) setActiveSlide(0);
+        return next;
+      });
+    };
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  const totalPages = Math.ceil(allClients.length / pageSize);
+  const clientPages = Array.from({ length: totalPages }, (_, i) =>
+    allClients.slice(i * pageSize, (i + 1) * pageSize)
+  );
+  // Live slider advances one page every ~4s
+  useEffect(() => {
+    const t = window.setInterval(() => setActiveSlide((v) => (v + 1) % totalPages), 4000);
+    return () => window.clearInterval(t);
+  }, [totalPages]);
+
   return (
-    <div>
-      {/* 1. Hero Section */}
-      <section className="relative bg-[#0b1f33] text-white overflow-hidden py-20 lg:py-28">
-        {/* Background artwork */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity"
-          style={{ backgroundImage: `url('/images/Video-Background.png')` }}
+    <div className="bg-white">
+      {/* 1. Hero — full-width dark network visual, left-aligned copy */}
+      <section className="relative h-[480px] md:h-[753px] flex items-center bg-[#061526] text-white overflow-hidden">
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/images/video.mp4"
+          poster="/images/Video-Background.png"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f33]/95 via-[#0f5487]/85 to-[#166fb0]/75" />
+        <div className="absolute inset-0 bg-black/20" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs sm:text-sm font-semibold tracking-wider text-sky-200 uppercase">
-              <span>Engineering First Company</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+        <div className="relative site-container pt-[40px] md:pt-[24px]">
+          <div className="max-w-[900px] text-left">
+            <h1 className="section-title text-white">
               Keeping You One Step Ahead!
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-200 font-medium leading-relaxed max-w-2xl">
-              {COMPANY_INFO.subTagline}
+            <div className="hero-fade">
+            <p className="text-[18px] leading-[28px] text-white mt-4 md:mt-5">
+              We are Technology Aggregators, with an eye to NextGen Cutting Edge Virtual Machine Technology.
             </p>
 
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
-              We are Technology Aggregators, with an eye to NextGen Cutting Edge Virtual Machine Technology and carrier-grade system integration.
-            </p>
-
-            <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+            <div className="mt-6 md:mt-7">
               <SmartLink
                 to={LINKS.companyProfile}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow-lg hover:shadow-xl transition-all"
+                className="bg-[#166fb0] hover:bg-[#0f5487] rounded-[3px] px-5 h-[48px] text-white font-medium uppercase text-[13px] tracking-[0.5px] inline-flex items-center gap-3 transition-colors"
               >
-                <span>Know More</span>
-                <IconArrowRight className="w-4 h-4" />
-              </SmartLink>
-
-              <SmartLink
-                to={LINKS.contact}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm transition-all"
-              >
-                <span>Contact Us</span>
+                <span className="w-5 h-[1.5px] bg-white inline-block" />
+                <span>KNOW MORE</span>
               </SmartLink>
             </div>
-          </div>
-
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="relative max-w-md w-full">
-              <img
-                src="/images/home-img.png"
-                alt="CITIUSCOMM Network Architecture"
-                className="w-full h-auto drop-shadow-2xl animate-pulse-slow"
-                loading="eager"
-              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Who We Are Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Visuals */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative grid grid-cols-2 gap-4">
-                <img
-                  src="/images/home-about-01.jpg"
-                  alt="CITIUSCOMM Engineers"
-                  className="rounded-xl shadow-lg object-cover w-full h-64 sm:h-80"
-                  loading="lazy"
-                />
+      {/* 2. Who We Are — light blue wash, stacked photos */}
+      <section className="relative bg-gradient-to-b from-[#ecf2fd] to-white py-[60px] md:pt-[88px] md:pb-[70px]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[40px] items-center">
+            {/* Left: overlapping photos (faded back image, cable photo in front) */}
+            <div className="relative w-full max-w-[500px] aspect-[500/582] mx-auto lg:mx-0">
+              <div className="absolute top-0 left-0 w-[83.4%] aspect-square overflow-hidden opacity-45">
                 <img
                   src="/images/home-about-02.jpg"
-                  alt="CITIUSCOMM Network Operations"
-                  className="rounded-xl shadow-lg object-cover w-full h-64 sm:h-80 mt-8"
-                  loading="lazy"
+                  alt="Who We Are Background"
+                  className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 left-6 bg-[#166fb0] text-white p-5 rounded-xl shadow-xl max-w-xs">
-                <div className="text-2xl font-bold tracking-tight">Pan-India</div>
-                <div className="text-xs text-sky-100 uppercase tracking-wider mt-0.5">
-                  Turnkey System Integration
-                </div>
+              <div className="absolute bottom-0 left-[16.6%] w-[83.4%] aspect-square overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+                <img
+                  src="/images/home-about-01.jpg"
+                  alt="CITIUSCOMM Network Operations"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
 
-            {/* Narrative */}
-            <div className="lg:col-span-7 space-y-6">
-              <SectionTitle
-                badge="Who We Are"
-                title="Fastest Growing Technology Aggregator"
-                align="left"
-              />
+            {/* Right: narrative */}
+            <div className="max-w-[640px]" data-reveal="up" data-delay="100">
+              <h2 className="section-title text-[#166fb0]">Who We Are</h2>
 
-              <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal">
-                <strong>CITIUSCOMM</strong>, a multi-national company, is the fastest growing Technology Aggregator and offers carrier-grade solutions for Telecom Operators, Enterprises, Cable &amp; Broadband providers, and Governments.
+              <p className="mt-6 text-[18px] leading-[28px] text-black">
+                <strong>&ldquo;CITIUSCOMM&rdquo; a Multi-National Company,</strong> is the fastest growing Technology Aggregator and <strong>offers carrier-grade solutions</strong> for the dynamically developing <strong>Communications and Networking Industry.</strong>
               </p>
 
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                CITIUSCOMM is providing E2E bespoke turnkey solutions which include Product, Service Delivery, NOC Operations, and Project Management. We are known for delivering cost-effective and high-quality solutions to our customers, efficiently and consistently.
-              </p>
-
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                We design and engineer comprehensive architectures with an eye on next-generation virtualized platforms, helping operators navigate complex migrations with zero downtime.
-              </p>
-
-              <div className="pt-2">
+              <h3 className="mt-8">
                 <SmartLink
-                  to={LINKS.whyUs}
-                  className="inline-flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow transition-all"
+                  to={LINKS.companyProfile}
+                  className="inline-flex items-center gap-3 text-[20px] font-sans font-bold text-[#166fb0] hover:text-[#0b1f33] uppercase transition-colors"
                 >
+                  <span className="w-6 h-[1.5px] bg-[#166fb0] inline-block" />
                   <span>KNOW MORE</span>
-                  <IconArrowRight className="w-4 h-4" />
                 </SmartLink>
-              </div>
+              </h3>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. High-Impact Big Statement Banner */}
-      <section className="bg-gradient-to-r from-[#0b1f33] via-[#0f5487] to-[#166fb0] py-16 px-4 sm:px-8 text-white text-center">
-        <div className="max-w-5xl mx-auto">
-          <div className="inline-block px-3.5 py-1 rounded-full bg-white/10 text-sky-200 text-xs font-semibold tracking-wider uppercase mb-4">
-            End-To-End System Integration
-          </div>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold leading-relaxed tracking-tight text-white">
-            “Our vast partner tie-ups bundled with our years of experience and knowledge puts us in a unique position to handle end-to-end deployments and system integrations for our customers.”
+      {/* 2B. Full-width architectural banner */}
+      <section
+        className="relative min-h-[420px] md:h-[566px] flex items-center bg-cover bg-center overflow-hidden"
+        style={{ backgroundImage: `url('/images/home-img.png')` }}
+      >
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="relative site-container py-16">
+          <h2 className="max-w-[860px] mx-auto md:mx-0 text-center md:text-left text-[18px] md:text-[28.8px] leading-[1.25] font-heading font-bold capitalize text-white">
+            Our Vast Partner Tie-Ups Bundled With Our Years Of Experience And Knowledge Puts Us In A Unique Position To Handle End-To-End Deployments And System Integrations For Our Customers.
           </h2>
         </div>
       </section>
 
-      {/* 4. Solutions Section */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Solutions"
-            title="Comprehensive Technology Offerings"
-            subtitle="Engineered for high-throughput, low-latency, and zero-compromise security across modern digital networks."
-          />
+      {/* 3. Solutions — 3 cards then 2 wide cards */}
+      <section className="pt-[60px] md:pt-[90px] pb-[50px] bg-white">
+        <div className="site-container">
+          <h2 className="section-title text-[#166fb0] text-center mb-[40px] md:mb-[56px]">
+            Solutions
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {solutions.map((item) => {
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-[1px] md:-mx-[10px]">
+            {solutions.map((item, idx) => {
               const IconComp = item.icon;
               return (
-                <div
+                <SmartLink
                   key={item.title}
-                  className="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden card-hover-lift flex flex-col"
+                  to={item.href}
+                  data-reveal="up"
+                  data-delay={idx === 1 || idx === 2 || idx === 4 ? 100 : 0}
+                  className={`group relative h-[350px] overflow-hidden block ${
+                    idx < 3 ? 'md:col-span-2' : 'md:col-span-3'
+                  }`}
                 >
-                  <div className="relative h-44 bg-slate-100 overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
-                    <div className="absolute bottom-3 left-4 flex items-center gap-2 text-white">
-                      <div className="p-2 rounded-lg bg-[#166fb0] text-white">
-                        <IconComp className="w-5 h-5" />
-                      </div>
-                      <h3 className="text-xl font-bold">{item.title}</h3>
-                    </div>
-                  </div>
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/45 group-hover:bg-black/30 transition-colors" />
 
-                  <div className="p-6 flex flex-col flex-grow">
-                    <p className="text-sm text-slate-600 leading-relaxed mb-6 flex-grow">
-                      {item.desc}
-                    </p>
-                    <div className="pt-2 border-t border-slate-100">
-                      <SmartLink
-                        to={item.href}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#166fb0] hover:text-[#0f5487] transition-colors"
-                      >
-                        <span>Learn More</span>
-                        <IconArrowRight className="w-4 h-4" />
-                      </SmartLink>
+                  <div className="absolute bottom-[46px] left-[56px] right-6 text-white">
+                    <div className="mb-3 text-white">
+                      <IconComp className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-[20px] leading-[30px] font-sans font-bold">
+                      {item.title}
+                    </h3>
+                    <div className="mt-1 text-[13px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                      Read More
                     </div>
                   </div>
-                </div>
+                </SmartLink>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* 5. Focus Verticals Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Market Focus"
-            title="Focus Verticals"
-            subtitle="Empowering diverse sectors with domain-specific engineering and carrier-grade infrastructure."
-          />
+      {/* 4. Focus Verticals */}
+      <section className="pt-[40px] md:pt-[60px] pb-[60px] md:pb-[80px] bg-white">
+        <div className="text-center">
+          <h2 className="section-title text-[#166fb0] mb-[40px] md:mb-[18px] px-5">
+            Focus Verticals
+          </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {verticals.map((vert) => (
-              <div
-                key={vert.name}
-                className="bg-slate-50 hover:bg-sky-50/50 rounded-xl p-6 text-center border border-slate-200/70 transition-all card-hover-lift flex flex-col items-center"
-              >
-                <div className="w-20 h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center p-3 mb-5 border border-slate-100">
-                  <img
-                    src={vert.icon}
-                    alt={vert.name}
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                  />
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-y-10 gap-x-0 items-start">
+            {verticals.map((vert, vIdx) => (
+              <div key={vert.name} className="flex flex-col items-center">
+                <div className="w-[230px] h-[230px] sm:w-[147px] sm:h-[147px] flex items-center justify-center mb-[60px]" data-reveal="fade">
+                  <img src={vert.icon} alt={vert.name} className="w-full h-full object-contain" />
                 </div>
-                <h5 className="text-base font-bold text-slate-900 mb-2">{vert.name}</h5>
-                <p className="text-xs text-slate-600 leading-relaxed">{vert.desc}</p>
+                <h5 data-reveal="up" data-delay={vIdx * 500} className="max-w-[147px] text-[20px] leading-[25px] font-sans font-medium text-black text-center">
+                  {vert.name}
+                </h5>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 6. Clients Showcase Section */}
+      {/* 5. Our Clients — dark network background, 6 logos per slide */}
       <section
-        className="relative py-20 bg-slate-900 text-white overflow-hidden"
-        style={{
-          backgroundImage: `url('/images/clients-bg.jpg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
+        className="relative pt-[70px] pb-[50px] bg-cover bg-center overflow-hidden"
+        style={{ backgroundImage: `url('/images/clients-bg.jpg')` }}
       >
-        <div className="absolute inset-0 bg-[#0b1f33]/90 backdrop-blur-xs" />
+        <div className="absolute inset-0 bg-[#061219]/78" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Trusted By Leaders"
-            title="Our Clients"
-            subtitle="Delivering mission-critical networks for premier telecom operators, MSOs, and service providers."
-            dark
-          />
+        <div className="relative site-container text-center">
+          <h2 className="section-title text-white mb-[34px]">Our Clients</h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 sm:gap-6 items-center">
-            {CLIENTS_LIST.map((client) => (
-              <div
-                key={client.name}
-                className="bg-white/95 hover:bg-white rounded-lg p-3 sm:p-4 flex items-center justify-center h-20 shadow-sm transition-transform hover:scale-105"
-                title={client.name}
-              >
-                <img
-                  src={client.logo}
-                  alt={client.name}
-                  className="max-h-12 w-auto object-contain filter grayscale hover:grayscale-0 transition-all"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Case Studies Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Proven Impact"
-            title="Featured Case Studies"
-            subtitle="Explore how CITIUSCOMM has solved complex network challenges across national and global deployments."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {CASE_STUDIES.map((cs) => (
-              <CaseStudyCard key={cs.id} caseStudy={cs} />
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <SmartLink
-              to={LINKS.caseStudies}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow transition-all"
+          <div className="overflow-hidden max-w-[1290px] mx-auto">
+            <div
+              className="flex transition-transform duration-[900ms] ease-[cubic-bezier(0.2,0.7,0.2,1)]"
+              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
             >
-              <span>View All Case Studies</span>
-              <IconArrowRight className="w-4 h-4" />
-            </SmartLink>
+              {clientPages.map((page, pIdx) => (
+                <div
+                  key={pIdx}
+                  className="w-full shrink-0 grid gap-x-[22px]"
+                  style={{ gridTemplateColumns: `repeat(${pageSize}, minmax(0, 1fr))` }}
+                >
+                  {Math.abs(pIdx - activeSlide) <= 1 && page.map((client) => (
+                    <div key={client.name} className="flex flex-col items-center">
+                      <div className="w-full max-w-[193px] aspect-square bg-white flex items-center justify-center p-2">
+                        <img src={client.logo} alt={client.name} className="w-full h-full object-contain" loading="lazy" />
+                      </div>
+                      <span className="text-[18px] leading-[28px] text-white mt-3">{client.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-[18px] mt-8">
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveSlide(idx)}
+                aria-label={`Slide ${idx + 1}`}
+                className={`w-[7px] h-[7px] rounded-full transition-colors ${
+                  activeSlide === idx ? 'bg-[#166fb0]' : 'bg-white hover:bg-white/70'
+                }`}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 8. Call to Action Banner */}
-      <CTASection />
+      {/* 6. Case Studies — plain image + meta, no card chrome */}
+      <section className="pt-[60px] md:pt-[90px] pb-[60px] md:pb-[100px] bg-white">
+        <div className="site-container">
+          <h2 className="section-title text-[#166fb0] text-center mb-[34px]">Case Studies</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[38px]">
+            {caseStudies.map((study) => (
+              <article key={study.title} className="group" data-reveal="up">
+                <SmartLink to={study.href} className="block aspect-[600/403] overflow-hidden bg-slate-100">
+                  <img
+                    src={study.image}
+                    alt={study.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </SmartLink>
+                <div className="pt-4">
+                  <SmartLink to={LINKS.caseStudies} className="text-[#888] text-[18px] leading-[24px]">
+                    Case Studies
+                  </SmartLink>
+                  <h3 className="text-[20px] leading-[30px] font-sans font-bold text-black mt-1">
+                    <SmartLink to={study.href} className="hover:text-[#166fb0] transition-colors">{study.title}</SmartLink>
+                  </h3>
+                  <p className="text-[18px] leading-[28px] text-black mt-2">{study.desc}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

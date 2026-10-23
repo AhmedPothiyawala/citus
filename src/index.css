@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Archivo", "Rubik", sans-serif;
+  --font-accent: "Nunito", sans-serif;
+}
+
 @layer base {
   :root {
     --brand-primary: #166fb0;
@@ -10,14 +16,32 @@
     --brand-subtle: #f0f7fc;
   }
 
-  html {
+  html, body {
     scroll-behavior: smooth;
-    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    font-size: 18px;
+    line-height: 28px;
+    color: #000;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Archivo', 'Rubik', sans-serif;
+  }
+
+  .font-rubik {
     font-family: 'Rubik', sans-serif;
-    color: #1e293b;
+  }
+
+  .font-opensans {
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .font-nunito {
+    font-family: 'Nunito', sans-serif;
   }
 }
 
@@ -55,4 +79,102 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* ---- Layout matched to live theme ---- */
+/* Live site: content edge sits 90px from the viewport edge on desktop */
+.site-container {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+@media (min-width: 690px)  { .site-container { padding-left: 40px; padding-right: 40px; } }
+@media (min-width: 1000px) { .site-container { padding-left: 60px; padding-right: 60px; } }
+@media (min-width: 1300px) { .site-container { padding-left: 90px; padding-right: 90px; } }
+
+/* Big blue/black section titles (live h2: Archivo 700, 50px / 60px) */
+.section-title {
+  font-family: 'Archivo', 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 40px;
+}
+@media (min-width: 1000px) { .section-title { font-size: 50px; line-height: 60px; } }
+
+/* Page title bar heading (live: heavy Archivo, ~56px) */
+.page-hero-title {
+  font-family: 'Archivo Black', 'Archivo', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.3;
+}
+@media (min-width: 1000px) { .page-hero-title { font-size: 54px; line-height: 78px; } }
+
+/* Content block headings, e.g. "ROUTER AND SWITCHES" */
+.block-title {
+  font-family: 'Archivo', 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.3;
+  color: #000;
+}
+@media (min-width: 1000px) { .block-title { font-size: 28px; } }
+
+.page-section { padding-top: 60px; padding-bottom: 60px; }
+@media (min-width: 1000px) { .page-section { padding-top: 85px; padding-bottom: 85px; } }
+
+/* ---- Entrance animations (modelled on the live theme) ---- */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 1s cubic-bezier(0.2, 0.7, 0.2, 1), transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.reveal-init.reveal-in,
+.reveal-fade.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+/* Line reveal: each word rises out of a clipping mask */
+.lr-line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.lr-word {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+.lr-ready.reveal-in .lr-word { transform: none; }
+/* Hero copy fades in after the heading (live: 800ms delay) */
+@keyframes heroFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.hero-fade { animation: heroFadeIn 1.1s ease 0.8s both; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init, .reveal-fade { opacity: 1; transform: none; transition: none; }
+  .lr-word { transform: none; transition: none; }
+  .hero-fade { animation: none; }
+}
+
+/* Image hover zoom used on cards and feature photos */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.img-zoom:hover img { transform: scale(1.06); }
+
+/* Phones: live theme keeps body copy large and title bars short */
+@media (max-width: 689px) {
+  main p, main li { font-size: 17px; line-height: 28px; }
+}
+
+/* Live body copy is 18px / 28px on desktop */
+@media (min-width: 690px) {
+  main p, main li { font-size: 18px; line-height: 28px; }
 }

@@ -12,50 +12,26 @@ interface PageHeroProps {
 
 export const PageHero: React.FC<PageHeroProps> = ({
   title,
-  subtitle,
-  backgroundImage = '/images/page-title-bar.jpg',
-  breadcrumbs,
+  backgroundImage = '/images/Data-Centers-1.jpg',
 }) => {
+  // Live theme: 400px title bar (header overlaps it), dark data-center image
+  // with a deep green/black tint, heavy centred Archivo title.
+  const isDefault = backgroundImage === '/images/Data-Centers-1.jpg';
   return (
-    <div className="relative bg-[#0b1f33] py-20 sm:py-24 overflow-hidden">
-      {/* Background image */}
+    <div className="relative h-[190px] md:h-[400px] pt-[56px] md:pt-[52px] flex items-center justify-center overflow-hidden bg-[#020a08]">
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity scale-105 transition-transform duration-1000"
+        className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       />
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0b1f33]/95 via-[#0f5487]/80 to-[#166fb0]/75" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-8 text-center sm:text-left">
-        {breadcrumbs && (
-          <nav className="flex items-center justify-center sm:justify-start gap-2 text-xs uppercase tracking-wider text-sky-200 mb-4 font-medium">
-            <SmartLink to={LINKS.home} className="hover:text-white transition-colors">
-              Home
-            </SmartLink>
-            {breadcrumbs.map((crumb, idx) => (
-              <React.Fragment key={idx}>
-                <span className="text-white/40">/</span>
-                {crumb.href ? (
-                  <SmartLink to={crumb.href} className="hover:text-white transition-colors">
-                    {crumb.label}
-                  </SmartLink>
-                ) : (
-                  <span className="text-white">{crumb.label}</span>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-        )}
-
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
-          {title}
-        </h1>
-
-        {subtitle && (
-          <p className="mt-4 text-base sm:text-lg text-slate-200 max-w-3xl leading-relaxed">
-            {subtitle}
-          </p>
-        )}
+      <div
+        className={`absolute inset-0 ${
+          isDefault
+            ? 'bg-gradient-to-b from-[#03120d]/90 via-[#041a12]/85 to-[#020806]/92 mix-blend-normal'
+            : 'bg-[#0b1f33]/45'
+        }`}
+      />
+      <div className="relative site-container text-center">
+        <h1 className="page-hero-title text-white">{title}</h1>
       </div>
     </div>
   );

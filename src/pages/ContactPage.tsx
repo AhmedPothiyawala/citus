@@ -1,123 +1,142 @@
-import { PageHero, ContactForm } from '../components/Widgets';
-import { OFFICES_LIST, COMPANY_INFO } from '../data/site';
-import { IconMapPin, IconPhone, IconMail, IconLinkedIn } from '../components/Icons';
+import React, { useState } from 'react';
+import { PageHero } from '../components/Widgets';
 
 export const ContactPage: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
   return (
-    <div>
-      <PageHero
-        title="Contact Us"
-        subtitle="Get in touch with our engineering, sales, and executive teams across our offices in India."
-        breadcrumbs={[{ label: 'Contact' }]}
-      />
+    <div className="bg-white">
+      <PageHero title="Contact" />
 
-      {/* Main Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Office Locations */}
-            <div className="lg:col-span-5 space-y-8">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-1 block">
-                  Locations
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                  {COMPANY_INFO.legalName}
-                </h2>
-                <p className="text-sm text-slate-600 mt-2">
-                  Headquartered in New Delhi with strategic presence in Mumbai and Kolkata.
-                </p>
-              </div>
+      <section className="pt-[40px] pb-[60px] md:pb-[90px] site-container">
+        <h2 className="text-[20px] md:text-[22px] font-bold text-black font-heading tracking-[0.3px] mb-[40px]">
+          CITIUS COMMUNICATIONS PVT. LTD.
+        </h2>
 
-              <div className="space-y-6">
-                {OFFICES_LIST.map((office) => (
-                  <div
-                    key={office.title}
-                    className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 shadow-xs card-hover-lift space-y-3"
-                  >
-                    <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                      <IconMapPin className="w-5 h-5 text-[#166fb0]" />
-                      <span>{office.title}</span>
-                    </h3>
-
-                    <div className="text-sm text-slate-600 leading-relaxed pl-7">
-                      {office.address.map((line, idx) => (
-                        <div key={idx}>{line}</div>
-                      ))}
-                    </div>
-
-                    <div className="pl-7 space-y-1 pt-1 text-sm">
-                      {office.phone && (
-                        <div className="flex items-center gap-2 text-slate-700">
-                          <IconPhone className="w-4 h-4 text-[#166fb0]" />
-                          <a
-                            href={`tel:${office.phone.replace(/[\s-]/g, '')}`}
-                            className="hover:text-[#166fb0] transition-colors"
-                          >
-                            Phone: {office.phone}
-                          </a>
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-2 text-slate-700">
-                        <IconMail className="w-4 h-4 text-[#166fb0]" />
-                        <a
-                          href={`mailto:${office.email}`}
-                          className="hover:text-[#166fb0] transition-colors"
-                        >
-                          Email: {office.email}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Social / Direct Connect Box */}
-              <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0b1f33] to-[#166fb0] text-white shadow-md space-y-3">
-                <h4 className="text-base font-bold">Connect on Professional Networks</h4>
-                <p className="text-xs text-sky-100 leading-relaxed">
-                  Follow CITIUSCOMM on LinkedIn for recent carrier deployment updates, technology announcements, and corporate insights.
-                </p>
-                <div className="pt-2">
-                  <a
-                    href={COMPANY_INFO.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold bg-white text-[#166fb0] hover:bg-sky-50 shadow transition-colors"
-                  >
-                    <IconLinkedIn className="w-4 h-4" />
-                    <span>Follow CITIUSCOMM on LinkedIn</span>
-                  </a>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <div>
+                <div className="w-[56px] h-[56px] rounded-full bg-[#e8f1f9] text-[#166fb0] flex items-center justify-center mb-[30px]"><svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+                <h3 className="text-[18px] font-bold text-black font-sans">
+                  Delhi Office
+                </h3>
+                <div className="text-black text-[18px] leading-[28px]">
+                  <p>B25, Ground Floor,</p>
+                  <p>Okhla Industrial Area,</p>
+                  <p>Phase-II,New Delhi – 110020.</p>
+                  <p><span className="font-semibold text-black">Phone:</span> +91 11 4010 7947</p>
+                  <p><span className="font-semibold text-black">Email:</span> <a href="mailto:sales@citiuscomm.com" className="text-[#166fb0] hover:underline">sales@citiuscomm.com</a></p>
                 </div>
               </div>
-            </div>
-
-            {/* Interactive Contact Form */}
-            <div className="lg:col-span-7 space-y-6">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-1 block">
-                  Inquiry
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                  Connect With Us
-                </h2>
-                <p className="text-sm text-slate-600 mt-2">
-                  Have a network requirement, RFP, or system integration query? Fill in the form below and an engineer will connect with you.
-                </p>
+          <div>
+                <div className="w-[56px] h-[56px] rounded-full bg-[#e8f1f9] text-[#166fb0] flex items-center justify-center mb-[30px]"><svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+                <h3 className="text-[18px] font-bold text-black font-sans">
+                  Mumbai Office
+                </h3>
+                <div className="text-black text-[18px] leading-[28px]">
+                  <p>503, Filix Tower, LBS Marg,</p>
+                  <p>Opp. Asian Paints, Bhandup (West),</p>
+                  <p>Mumbai – 400078.</p>
+                  <p><span className="font-semibold text-black">Phone:</span> 022 62362154</p>
+                  <p><span className="font-semibold text-black">Email:</span> <a href="mailto:sales@citiuscomm.com" className="text-[#166fb0] hover:underline">sales@citiuscomm.com</a></p>
+                </div>
               </div>
-
-              <ContactForm />
-
-              {/* Image banner */}
-              <div className="pt-4">
-                <img
-                  src="/images/contact.png"
-                  alt="Contact CITIUSCOMM"
-                  className="w-full h-auto rounded-xl border border-slate-200 object-cover"
-                />
+          <div>
+                <div className="w-[56px] h-[56px] rounded-full bg-[#e8f1f9] text-[#166fb0] flex items-center justify-center mb-[30px]"><svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div>
+                <h3 className="text-[18px] font-bold text-black font-sans">
+                  Kolkata Office
+                </h3>
+                <div className="text-black text-[18px] leading-[28px]">
+                  <p>2, Canal Street,</p>
+                  <p>1st floor, Flat#1B,</p>
+                  <p>near Entally Police Station,</p>
+                  <p>Kolkata -700014.</p>
+                  <p><span className="font-semibold text-black">Email:</span> <a href="mailto:sales@citiuscomm.com" className="text-[#166fb0] hover:underline">sales@citiuscomm.com</a></p>
+                </div>
               </div>
-            </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-[48px] items-start mt-[90px] md:mt-[190px]">
+          <div>
+            <h2 className="text-[30px] md:text-[34px] font-normal text-black font-heading text-center mb-[34px]">
+              Connect With Us
+            </h2>
+            {submitted ? (
+              <div className="p-6 bg-green-50 border border-green-200 text-green-800 rounded">
+                Thank you for contacting CITIUSCOMM. Your message has been sent.
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-[26px]">
+                <div>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Your Name (required)"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-[10px] py-[10px] bg-[#f4f4f4] border-0 border-b border-[#ddd] focus:border-[#166fb0] outline-none text-black text-[13px]"
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="email"
+                    required
+                    placeholder="Your Email (required)"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-[10px] py-[10px] bg-[#f4f4f4] border-0 border-b border-[#ddd] focus:border-[#166fb0] outline-none text-black text-[13px]"
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Subject"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="w-full px-[10px] py-[10px] bg-[#f4f4f4] border-0 border-b border-[#ddd] focus:border-[#166fb0] outline-none text-black text-[13px]"
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    rows={6}
+                    placeholder="Your Message"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-[10px] py-[10px] bg-[#f4f4f4] border-0 border-b border-[#ddd] focus:border-[#166fb0] outline-none text-black text-[13px]"
+                  />
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    className="px-[18px] h-[42px] bg-[#166fb0] hover:bg-[#0f5487] text-white font-medium text-[15px] rounded-[3px] transition-colors"
+                  >
+                    SEND
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          <div className="lg:pt-[84px]">
+            <img
+              src="/images/contact.png"
+              alt="CITIUSCOMM Pan-India Network Map"
+              className="w-full h-auto object-contain"
+            />
           </div>
         </div>
       </section>

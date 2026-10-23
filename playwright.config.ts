@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  workers: 1,
+  workers: process.env.WORKERS ? parseInt(process.env.WORKERS) : 1,
   reporter: 'list',
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:4174',

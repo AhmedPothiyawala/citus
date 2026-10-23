@@ -9,9 +9,9 @@ const ALL_19_ROUTES: [string, RegExp][] = [
   ['/why-us/', /Why Us/i],
   ['/leadership/', /Leadership/i],
   ['/partners/', /Partners/i],
-  ['/products/', /Products & Solutions/i],
+  ['/products/', /^Products$/i],
   ['/digital-services/', /Digital Services/i],
-  ['/networking/', /Networking & SD-WAN/i],
+  ['/networking/', /^Networking$/i],
   ['/fttx/', /FTTX/i],
   ['/server-storage/', /Server & Storage/i],
   ['/data-center-cloud/', /Data Center & Cloud/i],
@@ -22,7 +22,7 @@ const ALL_19_ROUTES: [string, RegExp][] = [
   ['/nepal-telecom/', /Nepal Telecom/i],
   ['/net-broadband/', /Net\+ Broadband/i],
   ['/careers/', /Careers/i],
-  ['/contact/', /Contact Us/i],
+  ['/contact/', /^Contact$/i],
 ];
 
 describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
@@ -58,9 +58,7 @@ describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
           expect(src?.startsWith('/images/') || src?.startsWith('data:')).toBe(true);
         }
 
-        // Clean up DOM between iterations
         unmount();
-        cleanup();
       }
     });
   }

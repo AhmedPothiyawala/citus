@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
+import { PageTitle } from './components/PageTitle';
+import { ScrollReveal } from './components/ScrollReveal';
 
 // Page components
 import { HomePage } from './pages/HomePage';
@@ -29,6 +31,8 @@ export const AppContent: React.FC = () => {
   return (
     <>
       <ScrollToTop />
+      <PageTitle />
+      <ScrollReveal />
       <div className="flex flex-col min-h-screen bg-white">
         <Header />
         <main className="flex-grow">

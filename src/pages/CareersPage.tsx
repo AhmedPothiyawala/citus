@@ -1,176 +1,294 @@
 import React, { useState } from 'react';
-import { PageHero, SectionTitle, CareerForm, CTASection } from '../components/Widgets';
-import { CAREER_OPENINGS } from '../data/site';
-import { IconCheck, IconChevronDown, IconBriefcase, IconMapPin, IconAward } from '../components/Icons';
+import { PageHero } from '../components/Widgets';
 
 export const CareersPage: React.FC = () => {
-  const [selectedPosition, setSelectedPosition] = useState<string>('IP Engineers');
-  const [expandedId, setExpandedId] = useState<string | null>('ip-engineers');
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggleExpand = (id: string, title: string) => {
-    setExpandedId(expandedId === id ? null : id);
-    setSelectedPosition(title);
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    position: 'IP Engineers',
+    message: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
   };
 
   return (
-    <div>
-      <PageHero
-        title="Careers"
-        subtitle="Let’s build a new dynamic world together! Bring your enthusiasm, your ideas, and your sincerity."
-        breadcrumbs={[{ label: 'Careers' }]}
-      />
+    <div className="bg-white">
+      <PageHero title="Careers" />
 
-      {/* Culture & Invitation Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 text-center space-y-6">
-          <SectionTitle
-            badge="Join Our Mission"
-            title="Work With Industry Pioneers"
-            subtitle="Let us work together to solve the most challenging problems of the industry with the knowledge of our unique backgrounds and sharp skillsets."
-          />
+      {/* Intro section */}
+      <section className="pb-[40px] md:pl-[85px] lg:pl-[85px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[58fr_42fr] gap-10 lg:gap-[50px] items-center">
+          <div className="space-y-6 text-black text-[18px] leading-[28px] px-5 md:px-0 pt-[40px] lg:pt-0">
+            <p>
+              Let us work together to solve the most challenging problems of the industry with the knowledge of our unique backgrounds and sharp skillsets.
+            </p>
+            <p>
+              Bring in your enthusiasm, your ideas, and your sincerity and we offer the best infrastructure and technological support for you!
+            </p>
+            <p className="font-bold text-black">
+              Let’s build a new dynamic world together!
+            </p>
+          </div>
 
-          <div className="p-8 rounded-2xl bg-gradient-to-r from-sky-50 via-white to-sky-50 border border-sky-100 shadow-xs text-slate-700 leading-relaxed text-base sm:text-lg">
-            “Bring in your enthusiasm, your ideas, and your sincerity and we offer the best infrastructure and technological support for you! Let’s build a new dynamic world together!”
+          <div>
+            <img
+              src="/images/3.jpg"
+              alt="Careers at CITIUSCOMM"
+              className="w-full h-auto object-cover"
+            />
           </div>
         </div>
       </section>
 
       {/* Openings Section */}
-      <section className="py-16 bg-slate-50 border-t border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            {/* Job Openings Accordion */}
-            <div className="lg:col-span-7 space-y-6">
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                <IconBriefcase className="w-6 h-6 text-[#166fb0]" />
-                <span>Current Openings</span>
-              </h2>
+      <section className="pt-[40px] pb-[50px] site-container lg:!px-[115px]">
+        <h2 className="section-title text-[#166fb0] mb-[22px]">
+          Openings
+        </h2>
 
-              <div className="space-y-4">
-                {CAREER_OPENINGS.map((opening) => {
-                  const isExpanded = expandedId === opening.id;
-                  return (
-                    <div
-                      key={opening.id}
-                      className="bg-white rounded-xl border border-slate-200/80 shadow-xs overflow-hidden transition-all"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => toggleExpand(opening.id, opening.title)}
-                        className="w-full p-6 text-left flex items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors"
-                        aria-expanded={isExpanded}
-                      >
-                        <div>
-                          <div className="flex items-center gap-2 text-xs font-semibold text-[#166fb0] uppercase tracking-wider mb-1">
-                            <span>{opening.category}</span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1 text-slate-500 font-normal">
-                              <IconMapPin className="w-3.5 h-3.5" />
-                              {opening.location}
-                            </span>
-                          </div>
-                          <h3 className="text-xl font-bold text-slate-900">{opening.title}</h3>
-                        </div>
-
-                        <div className="p-2 rounded-full bg-slate-100 text-slate-600 shrink-0">
-                          <IconChevronDown
-                            className={`w-5 h-5 transition-transform duration-200 ${
-                              isExpanded ? 'rotate-180 text-[#166fb0]' : ''
-                            }`}
-                          />
-                        </div>
-                      </button>
-
-                      {isExpanded && (
-                        <div className="px-6 pb-6 pt-2 border-t border-slate-100 space-y-5 text-sm text-slate-600">
-                          <p className="leading-relaxed">{opening.overview}</p>
-
-                          {opening.responsibilities.length > 0 && (
-                            <div>
-                              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">
-                                Responsibilities &amp; Scope:
-                              </h4>
-                              <ul className="space-y-1.5 pl-2">
-                                {opening.responsibilities.map((r, i) => (
-                                  <li key={i} className="flex items-start gap-2">
-                                    <IconCheck className="w-4 h-4 text-[#166fb0] shrink-0 mt-0.5" />
-                                    <span>{r}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {opening.qualifications.length > 0 && (
-                            <div>
-                              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">
-                                What We Are Looking For:
-                              </h4>
-                              <ul className="space-y-1.5 pl-2">
-                                {opening.qualifications.map((q, i) => (
-                                  <li key={i} className="flex items-start gap-2">
-                                    <IconCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                                    <span>{q}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {opening.preferred && opening.preferred.length > 0 && (
-                            <div>
-                              <h4 className="font-bold text-slate-800 text-xs uppercase tracking-wider mb-2">
-                                Preferred Advantage:
-                              </h4>
-                              <ul className="space-y-1.5 pl-2">
-                                {opening.preferred.map((p, i) => (
-                                  <li key={i} className="flex items-start gap-2">
-                                    <IconAward className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                                    <span>{p}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          <div className="pt-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedPosition(opening.title);
-                                const formEl = document.getElementById('apply-form');
-                                formEl?.scrollIntoView({ behavior: 'smooth' });
-                              }}
-                              className="px-5 py-2 rounded-full text-xs font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow-xs transition-colors"
-                            >
-                              Apply for {opening.title}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Interactive Apply Form */}
-            <div id="apply-form" className="lg:col-span-5 space-y-6">
-              <div className="sticky top-28">
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight mb-2">
-                  Apply Now
-                </h2>
-                <p className="text-sm text-slate-600 mb-6">
-                  Submit your details and our talent acquisition team will get in touch with you.
+        <div className="divide-y divide-[#ddd] border-b border-[#ddd]">
+          {/* 1. IP Engineers */}
+          <div className="py-[15px] md:py-[20px]">
+            <button
+              onClick={() => toggleAccordion(0)}
+              className="w-full flex items-center justify-between text-left py-2 font-medium text-black hover:text-[#166fb0] transition-colors"
+            >
+              <h3 className="text-[26px] md:text-[35px] leading-[45px] font-normal text-black font-sans">IP Engineers</h3>
+              <span className="w-[30px] h-[30px] shrink-0 rounded-full border border-[#555] flex items-center justify-center text-[#555] font-light text-[22px] leading-none">
+                {openIndex === 0 ? '−' : '+'}
+              </span>
+            </button>
+            {openIndex === 0 && (
+              <div className="pt-4 pb-6 space-y-4 text-black text-[18px] sm:text-[18px] leading-[28px]">
+                <p>
+                  IP network deployment including planning, engineering, implementation, L2/L3 operation and maintenance tasks. Support for global projects. VFHU IP network budget planning and control. Deliver the necessary resources for local and global projects, managing the cooperation with other internal teams, departments, and vendors. Covered domains: IP Core network (IP/MPLS, CPN, Data Center), Office IT IP network, Vodafone retail shops IP network, VoIP network.
                 </p>
-                <CareerForm initialPosition={selectedPosition} />
+                <p className="font-semibold text-black">We are looking for:</p>
+                <ul className="list-disc list-inside space-y-1.5 pl-2">
+                  <li>MSc, BSc, B.Tech degree in Telecommunication, Information Technology or Electrical engineering</li>
+                  <li>2 years of experience in IP networks</li>
+                  <li>Deep knowledge and understanding of IP networks and protocols, network security</li>
+                  <li>Good communication skills</li>
+                  <li>Intermediate spoken and written English</li>
+                  <li>Excellent computer skills</li>
+                  <li>Advantage: CCNA/CCNP Cisco certification or similar network-level exam</li>
+                </ul>
               </div>
-            </div>
+            )}
+          </div>
+
+          {/* 2. Linux Enterprise Support Analyst */}
+          <div className="py-[15px] md:py-[20px]">
+            <button
+              onClick={() => toggleAccordion(1)}
+              className="w-full flex items-center justify-between text-left py-2 font-medium text-black hover:text-[#166fb0] transition-colors"
+            >
+              <h3 className="text-[26px] md:text-[35px] leading-[45px] font-normal text-black font-sans">Linux Enterprise Support Analyst</h3>
+              <span className="w-[30px] h-[30px] shrink-0 rounded-full border border-[#555] flex items-center justify-center text-[#555] font-light text-[22px] leading-none">
+                {openIndex === 1 ? '−' : '+'}
+              </span>
+            </button>
+            {openIndex === 1 && (
+              <div className="pt-4 pb-6 space-y-4 text-black text-[18px] sm:text-[18px] leading-[28px]">
+                <p className="font-semibold text-black">Core Capabilities / Experience:</p>
+                <ul className="list-disc list-inside space-y-1.5 pl-2">
+                  <li>uX/Linux/RedHat System Operation& configuration experience</li>
+                  <li>IDM / Free IPA and LDAP Services Configuration & Baseline system installation experience</li>
+                  <li>X-Domain Linux / AD integration experience desirable.</li>
+                  <li>Operating in a multi-domain (AD and/or IDM)</li>
+                  <li>Understand PKI, Certificates, and Operation (Dogtag, Certmonger) in addition to Kerberos in uX domain</li>
+                  <li>Familiar with domain services including DNS/NTP services</li>
+                  <li>Past experience working with mixed AD/uX environment</li>
+                  <li>Command-line expertise with Bash, Ansible and common tools</li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* 3. Security CoE Infrastructure Section */}
+          <div className="py-[15px] md:py-[20px]">
+            <button
+              onClick={() => toggleAccordion(2)}
+              className="w-full flex items-center justify-between text-left py-2 font-medium text-black hover:text-[#166fb0] transition-colors"
+            >
+              <h3 className="text-[26px] md:text-[35px] leading-[45px] font-normal text-black font-sans">Security CoE Infrastructure Section</h3>
+              <span className="w-[30px] h-[30px] shrink-0 rounded-full border border-[#555] flex items-center justify-center text-[#555] font-light text-[22px] leading-none">
+                {openIndex === 2 ? '−' : '+'}
+              </span>
+            </button>
+            {openIndex === 2 && (
+              <div className="pt-4 pb-6 space-y-4 text-black text-[18px] sm:text-[18px] leading-[28px]">
+                <p className="font-semibold text-black">MandatoryExperience & Skills:</p>
+                <ul className="list-disc list-inside space-y-1.5 pl-2">
+                  <li>Minimum 2 to 5 years of security products (eg. ASA, FTD, WAF, DDoSetc) installation, configuration, development, and testing</li>
+                  <li>Strong understanding of cloud and virtualization security, mobile communication security, cryptography algorithms, security protocol, network security, mobile networks, TCP/IP networking, etc.</li>
+                  <li>Securing network systems by establishing and enforcing policies.</li>
+                  <li>Collaborating with internal teams, third-party support and service vendors to ensure that the network remains operational.</li>
+                  <li>Key technologies such as SAE/LTE, TCP/IP, IMS, virtualization, cloud, etc.</li>
+                  <li>Knowledge of Security algorithm (RSA, AES etc.) and security protocols (IPsec, TLS, etc.)</li>
+                </ul>
+                <p className="font-semibold text-black pt-2">Preferred Experience& Skills:</p>
+                <ul className="list-disc list-inside space-y-1.5 pl-2">
+                  <li>Past experience working with mixed AD/uX environment</li>
+                  <li>Command-line expertise with Bash, Ansible and common tools</li>
+                  <li>Experience/Knowledge of CISCO, F5, Radware security product is a plus.</li>
+                  <li>Has excellent oral and written communication skills in English.</li>
+                  <li>Good presentation skills with and ability to interact effectively.</li>
+                  <li>Demonstrating the ability to adapt in a dynamic work environment.</li>
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* 4. Others */}
+          <div className="py-[15px] md:py-[20px]">
+            <button
+              onClick={() => toggleAccordion(3)}
+              className="w-full flex items-center justify-between text-left py-2 font-medium text-black hover:text-[#166fb0] transition-colors"
+            >
+              <h3 className="text-[26px] md:text-[35px] leading-[45px] font-normal text-black font-sans">Others</h3>
+              <span className="w-[30px] h-[30px] shrink-0 rounded-full border border-[#555] flex items-center justify-center text-[#555] font-light text-[22px] leading-none">
+                {openIndex === 3 ? '−' : '+'}
+              </span>
+            </button>
+            {openIndex === 3 && (
+              <div className="pt-4 pb-6 space-y-4 text-black text-[18px] sm:text-[18px] leading-[28px]">
+                <p>
+                  If your skills do not directly align with the above positions but you bring passion, high integrity, and deep technical curiosity, submit your resume to sales@citiuscomm.com.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      <CTASection />
+      {/* Apply Now Section */}
+      <section className="pt-[40px] pb-[40px] max-w-[900px] mx-auto px-5">
+        <div className="bg-white rounded-[3px] px-6 py-6 sm:px-[24px] shadow-[0_6px_28px_rgba(0,0,0,0.12)]">
+          <h2 className="section-title text-[#166fb0] text-center mb-6">
+            Apply Now
+          </h2>
+
+          {submitted ? (
+            <div className="p-4 bg-green-50 border border-green-200 text-green-800 rounded text-center">
+              Thank you for your application! Our HR team will review your profile.
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="career-name" className="block text-[18px] font-semibold text-black mb-1">
+                    Your Name
+                  </label>
+                  <input
+                    id="career-name"
+                    type="text"
+                    required
+                    placeholder="Your Name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#f4f4f4] border-0 border-b border-[#ddd] rounded-none focus:bg-white focus:border-[#166fb0] outline-none text-black text-[18px]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="career-email" className="block text-[18px] font-semibold text-black mb-1">
+                    Your Email
+                  </label>
+                  <input
+                    id="career-email"
+                    type="email"
+                    required
+                    placeholder="Your Email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#f4f4f4] border-0 border-b border-[#ddd] rounded-none focus:bg-white focus:border-[#166fb0] outline-none text-black text-[18px]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="career-phone" className="block text-[18px] font-semibold text-black mb-1">
+                    Contact No.
+                  </label>
+                  <input
+                    id="career-phone"
+                    type="tel"
+                    required
+                    placeholder="Contact No."
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#f4f4f4] border-0 border-b border-[#ddd] rounded-none focus:bg-white focus:border-[#166fb0] outline-none text-black text-[18px]"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="career-position" className="block text-[18px] font-semibold text-black mb-1">
+                    Select Position
+                  </label>
+                  <select
+                    id="career-position"
+                    value={formData.position}
+                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-[#f4f4f4] border-0 border-b border-[#ddd] rounded-none focus:bg-white focus:border-[#166fb0] outline-none text-black text-[18px]"
+                  >
+                    <option value="IP Engineers">IP Engineers</option>
+                    <option value="Linux Enterprise Support Analyst">Linux Enterprise Support Analyst</option>
+                    <option value="Security CoE Infrastructure Section">Security CoE Infrastructure Section</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="career-resume" className="block text-[18px] font-semibold text-black mb-1">
+                  Upload Resume
+                </label>
+                <input
+                  id="career-resume"
+                  type="file"
+                  className="w-full text-[18px] text-black file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-black hover:file:bg-slate-300"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="career-message" className="block text-[18px] font-semibold text-black mb-1">
+                  Your Message
+                </label>
+                <textarea
+                  id="career-message"
+                  rows={4}
+                  placeholder="Your Message"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-[#f4f4f4] border-0 border-b border-[#ddd] rounded-none focus:bg-white focus:border-[#166fb0] outline-none text-black text-[18px]"
+                />
+              </div>
+
+              <div className="text-center">
+                <button
+                  type="submit"
+                  className="px-[18px] h-[48px] bg-[#166fb0] hover:bg-[#0f5487] text-white font-medium text-[18px] rounded-[3px] transition-colors"
+                >
+                  SUBMIT
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
     </div>
   );
 };

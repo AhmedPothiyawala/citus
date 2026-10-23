@@ -1,131 +1,98 @@
 import React from 'react';
-import { PageHero, CTASection } from '../components/Widgets';
 import { SmartLink } from '../components/SmartLink';
-import { LINKS } from '../data/site';
-import { IconCheck, IconArrowRight, IconChevronLeft, IconMapPin } from '../components/Icons';
 
 export const NepalTelecomPage: React.FC = () => {
   return (
-    <div>
-      <PageHero
-        title="Nepal Telecom"
-        subtitle="Mid-Hill Carrier Router Backbone &amp; Turnkey Leased Line Infrastructure Across Nepal."
-        backgroundImage="/images/nepal-telecom.jpg"
-        breadcrumbs={[
-          { label: 'Case Studies', href: LINKS.caseStudies },
-          { label: 'Nepal Telecom' },
-        ]}
-      />
+    <div className="bg-white">
+      {/* Hero Banner */}
+      <div className="relative h-[320px] md:h-[550px] pt-[60px] md:pt-[110px] flex items-center justify-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('/images/nepal-telecom.jpg')` }}
+        />
+        <div className="absolute inset-0 bg-[#1b2a3a]/45" />
+
+        <div className="relative site-container text-center w-full">
+          <span className="inline-block px-[10px] py-[2px] border border-white text-white text-[15px] font-medium mb-4 rounded-[3px]">
+            Case Studies
+          </span>
+          <h1 className="page-hero-title text-white mb-4">
+            Nepal Telecom
+          </h1>
+          <div className="text-[18px] text-white">
+            August 12, 2018
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 space-y-12">
-          {/* Header Badges */}
-          <div className="flex flex-wrap items-center gap-4 border-b border-slate-200 pb-6 text-sm text-slate-600">
-            <div className="flex items-center gap-1.5 font-semibold text-[#166fb0]">
-              <IconMapPin className="w-4 h-4" />
-              <span>Kathmandu &amp; Pan-Nepal</span>
-            </div>
-            <span>•</span>
-            <span className="font-medium">Client: Nepal Telecom (NT)</span>
-            <span>•</span>
-            <span className="px-3 py-0.5 rounded-full bg-sky-50 text-sky-700 text-xs font-semibold">
-              Carrier Core IP/MPLS &amp; Leased Line
-            </span>
+      <section className="pt-[60px] md:pt-[80px] pb-[50px] max-w-[1080px] mx-auto px-5 md:px-[40px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
+          <div className="space-y-6 text-black text-[18px] leading-[28px]">
+            <p>
+              Nepal Telecom is a state-owned Telecommunication Service Provider in Nepal and providing various mobile and Fixed-line services to the people of Nepal.
+            </p>
+            <p>
+              We have participated in Mid hill Router RFP of Nepal telecom and successfully won this bid by offering world-class Cisco Routers solution to NT. This project is under the execution phase currently.
+            </p>
           </div>
-
-          {/* Featured Image */}
-          <div className="rounded-2xl overflow-hidden shadow-xl border border-slate-100">
+          <div>
             <img
-              src="/images/nepal-telecom-600x403.jpg"
-              alt="Nepal Telecom Router Infrastructure"
-              className="w-full h-80 sm:h-[450px] object-cover"
+              src="/images/nepal-telecom.jpg"
+              alt="Nepal Telecom"
+              className="w-full h-auto object-cover"
             />
           </div>
+        </div>
 
-          {/* Executive Overview */}
-          <div className="prose prose-lg max-w-none text-slate-700 space-y-6 leading-relaxed">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Customer Background
-            </h2>
-
-            <p className="text-base sm:text-lg">
-              Nepal Telecom is a state-owned Telecommunication Service Provider in Nepal and providing various mobile and Fixed-line services to the people of Nepal. As the primary communications backbone of the nation, Nepal Telecom operates critical transmission infrastructure connecting remote mountainous regions with urban centers.
-            </p>
-
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight pt-4">
-              Mid-Hill Highway Router RFP Win
-            </h2>
-
-            <p className="text-base sm:text-lg">
-              We have participated in Mid hill Router RFP of Nepal telecom and successfully won this bid by offering world-class Cisco Routers solution to NT. This project is executed successfully with very high customer satisfaction.
-            </p>
-
-            <div className="space-y-3 pt-2">
-              {[
-                'Deployment of high-resilience Cisco Carrier Core and aggregation routers across the rugged Mid-Hill highway optical belt',
-                'Engineered to operate reliably under extreme Himalayan temperature fluctuations and rugged power conditions',
-                'Advanced IP/MPLS traffic engineering providing sub-50ms automated fast-reroute protection',
-                'Hands-on staging, testing, and knowledge transfer to Nepal Telecom network engineering teams',
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <div className="p-1 rounded-full bg-[#166fb0] text-white shrink-0 mt-1">
-                    <IconCheck className="w-3.5 h-3.5" />
-                  </div>
-                  <span className="text-sm sm:text-base font-medium text-slate-800">{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight pt-6">
-              National Leased Line Turnkey RFP Win
-            </h2>
-
-            <p className="text-base sm:text-lg">
-              Also got an opportunity to participate another project of Leased line RFP for Nepal Telecom. We have won this bid as well with providing CITIUS’s own solution for Leased line requirements.
-            </p>
-
-            <p>
-              CITIUSCOMM’s proprietary leased-line customer premises equipment (CPE) and optical aggregation interfaces empowered Nepal Telecom to deliver high-bandwidth, dedicated, and secure connectivity to government ministries, banks, corporate institutions, and defense establishments nationwide.
-            </p>
-          </div>
-
-          {/* Navigation to Prev & Next */}
-          <div className="border-t border-slate-200 pt-8 mt-12 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <SmartLink
-              to={LINKS.rakutenMobile}
-              className="group inline-flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-[#166fb0] hover:bg-sky-50/50 transition-all text-left w-full sm:w-auto"
-            >
-              <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-[#166fb0] group-hover:text-white flex items-center justify-center transition-colors shrink-0">
-                <IconChevronLeft className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-[#166fb0]">
-                  Previous Post
-                </div>
-                <div className="text-base font-bold text-slate-900">Rakuten Mobile</div>
-              </div>
-            </SmartLink>
-
-            <SmartLink
-              to={LINKS.netBroadband}
-              className="group inline-flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:border-[#166fb0] hover:bg-sky-50/50 transition-all text-right w-full sm:w-auto justify-end"
-            >
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 group-hover:text-[#166fb0]">
-                  Next Post
-                </div>
-                <div className="text-base font-bold text-slate-900">Net+ Broadband</div>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-[#166fb0] group-hover:text-white flex items-center justify-center transition-colors shrink-0">
-                <IconArrowRight className="w-5 h-5" />
-              </div>
-            </SmartLink>
-          </div>
+        <div className="text-black text-[18px] leading-[28px]">
+          <p>
+            Also got an opportunity to participate another project of Leased line RFP for Nepal Telecom. We have won this bid as well with providing CITIUS’s own software solution of AAA along with other network elements.
+          </p>
         </div>
       </section>
 
-      <CTASection />
+      {/* Bottom Previous / Next Post links */}
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="relative h-64 overflow-hidden border-r border-white/10">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url('/images/rakuten.jpg')` }}
+          />
+          <div className="absolute inset-0 bg-black/45" />
+          <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
+            <span className="text-[15px] text-white mb-2">
+              Previous Post
+            </span>
+            <SmartLink
+              to="/rakuten-mobile/"
+              className="text-[26px] md:text-[34px] font-normal font-sans hover:opacity-80 transition-opacity after:absolute after:inset-0"
+            >
+              Rakuten Mobile
+            </SmartLink>
+          </div>
+        </div>
+
+        <div className="site-container pb-[60px] md:pb-[80px]"><div className="relative h-[250px] md:h-[300px] overflow-hidden img-zoom" data-reveal>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url('/images/net-broadband.jpg')` }}
+          />
+          <div className="absolute inset-0 bg-black/45" />
+          <div className="relative h-full flex flex-col items-center justify-center text-center text-white px-4">
+            <span className="text-[15px] text-white mb-2">
+              Next Post
+            </span>
+            <SmartLink
+              to="/net-broadband/"
+              className="text-[26px] md:text-[34px] font-normal font-sans hover:opacity-80 transition-opacity after:absolute after:inset-0"
+            >
+              Net+ Broadband
+            </SmartLink>
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
   );
 };

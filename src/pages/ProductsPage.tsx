@@ -1,231 +1,188 @@
 import React from 'react';
-import { PageHero, SectionTitle, CTASection } from '../components/Widgets';
-import { SmartLink } from '../components/SmartLink';
-import { LINKS } from '../data/site';
-import {
-  IconShield,
-  IconNetwork,
-  IconCpu,
-  IconServer,
-  IconCloud,
-  IconArrowRight,
-  IconCheck,
-} from '../components/Icons';
+import { PageHero } from '../components/Widgets';
 
 export const ProductsPage: React.FC = () => {
-  const productCategories = [
-    {
-      id: 'e2e-security',
-      title: 'E2E SECURITY',
-      subtitle: 'Positive Firewall & Zero-Trust Defense',
-      desc: 'As the technology required to run your business evolves, so does the volume and complexity of threats against it. Our robust security portfolio shields your cloud workloads, core infrastructure, and edge perimeter with proactive DDoS mitigation, Deep Packet Inspection (DPI), and AI-driven intrusion prevention.',
-      highlights: [
-        'Positive Firewall security solution',
-        'Multi-Gigabit Anti-DDoS attack mitigation',
-        'Granular Deep Packet Inspection (DPI) & traffic shaping',
-        'Next-Gen Web Application Firewall (WAF) protection',
-      ],
-      icon: IconShield,
-      link: LINKS.securitySolutions,
-    },
-    {
-      id: 'networking',
-      title: 'NETWORKING',
-      subtitle: 'Carrier Routers, OLT, ONT, ONU & High-Density Switches',
-      desc: 'Innovative technologies drive business performance today, and it’s the network that powers this digital age. Our carrier-grade switches and routers connect data centers, metro access rings, and regional backbones with wire-speed IP MPLS routing and automated SD-WAN overlay fabrics.',
-      highlights: [
-        'High-density 100G / 400G spine-leaf data center switches',
-        'IP/MPLS carrier edge & aggregation routers',
-        'Software-Defined WAN (SD-WAN) orchestration',
-        'Optical DWDM transmission & metro interconnects',
-      ],
-      icon: IconNetwork,
-      link: LINKS.networking,
-    },
-    {
-      id: 'wireless-4g-5g',
-      title: 'WIFI & 4G / 5G CORE',
-      subtitle: 'Next-Generation Wireless & Private Cellular',
-      desc: 'There’s a wide range of 4G/5G Core Products which provide service management and control of 4G/5G services. We deliver carrier-grade indoor and outdoor WiFi 6/6E access points alongside disaggregated private 5G RAN and standalone 5G core elements.',
-      highlights: [
-        'High-density Enterprise & Outdoor WiFi Access Points',
-        '4G / 5G vRAN disaggregated radio infrastructure',
-        'Private 5G for campus, mining, and industrial automation',
-        'Cloud-native 5G user plane function (UPF) acceleration',
-      ],
-      icon: IconCpu,
-      link: LINKS.industryApplications,
-    },
-    {
-      id: 'fttx',
-      title: 'FTTX (OLT & ONT)',
-      subtitle: 'Optical Line Terminals & Optical Network Terminals',
-      desc: 'Broadband delivery requires flexible, modular, and high-density GPON/XGS-PON optical distribution. We supply carrier-tested OLT chassis, modular PON cards, and cost-effective ONUs/ONTs backed by on-ground staging and rapid field support pan-India.',
-      highlights: [
-        'High-density Optical Line Terminals (OLT) with redundant power',
-        'Multi-port Optical Network Terminals (ONT) with dual-band WiFi',
-        'XGS-PON 10G symmetrical optical access platforms',
-        'Comprehensive passive optical network (PON) accessories',
-      ],
-      icon: IconServer,
-      link: LINKS.fttx,
-    },
-  ];
-
   return (
-    <div>
-      <PageHero
-        title="Products &amp; Solutions"
-        subtitle="End-to-end security, networking, wireless, and optical solutions engineered for high performance."
-        breadcrumbs={[{ label: 'Solutions' }, { label: 'Products' }]}
-      />
+    <div className="bg-white">
+      <PageHero title="Products" backgroundImage="/images/page-title-bar.jpg" />
 
-      {/* Main Overview */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Product Portfolio"
-            title="Engineered for Scalability &amp; Resilience"
-            subtitle="Explore our comprehensive range of carrier-grade networking hardware, optical distribution systems, and security suites."
-          />
+      {/* 1. E2E SECURITY */}
+      <section className="page-section site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
+          <div>
+            <img
+              src="/images/CYBERSECURITY.jpg"
+              alt="E2E Security"
+              className="w-full h-auto object-cover"
+            />
+          </div>
 
-          <div className="space-y-12">
-            {productCategories.map((cat, idx) => {
-              const IconComp = cat.icon;
-              const isEven = idx % 2 === 0;
-              return (
-                <div
-                  key={cat.id}
-                  className="bg-slate-50 rounded-2xl p-8 sm:p-12 border border-slate-200/80 shadow-xs card-hover-lift"
-                >
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                    <div className={`lg:col-span-7 space-y-4 ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-sky-100 text-[#166fb0]">
-                          <IconComp className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-sky-600">
-                            {cat.subtitle}
-                          </span>
-                          <h3 className="text-2xl font-bold text-slate-900">{cat.title}</h3>
-                        </div>
-                      </div>
+          <div className="space-y-4">
+            <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+              E2E SECURITY
+            </h2>
+            <h4 className="text-[20px] font-bold text-black font-heading">
+              Positive Firewall security solution
+            </h4>
+            <p className="text-black text-[18px] leading-[28px]">
+              As the technology required to run your business evolves, so does the volume and complexity of threats against it. Our robust portfolio of comprehensive, industry-leading products and solutions provides unmatched protection with reduced complexity and reduced maintenance costs, from the endpoint to the data center to the cloud. Some of our security solutions include Network, Data, Firewall, Web, Email, Applications, and Cyber Security.
+            </p>
+          </div>
+        </div>
+      </section>
 
-                      <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                        {cat.desc}
-                      </p>
+      {/* 2. NETWORKING */}
+      <section className="page-section bg-[#f4f5f7]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[62fr_38fr] gap-10 lg:gap-[50px] items-center">
+            <div className="space-y-4">
+              <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+                NETWORKING
+              </h2>
+              <h4 className="text-[20px] font-bold text-black font-heading">
+                router, olt, ont, onu, switches
+              </h4>
+              <p className="text-black text-[18px] leading-[28px]">
+                Innovative technologies drive business performance today, and it’s the network that powers this digital age. Our future-proof networking solutions help you connect, collaborate and stay agile while taking control of your network’s future and reducing data center costs. With wired and wireless solutions ranging from large-scale corporate campus networks to small offices, we are the first to provide comprehensive, secure and easy-to-manage network solutions that will meet your needs today and in the future.
+              </p>
+            </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                        {cat.highlights.map((h, i) => (
-                          <div key={i} className="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-700">
-                            <IconCheck className="w-4 h-4 text-[#166fb0] shrink-0" />
-                            <span>{h}</span>
-                          </div>
-                        ))}
-                      </div>
+            <div>
+              <img
+                src="/images/router-olt-ont-onu-switches.jpg"
+                alt="Networking Routers and Switches"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-                      <div className="pt-4">
-                        <SmartLink
-                          to={cat.link}
-                          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow-xs transition-all"
-                        >
-                          <span>Explore Detailed Specifications</span>
-                          <IconArrowRight className="w-4 h-4" />
-                        </SmartLink>
+      {/* 3. WIFI */}
+      <section className="page-section site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
+          <div>
+            <img
+              src="/images/wifi.jpg"
+              alt="WiFi Solutions"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+              WIFI
+            </h2>
+            <h4 className="text-[20px] font-bold text-black font-heading">
+              4G, 5G
+            </h4>
+            <p className="text-black text-[18px] leading-[28px]">
+              There’s a wide range of 4G/5G Core Products, which provides service management and control of the 4G/5G services. It automatically manages and controls data sessions, enabling new business models. In addition, PCRF LTE also has the function of helping other devices other than the 3GPP networks such as Wi-Fi or fixed broadband devices to easily access the 4G/5G LTE network.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. FTTX */}
+      <section className="page-section bg-[#f4f5f7]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[62fr_38fr] gap-10 lg:gap-[50px] items-center mb-16">
+            <div className="space-y-4">
+              <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+                FTTX
+              </h2>
+              <p className="text-black text-[18px] leading-[28px]">
+                Fiber to the x or fiber in the loop is a generic term for any broadband network architecture using optical fiber to provide all or part of the local loop used for last mile telecommunications.
+              </p>
+            </div>
+
+            <div>
+              <img
+                src="/images/optical-fiber.jpg"
+                alt="FTTX Solutions"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+
+          {/* OLT and ONT Specifications */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start border-t border-slate-200/80 pt-16">
+            {/* OLT */}
+            <div>
+              <h2 className="text-2xl font-bold text-black font-heading mb-6">
+                Optical Line Terminal (OLT)
+              </h2>
+              <ul className="space-y-2 text-black text-[18px] leading-[28px]">
+                <li>• Support optical fiber link protection</li>
+                <li>• Support optical link measurement and diagnosis</li>
+                <li>• Support translation, Transparent, QinQ and other VLAN modes</li>
+                <li>• Support IGMP Proxy, Snooping</li>
+                <li>• Support CTC controllable multicast, support IGMP v2/v3</li>
+                <li>• Support standard, extended and user-defined ACL, support 128-byte depth detection</li>
+                <li>• Support DBA, traffic classification, priority and queue mapping, queue scheduling and congestion management</li>
+                <li>• Support ONT pre-authorization, pre-configuration</li>
+                <li>• Support ONT business template, ONT batch upgrade</li>
+                <li>• Support real-time alarm detection, performance monitoring</li>
+                <li>• Support upstream and downstream encryption and FEC</li>
+                <li>
+                  • Support CLI + Web management + NMS
+                  <ul className="pl-6 mt-2 space-y-1 text-black">
+                    <li>- 4 Port EPON OLT</li>
+                    <li>- 8 Port EPON OLT</li>
+                    <li>- 8 Port GPON OLT</li>
+                    <li>- 16 Port GPON OLT</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            {/* ONT */}
+            <div>
+              <h2 className="text-2xl font-bold text-black font-heading mb-6">
+                Optical Network Terminal (ONT)
+              </h2>
+              <ul className="space-y-2 text-black text-[18px] leading-[28px]">
+                <li>• Support PON, VoIP, CATV, Wi-Fi, USB integration</li>
+                <li>• Plug and play, integrated automatic detection, automatic configuration and automatic firmware upgrade technology</li>
+                <li>• Integrated OMCI and TR-069 remote configuration and maintenance functions</li>
+                <li>• Supports flexible QinQ VLAN, DHCP server/relay and IGMP/ MLD multicast monitoring</li>
+                <li>• Support optical path diagnostic monitoring, remotely disable optical path</li>
+                <li>• Fully compatible with Huawei, ZTE, Richerlink, V-Sol, C-Data OLT</li>
+                <li>• Support for 802.11b/g/n/ac Wi-Fi (2T X 2R)</li>
+                <li>• Support NAT, firewall function</li>
+                <li>• Support for IPv4 and IPv6 dual stacks</li>
+                <li>• POTS integrated circuit test confirms to GR-909</li>
+                <li>
+                  • WAN port supports bridge, router and bridge/router hybrid mode
+                  <div className="pl-6 mt-3 space-y-3">
+                    <div>
+                      <div className="font-semibold text-black">No WIFi ONTS</div>
+                      <div className="pl-4 text-black space-y-0.5">
+                        <div>- 1GE EPON ONT</div>
+                        <div>- 1GE XPON ONT</div>
                       </div>
                     </div>
-
-                    <div className={`lg:col-span-5 flex justify-center ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                      <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm w-full max-w-sm text-center">
-                        <div className="w-20 h-20 rounded-2xl bg-sky-50 text-[#166fb0] flex items-center justify-center mx-auto mb-4">
-                          <IconComp className="w-10 h-10" />
-                        </div>
-                        <h4 className="text-base font-bold text-slate-900">{cat.title}</h4>
-                        <p className="text-xs text-slate-500 mt-1">Multi-Vendor OEM Tested &amp; Certified</p>
-                        <div className="mt-4 pt-4 border-t border-slate-100 flex justify-around text-xs font-semibold text-slate-600">
-                          <div>Carrier-Grade</div>
-                          <div>•</div>
-                          <div>Turnkey SLA</div>
-                          <div>•</div>
-                          <div>Made in India</div>
-                        </div>
+                    <div>
+                      <div className="font-semibold text-black">Single Band WiFi ONTs</div>
+                      <div className="pl-4 text-black space-y-0.5">
+                        <div>- 1GE+1FE+2.4GW ONT (AD2X-1110)</div>
+                        <div>- 1GE+1FE+2.4GW+1VoIP ONT (AD2X-1111)</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-black">Dual Band WiFi ONTs</div>
+                      <div className="pl-4 text-black space-y-0.5">
+                        <div>- 2GE+(2.4G+5G)W+1VoIP ONT (AD2X-2021)</div>
+                        <div>- 4GE+(2.4G+5G)W+1VoIP ONT (AD2X-4022)</div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* Solutions Deep Dive Navigation Grid */}
-      <section className="py-20 bg-slate-50 border-t border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Solutions Hub"
-            title="Specialized Solutions Suites"
-            subtitle="Browse detailed architectural solutions tailored for telecom, cable, enterprise, and cloud environments."
-          />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <SmartLink
-              to={LINKS.networking}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs card-hover-lift block group"
-            >
-              <IconNetwork className="w-8 h-8 text-[#166fb0] mb-4 group-hover:scale-110 transition-transform" />
-              <h4 className="text-base font-bold text-slate-900 mb-1 group-hover:text-[#166fb0]">
-                Networking &amp; SD-WAN
-              </h4>
-              <p className="text-xs text-slate-500 line-clamp-2">
-                Routers, switches, and software-defined network management.
-              </p>
-            </SmartLink>
-
-            <SmartLink
-              to={LINKS.fttx}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs card-hover-lift block group"
-            >
-              <IconCpu className="w-8 h-8 text-[#166fb0] mb-4 group-hover:scale-110 transition-transform" />
-              <h4 className="text-base font-bold text-slate-900 mb-1 group-hover:text-[#166fb0]">
-                FTTX &amp; Optical Fiber
-              </h4>
-              <p className="text-xs text-slate-500 line-clamp-2">
-                GPON, point-to-point, OLT and ONT deployments nationwide.
-              </p>
-            </SmartLink>
-
-            <SmartLink
-              to={LINKS.serverStorage}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs card-hover-lift block group"
-            >
-              <IconServer className="w-8 h-8 text-[#166fb0] mb-4 group-hover:scale-110 transition-transform" />
-              <h4 className="text-base font-bold text-slate-900 mb-1 group-hover:text-[#166fb0]">
-                Server &amp; Storage
-              </h4>
-              <p className="text-xs text-slate-500 line-clamp-2">
-                Mission-critical enterprise compute fabrics with Dell &amp; HPE.
-              </p>
-            </SmartLink>
-
-            <SmartLink
-              to={LINKS.dataCenterCloud}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs card-hover-lift block group"
-            >
-              <IconCloud className="w-8 h-8 text-[#166fb0] mb-4 group-hover:scale-110 transition-transform" />
-              <h4 className="text-base font-bold text-slate-900 mb-1 group-hover:text-[#166fb0]">
-                Data Center &amp; Cloud
-              </h4>
-              <p className="text-xs text-slate-500 line-clamp-2">
-                Facility engineering, workload migrations, and hybrid operating models.
-              </p>
-            </SmartLink>
-          </div>
-        </div>
-      </section>
-
-      <CTASection />
     </div>
   );
 };

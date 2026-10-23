@@ -1,206 +1,169 @@
 import React from 'react';
-import { PageHero, SectionTitle, CTASection } from '../components/Widgets';
-import { IconCheck, IconShield, IconCpu, IconCloud, IconNetwork, IconArrowRight } from '../components/Icons';
-import { SmartLink } from '../components/SmartLink';
-import { LINKS } from '../data/site';
+import { PageHero } from '../components/Widgets';
 
 export const DigitalServicesPage: React.FC = () => {
-  const services = [
-    {
-      id: 'cybersecurity',
-      title: 'CYBERSECURITY',
-      subtitle: 'Proactive Defense & Compliance',
-      desc: 'The methods and capabilities used to prevent and protect information systems and data from damage, unauthorized use, modification, or exploitation. Citiuscomm highlights cybersecurity counter-measures such as risk management, security upgrades, and compliance programs.',
-      image: '/images/CYBERSECURITY.jpg',
-      icon: IconShield,
-      points: [
-        'Enterprise vulnerability assessment and penetration testing (VAPT)',
-        'Endpoint detection and response (EDR) with 24x7 SOC monitoring',
-        'Regulatory compliance auditing (ISO 27001, CERT-In, GDPR, HIPAA)',
-        'Zero-trust network architecture and privileged access management (PAM)',
-      ],
-    },
-    {
-      id: 'it-optimization',
-      title: 'IT OPTIMIZATION',
-      subtitle: 'Agility, Speed & Operational Efficiency',
-      desc: 'The ability of information and data systems to quickly respond to market dynamics; meet the strategic needs of the business; improve productivity, agility, efficiency, and effectiveness of an IT organization while driving down total cost of ownership.',
-      image: '/images/IT-OPTIMIZATION.jpg',
-      icon: IconCpu,
-      points: [
-        'Legacy application containerization and microservices refactoring',
-        'Infrastructure consolidation and automated virtualization tuning',
-        'DevOps continuous integration and continuous deployment (CI/CD) pipelines',
-        'Real-time application performance monitoring (APM) and observability',
-      ],
-    },
-    {
-      id: 'data-intelligence',
-      title: 'DATA INTELLIGENCE',
-      subtitle: 'Actionable Insights & Predictive Analytics',
-      desc: 'The analysis of various forms of data in leadership and management to make better business decisions and build predictive models. Transform raw network logs into strategic executive dashboards and subscriber retention engines.',
-      image: '/images/DATA-INTELLIGENCE.jpg',
-      icon: IconNetwork,
-      points: [
-        'Centralized data lakehouse engineering and ETL data pipelines',
-        'Predictive network churn analytics and customer sentiment scoring',
-        'Executive real-time business intelligence dashboards (PowerBI, Tableau)',
-        'Big data stream processing for multi-gigabit carrier telemetries',
-      ],
-    },
-    {
-      id: 'intelligent-automation',
-      title: 'INTELLIGENT AUTOMATION',
-      subtitle: 'AI & Robotic Process Automation (RPA)',
-      desc: 'The combination of Artificial Intelligence (AI) and Robotic Process Automation (RPA) technologies which together empower rapid end-to-end business process automation, eliminating human error and accelerating service activation.',
-      image: '/images/INTELLIGENT-AUTOMATION-1.jpg',
-      icon: IconCloud,
-      points: [
-        'Automated subscriber KYC verification and broadband account provisioning',
-        'Zero-touch network configuration and self-healing fault recovery',
-        'AI-driven service desk ticketing and conversational chatbots',
-        'Automated billing reconciliations and inventory audit robots',
-      ],
-    },
-  ];
-
-  const additionalDomains = [
-    {
-      title: 'DATA SCIENCE & AI',
-      desc: 'Deep learning models, anomaly detection, predictive maintenance for cell towers and data centers.',
-    },
-    {
-      title: 'INTERNET OF THINGS (IoT)',
-      desc: 'Smart city sensors, industrial telemetry, smart metering, and automated surveillance pipelines.',
-    },
-    {
-      title: 'CLOUD MODERNIZATION',
-      desc: 'Multi-cloud orchestration, sovereign Indian cloud hosting, and cost optimization governance.',
-    },
-    {
-      title: 'SDWAN, MERAKI & TIBCO',
-      desc: 'Cisco Meraki cloud branch networking, Tibco syslog ingestion, and enterprise event streaming.',
-    },
-  ];
-
   return (
-    <div>
-      <PageHero
-        title="Digital Services"
-        subtitle="Empowering digital enterprises with advanced cybersecurity, IT optimization, data intelligence, and AI-driven automation."
-        breadcrumbs={[{ label: 'Solutions', href: LINKS.products }, { label: 'Digital Services' }]}
-      />
+    <div className="bg-white">
+      <PageHero title="Digital Services" backgroundImage="/images/page-title-bar.jpg" />
 
-      {/* Main 4 Pillars */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16">
-          <SectionTitle
-            badge="Digital Transformation"
-            title="Accelerating Digital Agility &amp; Intelligence"
-            subtitle="Explore how our digital capabilities modernize legacy systems into intelligent, automated, and secure platforms."
-          />
+      {/* 1. CYBERSECURITY */}
+      <section className="page-section site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
+          <div>
+            <img
+              src="/images/CYBERSECURITY.jpg"
+              alt="Cybersecurity"
+              className="w-full h-auto object-cover"
+            />
+          </div>
 
-          <div className="space-y-16">
-            {services.map((svc, idx) => {
-              const IconComp = svc.icon;
-              const isEven = idx % 2 === 0;
-              return (
-                <div
-                  key={svc.id}
-                  className="bg-slate-50 rounded-2xl p-8 sm:p-12 border border-slate-200/80 shadow-xs card-hover-lift"
-                >
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                    <div className={`lg:col-span-7 space-y-4 ${isEven ? 'order-1' : 'order-1 lg:order-2'}`}>
-                      <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-xl bg-sky-100 text-[#166fb0]">
-                          <IconComp className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-sky-600">
-                            {svc.subtitle}
-                          </span>
-                          <h3 className="text-2xl font-bold text-slate-900">{svc.title}</h3>
-                        </div>
-                      </div>
-
-                      <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                        {svc.desc}
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
-                        {svc.points.map((pt, i) => (
-                          <div key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-700">
-                            <IconCheck className="w-4 h-4 text-[#166fb0] shrink-0 mt-0.5" />
-                            <span>{pt}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="pt-4">
-                        <SmartLink
-                          to={LINKS.contact}
-                          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold bg-[#166fb0] hover:bg-[#0f5487] text-white shadow-xs transition-all"
-                        >
-                          <span>Inquire for {svc.title}</span>
-                          <IconArrowRight className="w-4 h-4" />
-                        </SmartLink>
-                      </div>
-                    </div>
-
-                    <div className={`lg:col-span-5 ${isEven ? 'order-2' : 'order-2 lg:order-1'}`}>
-                      <div className="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200">
-                        <img
-                          src={svc.image}
-                          alt={svc.title}
-                          className="w-full h-64 sm:h-80 object-cover"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b1f33]/80 via-transparent to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4 text-white text-sm font-bold">
-                          {svc.title} Solutions
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="space-y-4">
+            <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+              CYBERSECURITY
+            </h2>
+            <p className="text-black text-[18px] font-medium leading-[28px]">
+              The methods and capabilities used to prevent and protect information systems and data from damage, unauthorized use, modification, or exploitation.
+            </p>
+            <p className="text-black text-[18px] leading-[28px]">
+              Citiuscomm highlights cybersecurity counter-measures such as risk management, security upgrades, and compliance programs as we drive digitalization for our clients. Our services can support both upstream and downstream operations, including strategy consulting, security implementation, and technical consulting. Through our long-term endeavors in research and development, we have accumulated technical expertise that will help you protect your enterprise against cybersecurity risks.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Additional Emerging Digital Disciplines */}
-      <section className="py-20 bg-slate-50 border-t border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <SectionTitle
-            badge="Advanced Disciplines"
-            title="Emerging Technology Capabilities"
-            subtitle="Driving the frontier of AI, IoT telemetry, sovereign cloud, and event processing."
-          />
+      {/* 2. IT OPTIMIZATION */}
+      <section className="page-section bg-[#f4f5f7]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[62fr_38fr] gap-10 lg:gap-[50px] items-center">
+            <div className="space-y-4">
+              <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+                IT OPTIMIZATION
+              </h2>
+              <p className="text-black text-[18px] font-medium leading-[28px]">
+                The ability of information and data systems to quickly respond to market dynamics; meet the strategic needs of the business; and balance costs and risks.
+              </p>
+              <p className="text-black text-[18px] leading-[28px]">
+                Today, as new companies emerge that disrupt conventional ideas in all kinds of industries, companies must constantly consider streamlining their IT, converging ecosystems with partners, business processes, end-user reputations, commercial value, etc. Through various means such as optimizing and automating IT processes and resources, moving to cloud-based systems, and improving profitability and productivity, Citiuscomm will help you focus on digitization to stimulate enterprise reform.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {additionalDomains.map((item) => (
-              <div
-                key={item.title}
-                className="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-xs card-hover-lift flex flex-col justify-between"
-              >
-                <div>
-                  <h4 className="text-base font-bold text-slate-900 mb-2">{item.title}</h4>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-[#166fb0]">
-                  <span>Explore Capabilities</span>
-                  <IconArrowRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            ))}
+            <div>
+              <img
+                src="/images/IT-OPTIMIZATION.jpg"
+                alt="IT Optimization"
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      <CTASection />
+      {/* 3. DATA INTELLIGENCE */}
+      <section className="page-section site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
+          <div>
+            <img
+              src="/images/DATA-INTELLIGENCE.jpg"
+              alt="Data Intelligence"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+              DATA INTELLIGENCE
+            </h2>
+            <p className="text-black text-[18px] leading-[28px]">
+              Citiuscomm’s Data & Intelligence brings you the maximum benefit from a deep understanding of the business and technology trends in your company’s field. Citiuscomm leverages all the technologies to provide industry-specific solutions and decision-making systems based on AI and analysis.
+            </p>
+            <p className="text-black text-[18px] leading-[28px]">
+              The purpose of Data & Intelligence is to turn huge dormant big data into meaningful and even intelligent data. The techniques and technologies used to create measurable business value from data, information, and knowledge.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. INTELLIGENT AUTOMATION */}
+      <section className="page-section bg-[#f4f5f7]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[62fr_38fr] gap-10 lg:gap-[50px] items-center">
+            <div className="space-y-4">
+              <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+                INTELLIGENT AUTOMATION
+              </h2>
+              <h4 className="text-[20px] font-bold text-black font-heading">
+                DATA SCIENCE & AI
+              </h4>
+              <p className="text-black text-[18px] leading-[28px]">
+                Citiuscomm leverages AI and Intelligent Automation to accelerate business automation. We are aiming for automation in all IT processes, from data centers to end-users and from the cloud to applications. Citiuscomm will leverage all the leading advanced technologies available to apply the benefits of Intelligent Automation to all of your business processes.
+              </p>
+              <p className="text-black text-[18px] leading-[28px]">
+                The execution of automated business processes using artificial intelligence (AI), machine learning, and data science to make “intelligent” decisions & drive better outcomes.
+              </p>
+            </div>
+
+            <div>
+              <img
+                src="/images/INTELLIGENT-AUTOMATION-1.jpg"
+                alt="Intelligent Automation"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. INTERNET OF THINGS */}
+      <section className="page-section site-container">
+        <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
+          <div>
+            <img
+              src="/images/IoT-solutions.jpg"
+              alt="Internet of Things"
+              className="w-full h-auto object-cover"
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+              INTERNET OF THINGS
+            </h2>
+            <p className="text-black text-[18px] leading-[28px]">
+              Internet of Things (IoT) is the first step toward digitalization. Citiuscomm is able to provide optimal IoT solutions by combining solutions and services with its business knowledge and other DFAs. The growth of this field and the opportunities it will create are enormous. The opportunity to grow and develop your business stems from how you will tackle the IoT industry and combine it with other areas of digital focus to create unique solutions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. CLOUD */}
+      <section className="page-section bg-[#f4f5f7]">
+        <div className="site-container">
+          <div className="grid grid-cols-1 lg:grid-cols-[62fr_38fr] gap-10 lg:gap-[50px] items-center">
+            <div className="space-y-4">
+              <h2 className="text-[30px] leading-[1.2] font-bold text-black font-heading">
+                CLOUD
+              </h2>
+              <h4 className="text-[20px] font-bold text-black font-heading">
+                SDWAN, Meraki, Tibco syslog solutions
+              </h4>
+              <p className="text-black text-[18px] leading-[28px]">
+                Citiuscomm leverages AI and Intelligent Automation to accelerate business automation. We are aiming for automation in all IT processes, from data centers to end-users and from the cloud to applications. Citiuscomm will leverage all the leading advanced technologies available to apply the benefits of Intelligent Automation to all of your business processes.
+              </p>
+              <p className="text-black text-[18px] leading-[28px]">
+                The execution of automated business processes using artificial intelligence (AI), machine learning, and data science to make “intelligent” decisions & drive better outcomes.
+              </p>
+            </div>
+
+            <div>
+              <img
+                src="/images/cloud.jpg"
+                alt="Cloud Solutions"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

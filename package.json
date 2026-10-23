@@ -12,10 +12,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "vite build && playwright test",
-    "test:unit:stress": "for i in $(seq 1 25); do vitest run --reporter=dot || exit 1; done",
+    "test:unit:stress": "for i in $(seq 1 25); do vitest run tests/unit/Site.test.tsx --reporter=dot || exit 1; done",
     "test:unit:100": "vitest run tests/unit/Stress100.test.tsx",
     "test:e2e:stress": "playwright test tests/e2e/site.spec.ts --repeat-each=5",
     "test:pages:stress": "playwright test tests/e2e/site.spec.ts --repeat-each=10",
+    "test:page:100": "playwright test tests/e2e/site.spec.ts --repeat-each=100 -g",
+    "test:full:100": "npm run test:unit:100 && playwright test tests/e2e/site.spec.ts --repeat-each=100",
     "test:stress": "npm run test:unit:100 && npm run test:pages:stress",
     "test:sanity": "npx tsx scripts/full-sanity-check.ts && npm run lint && npm test && npm run test:unit:100",
     "verify": "npm run test:sanity && npm run test:e2e"

@@ -100,9 +100,9 @@ export const COMPANY_INFO = {
 };
 
 export const MAIN_NAV: NavLink[] = [
-  { label: 'Home', href: LINKS.home },
+  { label: 'HOME', href: LINKS.home },
   {
-    label: 'About Us',
+    label: 'ABOUT US',
     href: LINKS.companyProfile,
     children: [
       { label: 'Company Profile', href: LINKS.companyProfile, desc: 'Vision, mission & turnkey technology aggregations' },
@@ -111,23 +111,20 @@ export const MAIN_NAV: NavLink[] = [
     ],
   },
   {
-    label: 'Solutions',
-    href: LINKS.products,
+    label: 'SOLUTIONS',
+    href: LINKS.networking,
     children: [
-      { label: 'Solutions Overview', href: LINKS.products, desc: 'End-to-end security, networking & wireless solutions' },
       { label: 'Networking', href: LINKS.networking, desc: 'Switches, routers & SD-WAN solutions' },
       { label: 'FTTX', href: LINKS.fttx, desc: 'Fiber-to-the-x, GPON & OLT/ONT deployments' },
       { label: 'Server & Storage', href: LINKS.serverStorage, desc: 'Enterprise compute & storage infrastructure' },
       { label: 'Data Center & Cloud', href: LINKS.dataCenterCloud, desc: 'Data center setup, cloud migration & hybrid cloud' },
       { label: 'Security Solutions', href: LINKS.securitySolutions, desc: 'DDoS mitigation, DPI & firewall protection' },
-      { label: 'Industry Applications', href: LINKS.industryApplications, desc: 'Telecom, cable, broadband & enterprise verticals' },
-      { label: 'Digital Services', href: LINKS.digitalServices, desc: 'Cybersecurity, IT optimization, automation & AI' },
     ],
   },
-  { label: 'Case Studies', href: LINKS.caseStudies },
-  { label: 'Partners', href: LINKS.partners },
-  { label: 'Careers', href: LINKS.careers },
-  { label: 'Contact', href: LINKS.contact },
+  { label: 'INDUSTRY APPLICATIONS', href: LINKS.industryApplications },
+  { label: 'PARTNERS', href: LINKS.partners },
+  { label: 'CAREERS', href: LINKS.careers },
+  { label: 'CONTACT', href: LINKS.contact },
 ];
 
 export const LEADERSHIP_TEAM: TeamMember[] = [
@@ -229,6 +226,8 @@ export const CLIENTS_LIST: ClientItem[] = [
   { name: 'Subisu', logo: '/images/Subisu-Logo.jpg' },
   { name: 'Vianet', logo: '/images/Via-Net-Logo.jpg' },
   { name: 'Discovery', logo: '/images/Discovery-Logo.jpg' },
+  { name: 'Airtel', logo: '/images/airtel.jpg' },
+  { name: 'Sony / SET', logo: '/images/sony.png' },
 ];
 
 export const CASE_STUDIES: CaseStudyItem[] = [
