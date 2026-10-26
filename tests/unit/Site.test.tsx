@@ -16,7 +16,7 @@ import {
 } from '../../src/data/site';
 
 const ALL_ROUTES: [string, RegExp][] = [
-  ['/', /Keeping You One Step Ahead!/i],
+  ['/', /We Source and Support the Data Center Equipment/i],
   ['/company-profile/', /^Company Profile$/i],
   ['/why-us/', /^Why Us$/i],
   ['/leadership/', /^Leadership$/i],
@@ -48,10 +48,15 @@ describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
     const heading = await screen.findByRole('heading', { level: 1, name: h1Regex });
     expect(heading).toBeInTheDocument();
 
-    // Verify presence of header elements
-    expect(screen.getAllByAltText(/CITIUSCOMM Logo/i).length).toBeGreaterThanOrEqual(1);
-    // Verify presence of footer text
-    expect(screen.getByText(/developed by/i)).toBeInTheDocument();
+    if (path === '/') {
+      // Homepage has its own self-contained header with text brand
+      expect(screen.getAllByText('Citius Communication').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByText(/All Rights Reserved/i)).toBeInTheDocument();
+    } else {
+      // Other pages use the shared CITIUSCOMM header/footer
+      expect(screen.getAllByAltText(/CITIUSCOMM Logo/i).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText(/All Rights Reserved/i).length).toBeGreaterThanOrEqual(1);
+    }
 
     // Verify inner pages have NO breadcrumbs
     if (path !== '/') {
@@ -126,15 +131,15 @@ describe('Header & Navigation Component', () => {
 });
 
 describe('Footer Component', () => {
-  it('renders copyright and developed by', () => {
+  it('renders copyright and contact info', () => {
     render(
       <MemoryRouter>
         <Footer />
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/2026 CITIUSCOMM/i)).toBeInTheDocument();
-    expect(screen.getByText(/WebGyor Technologies/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Citius Communication Pvt\. Ltd\./i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/All Rights Reserved/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('link', { name: /CITIUSCOMM LinkedIn/i })).toBeInTheDocument();
   });
 });

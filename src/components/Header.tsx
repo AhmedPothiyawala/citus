@@ -10,6 +10,10 @@ export const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Homepage has a white hero, so header must always use dark text there
+  const isHomePage = location.pathname === '/';
+  const useDark = scrolled || isHomePage;
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY >= 40);
@@ -35,42 +39,42 @@ export const Header: React.FC = () => {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white shadow-md text-[#0b1f33]' : 'bg-transparent text-white'
+        useDark ? 'bg-white shadow-md text-[#0b1f33]' : 'bg-transparent text-white'
       }`}
     >
       {/* Top Bar (Secondary Header) — hidden on phones like the live site */}
       <div
         className={`hidden lg:block transition-colors duration-300 ${
-          scrolled ? 'border-b border-gray-200' : ''
+          useDark ? 'border-b border-gray-200' : ''
         }`}
       >
         <div className="site-container pt-[6px] pb-0 flex justify-end items-center text-[13px] font-medium leading-6">
           <a
             href={`mailto:${COMPANY_INFO.email}`}
             className={`transition-colors ${
-              scrolled ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
+              useDark ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
             }`}
           >
             {COMPANY_INFO.email}
           </a>
-          <span className={`mx-[18px] ${scrolled ? 'text-gray-400' : 'text-white'}`}>|</span>
+          <span className={`mx-[18px] ${useDark ? 'text-gray-400' : 'text-white'}`}>|</span>
           <a
             href={`tel:${COMPANY_INFO.phoneFormatted}`}
             className={`transition-colors ${
-              scrolled ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
+              useDark ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
             }`}
           >
             {COMPANY_INFO.phoneFormatted}
             <span className="sr-only">{COMPANY_INFO.phone}</span>
           </a>
-          <span className={`mx-[18px] ${scrolled ? 'text-gray-400' : 'text-white'}`}>|</span>
+          <span className={`mx-[18px] ${useDark ? 'text-gray-400' : 'text-white'}`}>|</span>
           <a
             href={COMPANY_INFO.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="CITIUSCOMM LinkedIn"
             className={`transition-colors inline-flex items-center ${
-              scrolled ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
+              useDark ? 'text-gray-700 hover:text-[#166fb0]' : 'text-white hover:text-white/80'
             }`}
           >
             <IconLinkedIn className="w-3.5 h-3.5" />
@@ -83,7 +87,7 @@ export const Header: React.FC = () => {
         {/* Logo */}
         <SmartLink to={LINKS.home} className="inline-block py-1">
           <img
-            src={scrolled ? COMPANY_INFO.logoRetina : '/images/citiuscomm-white-logo.png'}
+            src={useDark ? COMPANY_INFO.logoRetina : '/images/citiuscomm-white-logo.png'}
             alt="CITIUSCOMM Logo"
             className="h-[26px] sm:h-[30px] w-auto object-contain transition-opacity duration-200"
             loading="eager"
@@ -101,7 +105,7 @@ export const Header: React.FC = () => {
                 <div key={item.label} className="relative group py-2">
                   <div
                     className={`inline-flex items-center gap-1.5 py-1 uppercase cursor-pointer transition-colors ${
-                      scrolled
+                      useDark
                         ? active
                           ? 'text-[#166fb0] border-b-[2px] border-[#166fb0]'
                           : 'text-[#0b1f33] hover:text-[#166fb0]'
@@ -113,7 +117,7 @@ export const Header: React.FC = () => {
                     <span>{item.label}</span>
                     <IconChevronDown
                       className={`w-3 h-3 transition-transform duration-200 group-hover:rotate-180 ${
-                        scrolled ? 'text-gray-500 group-hover:text-[#166fb0]' : 'text-white/70 group-hover:text-white'
+                        useDark ? 'text-gray-500 group-hover:text-[#166fb0]' : 'text-white/70 group-hover:text-white'
                       }`}
                     />
                   </div>
@@ -143,7 +147,7 @@ export const Header: React.FC = () => {
                 key={item.label}
                 to={item.href}
                 className={`py-1 uppercase transition-colors ${
-                  scrolled
+                  useDark
                     ? active
                       ? 'text-[#166fb0] border-b-[2px] border-[#166fb0]'
                       : 'text-[#0b1f33] hover:text-[#166fb0]'
@@ -164,7 +168,7 @@ export const Header: React.FC = () => {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
           className={`lg:hidden p-2 focus:outline-none transition-colors ${
-            scrolled ? 'text-[#0b1f33] hover:text-[#166fb0]' : 'text-white hover:text-sky-300'
+            useDark ? 'text-[#0b1f33] hover:text-[#166fb0]' : 'text-white hover:text-sky-300'
           }`}
         >
           {mobileMenuOpen ? <IconX className="w-6 h-6" /> : <IconMenu className="w-6 h-6" />}

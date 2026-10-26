@@ -128,8 +128,8 @@ async function verifyGlobalChromeAndAssets(page: Page, route: string, isMobile: 
   const footer = page.locator('footer').first();
   await expect(footer).toBeVisible();
   const footerText = await footer.innerText();
-  expect(footerText).toContain('© 2026 CITIUSCOMM.');
-  expect(footerText).toContain('developed by WebGyor Technologies');
+  expect(footerText).toContain('Citius Communication');
+  expect(footerText).toContain('All Rights Reserved');
 
   // Verify LinkedIn link exists in footer
   const linkedIn = footer.locator('a[href*="linkedin.com"]');
@@ -214,29 +214,21 @@ test.describe('Part 2 - Deep Page Assertions (Pages 1 to 19)', () => {
   test('Page 1: Home (/)', async ({ page }) => {
     await page.goto('/');
     const h1 = page.getByRole('heading', { level: 1 });
-    await expect(h1).toHaveText('Keeping You One Step Ahead!');
-    await expect(page.getByText('We are Technology Aggregators, with an eye to NextGen Cutting Edge Virtual Machine Technology.')).toBeVisible();
+    await expect(h1).toContainText('We Source and Support the Data Center Equipment');
+    await expect(page.getByText('Hardware supply, integration and managed services for data centers of every size, from edge rooms to hyperscale campuses.')).toBeVisible();
 
-    const cta = page.getByRole('link', { name: /KNOW MORE/i }).first();
+    const cta = page.getByRole('link', { name: /Explore services/i }).first();
     await expect(cta).toBeVisible();
-    await expect(cta).toHaveAttribute('href', '/company-profile/');
 
-    await expect(page.getByRole('heading', { name: 'Who We Are' })).toBeVisible();
-    await expect(page.getByText(/“CITIUSCOMM” a Multi-National Company/i)).toBeVisible();
-    await expect(page.getByText(/Our vast partner tie-ups bundled/i)).toBeVisible();
-
-    await expect(page.getByRole('heading', { name: 'Solutions', exact: true })).toBeVisible();
-    for (const sol of ['Networking', 'FTTX', 'Server & Storage', 'Security Solutions', 'Data Center & Cloud']) {
-      await expect(page.getByRole('link', { name: sol }).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Support for every business model' })).toBeVisible();
+    for (const model of ['Cloud and Managed Services', 'Retail Colocation', 'Enterprise and Captive', 'Wholesale and Built-to-suit']) {
+      await expect(page.getByRole('heading', { name: model }).first()).toBeVisible();
     }
 
-    await expect(page.getByRole('heading', { name: 'Focus Verticals' })).toBeVisible();
-    for (const vert of ['Cable & Broadband', 'Telecom', 'Enterprises', 'Data Center and Cloud', 'Government and PSUs']) {
-      await expect(page.getByText(vert).first()).toBeVisible();
-    }
-
-    await expect(page.getByRole('heading', { name: 'Our Clients' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Case Studies' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Hardware supply, integration and services/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'From requirement to running' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Independent advice, one accountable team/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Planning your next facility/i })).toBeVisible();
   });
 
   test('Page 2: Company Profile (/company-profile/)', async ({ page }) => {

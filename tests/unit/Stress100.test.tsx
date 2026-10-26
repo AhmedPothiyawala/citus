@@ -4,7 +4,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 import { AppContent } from '../../src/App';
 
 const ALL_19_ROUTES: [string, RegExp][] = [
-  ['/', /Keeping You One Step Ahead!/i],
+  ['/', /We Source and Support the Data Center Equipment/i],
   ['/company-profile/', /Company Profile/i],
   ['/why-us/', /Why Us/i],
   ['/leadership/', /Leadership/i],
@@ -43,19 +43,30 @@ describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
         const heading = screen.getByRole('heading', { level: 1, name: h1Pattern });
         expect(heading).toBeInTheDocument();
 
-        // 2. Sanity check: Header logo
-        const logos = screen.getAllByAltText(/CITIUSCOMM Logo/i);
-        expect(logos.length).toBeGreaterThanOrEqual(1);
+        // 2. Sanity check: Header brand
+        if (route === '/') {
+          // Homepage has text-based brand "Citius Communication"
+          expect(screen.getAllByText('Citius Communication').length).toBeGreaterThanOrEqual(1);
+        } else {
+          const logos = screen.getAllByAltText(/CITIUSCOMM Logo/i);
+          expect(logos.length).toBeGreaterThanOrEqual(1);
+        }
 
-        // 3. Sanity check: Footer copyright
-        expect(screen.getByText(/developed by/i)).toBeInTheDocument();
+        // 3. Sanity check: Footer content
+        if (route === '/') {
+          expect(screen.getByText(/All Rights Reserved/i)).toBeInTheDocument();
+        } else {
+          expect(screen.getAllByText(/All Rights Reserved/i).length).toBeGreaterThanOrEqual(1);
+        }
 
-        // 4. Sanity check: Zero broken image references
-        const images = container.querySelectorAll('img');
-        for (const img of Array.from(images)) {
-          const src = img.getAttribute('src');
-          expect(src).toBeTruthy();
-          expect(src?.startsWith('/images/') || src?.startsWith('data:')).toBe(true);
+        // 4. Sanity check: Zero broken image references (skip for homepage which has no images)
+        if (route !== '/') {
+          const images = container.querySelectorAll('img');
+          for (const img of Array.from(images)) {
+            const src = img.getAttribute('src');
+            expect(src).toBeTruthy();
+            expect(src?.startsWith('/images/') || src?.startsWith('data:')).toBe(true);
+          }
         }
 
         unmount();

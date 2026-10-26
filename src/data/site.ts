@@ -85,6 +85,7 @@ export const LINKS = {
 
 export const COMPANY_INFO = {
   name: 'CITIUSCOMM',
+  brandName: 'Citius Communication',
   legalName: 'CITIUS COMMUNICATIONS PVT. LTD.',
   tagline: 'Keeping You One Step Ahead!',
   subTagline: 'We are an engineering first company. We engineer and design solutions for your networks.',
@@ -97,6 +98,7 @@ export const COMPANY_INFO = {
   logoWhite: '/images/citiuscomm-white-logo.png',
   logoWhiteRetina: '/images/citiuscomm-white-retina-logo.png',
   favicon: '/images/Favicon.png',
+  copyright: `© ${new Date().getFullYear()} Citius Communication Pvt. Ltd. All Rights Reserved.`,
 };
 
 export const MAIN_NAV: NavLink[] = [
@@ -188,17 +190,22 @@ export const WHY_US_DIFFERENTIATORS = [
 
 export const PARTNERS_LIST: PartnerItem[] = [
   { name: 'Cisco', logo: '/images/cisco.jpg', category: 'Networking & Security' },
-  { name: 'Juniper Networks', logo: '/images/juniper.jpg', category: 'Routing & Cloud' },
+  { name: 'Arista', logo: '/images/networking.jpg', category: 'Data Center Switching' },
+  { name: 'Fortinet', logo: '/images/Firewall-security-solution.jpg', category: 'Cybersecurity' },
+  { name: 'Palo Alto Networks', logo: '/images/CYBERSECURITY.jpg', category: 'NextGen Security' },
   { name: 'Dell Technologies', logo: '/images/dell.jpg', category: 'Servers & Storage' },
+  { name: 'Juniper Networks', logo: '/images/juniper.jpg', category: 'Routing & Cloud' },
+  { name: 'Lenovo', logo: '/images/server.jpg', category: 'Compute & Storage' },
   { name: 'HPE', logo: '/images/hp.jpg', category: 'Enterprise Compute' },
+  { name: 'CommScope', logo: '/images/optical-fiber.jpg', category: 'Structured Cabling' },
   { name: 'Oracle', logo: '/images/oracle-1.jpg', category: 'Database & Cloud' },
   { name: 'Extreme Networks', logo: '/images/extreme.jpg', category: 'Cloud Networking' },
   { name: 'Casa Systems', logo: '/images/casa-systems.jpg', category: 'Broadband & Cable' },
+  { name: 'ProLabs', logo: '/images/prolabs.jpg', category: 'Optical Connectivity' },
   { name: 'New IT V', logo: '/images/new-it-v.jpg', category: 'Digital Solutions' },
   { name: 'Avanseus', logo: '/images/avanseus.jpg', category: 'AI & Analytics' },
   { name: 'Atrinet', logo: '/images/atrinet-1.jpg', category: 'Network Automation' },
   { name: 'Tibco', logo: '/images/tibco-1.jpg', category: 'Data & Integration' },
-  { name: 'ProLabs', logo: '/images/prolabs.jpg', category: 'Optical Connectivity' },
   { name: 'Allot', logo: '/images/allot.jpg', category: 'Network Intelligence & Security' },
   { name: 'EfficientIP', logo: '/images/efficient.jpg', category: 'DDI & DNS Security' },
   { name: 'DIY CAM', logo: '/images/diy-cam.jpg', category: 'Surveillance & IoT' },

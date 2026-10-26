@@ -171,10 +171,26 @@
 
 /* Phones: live theme keeps body copy large and title bars short */
 @media (max-width: 689px) {
-  main p, main li { font-size: 17px; line-height: 28px; }
+  main:not(.homepage-main) p, main:not(.homepage-main) li { font-size: 17px; line-height: 28px; }
 }
 
 /* Live body copy is 18px / 28px on desktop */
 @media (min-width: 690px) {
-  main p, main li { font-size: 18px; line-height: 28px; }
+  main:not(.homepage-main) p, main:not(.homepage-main) li { font-size: 18px; line-height: 28px; }
+}
+
+/* Homepage strict typography isolation matched to reference design */
+.homepage-root,
+.homepage-root * {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+.homepage-root h1,
+.homepage-root h2,
+.homepage-root h3,
+.homepage-root h4,
+.homepage-root h5,
+.homepage-root h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.02em;
 }
