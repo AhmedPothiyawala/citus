@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SmartLink } from '../components/SmartLink';
+import { NetworkGlobe } from '../components/fx/NetworkGlobe';
+import { InteractiveFx } from '../components/fx/InteractiveFx';
 import { LINKS, COMPANY_INFO, PARTNERS_LIST, CLIENTS_LIST } from '../data/site';
 
 /* ── COLOR TOKENS ── */
@@ -126,6 +128,101 @@ const DC_ROTATING_PHRASES = [
   'Edge Data Centers & Server Room Expansions.',
 ];
 
+/* ── Swipeable slider: native scroll + snap, mouse drag, auto-advance, dots stay in sync ── */
+function useSnapSlider(
+  active: number,
+  setActive: (i: number) => void,
+  pausedRef: React.MutableRefObject<boolean>,
+  pages: number
+) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const pagesRef = useRef(pages);
+  pagesRef.current = pages;
+  const settleTimer = useRef<number | undefined>(undefined);
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+
+  // Dots map onto the whole scroll range, so this works for the paged desktop
+  // layout and the single-row phone layout alike.
+  const maxScroll = (el: HTMLDivElement) => Math.max(1, el.scrollWidth - el.clientWidth);
+  const indexAt = (el: HTMLDivElement) => Math.round((el.scrollLeft / maxScroll(el)) * (pagesRef.current - 1));
+  const leftFor = (el: HTMLDivElement, i: number) => (i / Math.max(1, pagesRef.current - 1)) * maxScroll(el);
+
+  // Move to the active slide when it changes from the timer or a dot click
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el || !el.clientWidth) return;
+    if (indexAt(el) !== active && typeof el.scrollTo === 'function') {
+      el.scrollTo({ left: leftFor(el, active), behavior: 'smooth' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active]);
+
+  const onScroll = () => {
+    const el = trackRef.current;
+    if (!el || !el.clientWidth) return;
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      setActive(indexAt(el));
+    }, 120);
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    pausedRef.current = true;
+    if (e.pointerType !== 'mouse') return; // touch uses native swipe
+    const el = trackRef.current;
+    if (!el) return;
+    drag.current = { x: e.clientX, left: el.scrollLeft, moved: false };
+    el.classList.add('is-dragging');
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = trackRef.current;
+    if (!el || !drag.current) return;
+    const dx = e.clientX - drag.current.x;
+    if (Math.abs(dx) > 4) drag.current.moved = true;
+    el.scrollLeft = drag.current.left - dx;
+  };
+  const endDrag = () => {
+    const el = trackRef.current;
+    if (el && drag.current) {
+      // A short flick of ~12% of the width moves to the next / previous dot
+      const pages = pagesRef.current;
+      const dx = el.scrollLeft - drag.current.left;
+      const step = maxScroll(el) / Math.max(1, pages - 1);
+      const start = Math.round(drag.current.left / step);
+      let idx = Math.round(el.scrollLeft / step);
+      if (dx > el.clientWidth * 0.12) idx = Math.max(idx, start + 1);
+      if (dx < -el.clientWidth * 0.12) idx = Math.min(idx, start - 1);
+      idx = Math.min(pages - 1, Math.max(0, idx));
+      // Glide to the target first, then re-enable snapping so it can't pull back
+      el.classList.add('is-settling');
+      if (typeof el.scrollTo === 'function') el.scrollTo({ left: leftFor(el, idx), behavior: 'smooth' });
+      el.classList.remove('is-dragging');
+      window.setTimeout(() => el.classList.remove('is-settling'), 550);
+      setActive(idx);
+    }
+    drag.current = null;
+  };
+  // Swallow the click that ends a drag so cards are not "clicked" while swiping
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (drag.current?.moved) e.preventDefault();
+  };
+
+  return {
+    trackRef,
+    trackProps: {
+      onScroll,
+      onPointerDown,
+      onPointerMove,
+      onPointerUp: endDrag,
+      onPointerCancel: endDrag,
+      onClickCapture,
+      onMouseEnter: () => { pausedRef.current = true; },
+      onMouseLeave: () => { endDrag(); pausedRef.current = false; },
+      onTouchEnd: () => { window.setTimeout(() => { pausedRef.current = false; }, 4000); },
+    },
+  };
+}
+
 export const HomePage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
@@ -134,6 +231,8 @@ export const HomePage: React.FC = () => {
 
   const [activePartnerSlide, setActivePartnerSlide] = useState(0);
   const isPartnerAutoScrollPausedRef = useRef(false);
+  const partnerSlider = useSnapSlider(activePartnerSlide, setActivePartnerSlide, isPartnerAutoScrollPausedRef, 4);
+  const clientSlider = useSnapSlider(activeClientSlide, setActiveClientSlide, isClientAutoScrollPausedRef, 4);
 
   // Typewriter text animation state for hero headline
   const [typewriterIndex, setTypewriterIndex] = useState(0);
@@ -382,6 +481,8 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="homepage-root bg-white w-full overflow-x-clip" data-no-reveal>
+      <div id="home-scroll-progress" aria-hidden="true" />
+      <InteractiveFx />
 
       {/* ═══════════════════════════════════════════════════
           A · NAVIGATION BAR (Distinct Dark Navy Brand Theme - Sticky Header)
@@ -508,9 +609,12 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           B · FIRST PAGE HERO: 2-LINE HEADLINE + FULL CAPACITY GRAPH
       ═══════════════════════════════════════════════════ */}
-      <section className="bg-white min-h-0 lg:h-[calc(100vh-60px)] flex flex-col justify-between pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
+      <section className="relative bg-white min-h-0 lg:h-[calc(100vh-60px)] flex flex-col justify-between pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
+        {/* Rotating 3D network globe + soft aurora behind the hero */}
+        <div className="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full bg-gradient-to-br from-[#00C4CC]/10 via-[#2563EB]/8 to-transparent blur-3xl pointer-events-none" aria-hidden="true" />
+        <NetworkGlobe className="hero-globe hidden md:block top-[-110px] right-[-110px] w-[360px] h-[360px] lg:w-[420px] lg:h-[420px] opacity-60" />
         {/* Eyebrow & 2-Line Headline at Top */}
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 shrink-0">
+        <div className="relative z-[1] w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 shrink-0">
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-block w-2 h-2 rounded-full bg-[#00C4CC] animate-live-dot shrink-0" />
             <p
@@ -539,8 +643,8 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
-        <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 flex-1 min-h-0 flex flex-col items-center justify-center">
-          <div className="w-full h-full flex items-center justify-start md:justify-center overflow-x-auto select-none scrollbar-thin">
+        <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 flex-1 min-h-0 flex flex-col items-center justify-center">
+          <div className="hidden md:flex w-full h-full items-center justify-center overflow-x-auto select-none scrollbar-thin">
             <div className="relative w-full max-w-[1160px] flex items-center justify-center shrink-0">
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
@@ -823,10 +927,37 @@ export const HomePage: React.FC = () => {
               </svg>
             </div>
           </div>
-          {/* Mobile swipe indicator */}
-          <div className="md:hidden flex items-center justify-center gap-1.5 text-[11px] text-slate-400 py-1 font-medium select-none">
-            <span>&#8592; Swipe to explore all capacity tiers &#8594;</span>
-          </div>
+          {/* Phones: capacity tiers as a vertical timeline (the wide graph is unreadable at this size) */}
+          <ol className="md:hidden relative w-full px-2 pt-4 pb-2">
+            <span
+              className="absolute left-[19px] top-6 bottom-6 w-[2px] rounded-full bg-gradient-to-b from-[#06B6D4] via-[#4F46E5] to-[#EC4899]"
+              aria-hidden="true"
+            />
+            {CAPACITY_TIERS.map((tier, i) => (
+              <li
+                key={tier.pillText}
+                className={`home-reveal stagger-${(i % 4) + 1} relative flex items-start gap-4 py-2.5`}
+              >
+                <span
+                  className="relative z-[1] mt-1.5 w-[16px] h-[16px] rounded-full border-[3px] bg-white shrink-0 shadow-[0_0_0_4px_rgba(255,255,255,1)]"
+                  style={{ borderColor: tier.color, marginLeft: '3px' }}
+                  aria-hidden="true"
+                />
+                <div className="flex-1 rounded-xl bg-[#0B1B3D] text-white px-4 py-3 shadow-md" style={{ borderTop: `3px solid ${tier.color}` }}>
+                  <div className="flex items-center justify-between gap-3 mb-1">
+                    <p className="text-[14px] font-bold leading-[20px]">{tier.boxLines.join(' ')}</p>
+                    <span
+                      className="shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white"
+                      style={{ backgroundColor: tier.color }}
+                    >
+                      {tier.pillText}
+                    </span>
+                  </div>
+                  <p className="text-[12.5px] leading-[18px] text-slate-300">{tier.annotationLines.join(' ')}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -874,11 +1005,11 @@ export const HomePage: React.FC = () => {
             {businessModels.map((model, idx) => (
               <div
                 key={model.title}
-                className={`card-hover-cool group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${(idx % 4) + 1}`}
+                className={`card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${(idx % 4) + 1}`}
                 style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
               >
                 {/* Glowing subtle gradient top border on hover */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#6366F1] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 z-[2] bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#6366F1] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
                 <h3 className="text-[17px] md:text-[18px] font-bold mb-2 transition-colors group-hover:text-blue-900" style={{ color: C.headline }}>
                   {model.title}
                 </h3>
@@ -888,7 +1019,7 @@ export const HomePage: React.FC = () => {
                 <p className="text-[11px] font-bold uppercase tracking-wider mb-2.5" style={{ color: C.teal }}>
                   {model.subLabel}
                 </p>
-                <ul className="space-y-1.5">
+                <ul className="tick-list space-y-1.5">
                   {model.points.map((point, pIdx) => (
                     <li key={pIdx} className="flex items-start gap-2.5 text-[13px] md:text-[14px] leading-[20px]" style={{ color: C.body }}>
                       <span className="mt-[7px] w-[5px] h-[5px] rounded-full shrink-0 bg-[#0E9F9F] group-hover:bg-[#22D3EE] group-hover:scale-125 transition-all duration-300" />
@@ -908,7 +1039,7 @@ export const HomePage: React.FC = () => {
       <section className="py-2.5 md:py-3 bg-white">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
-            className="home-reveal-scale card-hover-cool rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-r from-[#F3F6FA] via-[#EDF5FB] to-[#F3F6FA]"
+            className="home-reveal-scale card-hover-cool glow-border rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-r from-[#F3F6FA] via-[#EDF5FB] to-[#F3F6FA]"
             style={{ border: `1px solid ${C.border}` }}
           >
             <div>
@@ -947,14 +1078,14 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             {/* Hardware Supply Column */}
             <div
-              className="card-hover-cool group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-1"
+              className="card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-1" data-tilt-max="5"
               style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#22D3EE] to-[#3B82F6] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 z-[2] bg-gradient-to-r from-[#22D3EE] to-[#3B82F6] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
               <h3 className="text-[17px] md:text-[18px] font-bold mb-3 transition-colors group-hover:text-blue-900" style={{ color: C.headline }}>
                 Hardware Supply and Integration
               </h3>
-              <ul className="space-y-2">
+              <ul className="tick-list space-y-2">
                 {hardwareSupply.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5 text-[13px] md:text-[14px] leading-[20px]" style={{ color: C.body }}>
                     <span className="mt-[7px] w-[5px] h-[5px] rounded-full shrink-0 bg-[#0E9F9F] group-hover:bg-[#22D3EE] group-hover:scale-125 transition-all duration-300" />
@@ -966,14 +1097,14 @@ export const HomePage: React.FC = () => {
 
             {/* Services Column */}
             <div
-              className="card-hover-cool group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-2"
+              className="card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-2" data-tilt-max="5"
               style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
             >
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#3B82F6] to-[#6366F1] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 h-1 z-[2] bg-gradient-to-r from-[#3B82F6] to-[#6366F1] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
               <h3 className="text-[17px] md:text-[18px] font-bold mb-3 transition-colors group-hover:text-blue-900" style={{ color: C.headline }}>
                 Services
               </h3>
-              <ul className="space-y-2">
+              <ul className="tick-list space-y-2">
                 {servicesList.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-2.5 text-[13px] md:text-[14px] leading-[20px]" style={{ color: C.body }}>
                     <span className="mt-[7px] w-[5px] h-[5px] rounded-full shrink-0 bg-[#0E9F9F] group-hover:bg-[#22D3EE] group-hover:scale-125 transition-all duration-300" />
@@ -995,7 +1126,7 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="partners"
-        className="pt-8 pb-6 md:pt-10 md:pb-8 bg-[#0B1B3D] text-white relative overflow-hidden border-b border-slate-800/60"
+        className="spotlight pt-8 pb-6 md:pt-10 md:pb-8 bg-[#0B1B3D] text-white relative overflow-hidden border-b border-slate-800/60"
       >
         {/* Dynamic Animated Tech Background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
@@ -1031,30 +1162,25 @@ export const HomePage: React.FC = () => {
 
           {/* Technology Partners Horizontal Auto-Scrolling Track (In One Line) */}
           <div
-            className="home-reveal stagger-1 w-full overflow-hidden mb-5 py-1"
-            onMouseEnter={() => {
-              isPartnerAutoScrollPausedRef.current = true;
-            }}
-            onMouseLeave={() => {
-              isPartnerAutoScrollPausedRef.current = false;
-            }}
+            ref={partnerSlider.trackRef}
+            {...partnerSlider.trackProps}
+            className="slider-track home-reveal stagger-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory mb-4 pt-4 pb-2 cursor-grab"
+            aria-roledescription="carousel"
           >
-            <div
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${activePartnerSlide * 100}%)` }}
-            >
+            <div className="flex">
               {partnerSlides.map((slide, sIdx) => (
                 <div
                   key={sIdx}
-                  className="w-full shrink-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 md:gap-4 px-1"
+                  className="shrink-0 flex gap-3 pr-3 sm:pr-1 sm:w-full sm:snap-start sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:gap-3.5 md:gap-4 px-1"
                 >
                   {slide.map((partner) => (
-                    <div key={partner.name} className="flex flex-col items-center group">
+                    <div key={partner.name} className="w-[42vw] shrink-0 snap-start sm:w-auto sm:snap-align-none flex flex-col items-center group">
                       <div className="w-full bg-white rounded-2xl p-2.5 sm:p-3 md:p-3.5 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 border border-white/20 overflow-hidden relative group-hover:border-[#00C4CC]/50">
                         <img
                           src={partner.logo}
                           alt={partner.name}
-                          className="w-full h-full max-h-[145px] max-w-[92%] object-contain scale-110 sm:scale-120 group-hover:scale-130 transition-transform duration-300 drop-shadow-sm select-none"
+                          className="w-full h-full max-h-[145px] max-w-[92%] object-contain scale-110 sm:scale-120 group-hover:scale-130 transition-transform duration-300 drop-shadow-sm select-none pointer-events-none"
+                          draggable={false}
                           loading="lazy"
                         />
                       </div>
@@ -1070,13 +1196,6 @@ export const HomePage: React.FC = () => {
 
           {/* Pagination Controls Matching Our Clients */}
           <div className="home-reveal stagger-2 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setActivePartnerSlide((prev) => (prev - 1 + partnerSlides.length) % partnerSlides.length)}
-              className="w-8 h-8 rounded-full border border-slate-700 bg-slate-800/40 text-slate-300 hover:text-white hover:border-[#00C4CC] hover:bg-[#00C4CC]/20 flex items-center justify-center transition-all text-xs font-bold"
-              aria-label="Previous Partners Slide"
-            >
-              &#8592;
-            </button>
             <div className="flex items-center gap-2">
               {partnerSlides.map((_, idx) => (
                 <button
@@ -1091,13 +1210,6 @@ export const HomePage: React.FC = () => {
                 />
               ))}
             </div>
-            <button
-              onClick={() => setActivePartnerSlide((prev) => (prev + 1) % partnerSlides.length)}
-              className="w-8 h-8 rounded-full border border-slate-700 bg-slate-800/40 text-slate-300 hover:text-white hover:border-[#00C4CC] hover:bg-[#00C4CC]/20 flex items-center justify-center transition-all text-xs font-bold"
-              aria-label="Next Partners Slide"
-            >
-              &#8594;
-            </button>
           </div>
         </div>
       </section>
@@ -1107,7 +1219,7 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="clients"
-        className="pt-6 pb-8 md:pt-8 md:pb-10 bg-[#0B1B3D] text-white relative overflow-hidden"
+        className="spotlight pt-6 pb-8 md:pt-8 md:pb-10 bg-[#0B1B3D] text-white relative overflow-hidden"
       >
         {/* Dynamic Animated Tech Background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
@@ -1143,30 +1255,25 @@ export const HomePage: React.FC = () => {
 
           {/* Client Logo Horizontal Auto-Scrolling Track */}
           <div
-            className="home-reveal stagger-1 w-full overflow-hidden mb-5 py-1"
-            onMouseEnter={() => {
-              isClientAutoScrollPausedRef.current = true;
-            }}
-            onMouseLeave={() => {
-              isClientAutoScrollPausedRef.current = false;
-            }}
+            ref={clientSlider.trackRef}
+            {...clientSlider.trackProps}
+            className="slider-track home-reveal stagger-1 w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory mb-4 pt-4 pb-2 cursor-grab"
+            aria-roledescription="carousel"
           >
-            <div
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${activeClientSlide * 100}%)` }}
-            >
+            <div className="flex">
               {clientSlides.map((slide, sIdx) => (
                 <div
                   key={sIdx}
-                  className="w-full shrink-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 md:gap-4 px-1"
+                  className="shrink-0 flex gap-3 pr-3 sm:pr-1 sm:w-full sm:snap-start sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:gap-3.5 md:gap-4 px-1"
                 >
                   {slide.map((client) => (
-                    <div key={client.name} className="flex flex-col items-center group">
+                    <div key={client.name} className="w-[42vw] shrink-0 snap-start sm:w-auto sm:snap-align-none flex flex-col items-center group">
                       <div className="w-full bg-white rounded-2xl p-2.5 sm:p-3 md:p-3.5 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 border border-white/20 overflow-hidden relative group-hover:border-[#00C4CC]/50">
                         <img
                           src={client.logo}
                           alt={client.name}
-                          className="w-full h-full max-h-[145px] max-w-[92%] object-contain scale-110 sm:scale-120 group-hover:scale-130 transition-transform duration-300 drop-shadow-sm select-none"
+                          className="w-full h-full max-h-[145px] max-w-[92%] object-contain scale-110 sm:scale-120 group-hover:scale-130 transition-transform duration-300 drop-shadow-sm select-none pointer-events-none"
+                          draggable={false}
                           loading="lazy"
                         />
                       </div>
@@ -1182,13 +1289,6 @@ export const HomePage: React.FC = () => {
 
           {/* Pagination Controls Matching User Screenshot */}
           <div className="home-reveal stagger-2 flex items-center justify-center gap-3">
-            <button
-              onClick={() => setActiveClientSlide((prev) => (prev - 1 + clientSlides.length) % clientSlides.length)}
-              className="w-8 h-8 rounded-full border border-slate-700 bg-slate-800/40 text-slate-300 hover:text-white hover:border-[#00C4CC] hover:bg-[#00C4CC]/20 flex items-center justify-center transition-all text-xs font-bold"
-              aria-label="Previous Slide"
-            >
-              &#8592;
-            </button>
             <div className="flex items-center gap-2">
               {clientSlides.map((_, idx) => (
                 <button
@@ -1203,13 +1303,6 @@ export const HomePage: React.FC = () => {
                 />
               ))}
             </div>
-            <button
-              onClick={() => setActiveClientSlide((prev) => (prev + 1) % clientSlides.length)}
-              className="w-8 h-8 rounded-full border border-slate-700 bg-slate-800/40 text-slate-300 hover:text-white hover:border-[#00C4CC] hover:bg-[#00C4CC]/20 flex items-center justify-center transition-all text-xs font-bold"
-              aria-label="Next Slide"
-            >
-              &#8594;
-            </button>
           </div>
         </div>
       </section>
@@ -1228,17 +1321,16 @@ export const HomePage: React.FC = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          <div className="steps-track home-reveal grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {steps.map((step, idx) => (
               <div
                 key={step.num}
-                className={`card-hover-cool group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${idx + 1}`}
+                className={`card-hover-cool tilt-3d glow-border group relative z-[1] rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${idx + 1}`}
                 style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
               >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#6366F1] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 z-[2] bg-gradient-to-r from-[#22D3EE] via-[#3B82F6] to-[#6366F1] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
                 <p
-                  className="step-num-glow text-2xl md:text-[28px] font-extrabold mb-2.5 group-hover:scale-110 group-hover:text-cyan-500 transition-all duration-300 inline-block"
-                  style={{ color: C.teal }}
+                  className={`step-num step-num-${idx + 1} text-2xl md:text-[34px] font-extrabold mb-2.5`}
                 >
                   {step.num}
                 </p>
@@ -1272,10 +1364,10 @@ export const HomePage: React.FC = () => {
             {independentAdvice.map((item, idx) => (
               <div
                 key={item.title}
-                className={`card-hover-cool group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${idx + 1}`}
+                className={`card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${idx + 1}`}
                 style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
               >
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#22D3EE] to-[#6366F1] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 z-[2] bg-gradient-to-r from-[#22D3EE] to-[#6366F1] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
                 <h3 className="text-[17px] md:text-[18px] font-bold mb-1.5 transition-colors group-hover:text-blue-900" style={{ color: C.headline }}>
                   {item.title}
                 </h3>
@@ -1294,7 +1386,7 @@ export const HomePage: React.FC = () => {
       <section className="pt-2 pb-6 md:pt-3 md:pb-8 bg-white">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
-            className="home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"
+            className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"
           >
             {/* Animated Rotating Pulsing Aurora Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[360px] bg-gradient-to-r from-[#00C4CC]/25 via-[#3B82F6]/20 to-[#6366F1]/25 rounded-full blur-3xl pointer-events-none animate-cta-aurora" />
