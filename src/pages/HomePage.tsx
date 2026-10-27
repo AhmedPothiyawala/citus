@@ -157,6 +157,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
   const firstSetRef = useRef<HTMLDivElement>(null);
   const singleSetWidthRef = useRef<number>(0);
 
+  const posRef = useRef<number | null>(null);
   const isPausedRef = useRef<boolean>(false);
   const isInteractingRef = useRef<boolean>(false);
   const resumeTimerRef = useRef<number | null>(null);
@@ -230,14 +231,19 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
       const W = singleSetWidthRef.current;
 
       if (!isPausedRef.current && !isInteractingRef.current && el && W > 0) {
-        const step = (reverse ? -1 : 1) * speed * dt;
-        el.scrollLeft += step;
-
-        if (el.scrollLeft >= W * 2.2) {
-          el.scrollLeft -= W;
-        } else if (el.scrollLeft <= W * 0.4) {
-          el.scrollLeft += W;
+        // Keep the exact (fractional) position ourselves. Phones (iOS Safari / Chrome) store
+        // scrollLeft as whole pixels, so adding ~0.7px per frame was rounded away to 0 and the
+        // forward-moving strip (Technology Partners) never moved. The reverse strip worked only
+        // because rounding went the other way.
+        if (posRef.current === null || Math.abs(posRef.current - el.scrollLeft) > 2) {
+          posRef.current = el.scrollLeft; // user scrolled/swiped: continue from there
         }
+        posRef.current += (reverse ? -1 : 1) * speed * dt;
+        if (posRef.current >= W * 2.2) posRef.current -= W;
+        else if (posRef.current <= W * 0.4) posRef.current += W;
+        el.scrollLeft = Math.round(posRef.current);
+      } else {
+        posRef.current = null;
       }
 
       rafId = requestAnimationFrame(loop);
@@ -284,9 +290,10 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     };
   }, []);
 
-  // Pointer drag events for cursor drag-to-scroll
+  // Desktop Pointer drag events for mouse cursor drag-to-scroll
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    // Only handle mouse on desktop — let touch devices use native smooth touch scroll!
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
     const el = containerRef.current;
     if (!el) return;
 
@@ -305,7 +312,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isPointerDownRef.current || !containerRef.current) return;
+    if (e.pointerType !== 'mouse' || !isPointerDownRef.current || !containerRef.current) return;
     const currentX = e.clientX;
     const deltaX = currentX - startXRef.current;
 
@@ -339,7 +346,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isPointerDownRef.current) return;
+    if (e.pointerType !== 'mouse' || !isPointerDownRef.current) return;
     isPointerDownRef.current = false;
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
@@ -365,6 +372,16 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     } else {
       scheduleResume(1200);
     }
+  };
+
+  // Mobile Touch handlers: pause auto-scroll during finger touch and resume when lifted
+  const handleTouchStart = () => {
+    isInteractingRef.current = true;
+    if (resumeTimerRef.current) window.clearTimeout(resumeTimerRef.current);
+  };
+
+  const handleTouchEnd = () => {
+    scheduleResume(1500);
   };
 
   const handleScrollBy = (offset: number) => {
@@ -409,6 +426,9 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
         onClickCapture={(e) => {
           if (hasMovedRef.current) {
             e.preventDefault();
@@ -416,17 +436,23 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
           }
         }}
         onMouseEnter={() => {
-          isPausedRef.current = true;
+          // Only pause on mouse hover if the device actually supports hover (not mobile touch)
+          if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+            isPausedRef.current = true;
+          }
         }}
         onMouseLeave={() => {
-          if (!isPointerDownRef.current) {
-            scheduleResume(600);
+          if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+            if (!isPointerDownRef.current) {
+              scheduleResume(600);
+            }
           }
         }}
         className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
         style={{
+          WebkitOverflowScrolling: 'touch',
           WebkitMaskImage:
             'linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent)',
           maskImage:
@@ -483,7 +509,7 @@ export const HomePage: React.FC = () => {
   useEffect(() => {
     const el = graphBoxRef.current;
     if (!el || typeof window === 'undefined') return;
-    const BASE = 1160 / 476;
+    const BASE = 1172 / 476;
     const update = () => {
       const W = el.clientWidth;
       if (!W) return;
@@ -502,6 +528,7 @@ export const HomePage: React.FC = () => {
     };
   }, []);
   const gx = (x: number) => 75 + (x - 75) * gk;
+  const viewBoxW = Math.round(gx(1097) + 75);
   const stretchPath = (d: string) =>
     d.replace(/(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g, (_m, x, y) => `${gx(parseFloat(x)).toFixed(1)} ${y}`);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
@@ -942,11 +969,11 @@ export const HomePage: React.FC = () => {
         {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
         <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 min-h-0 flex flex-col items-center justify-start mt-1 md:mt-1">
           <div className="w-full flex items-center justify-center overflow-visible select-none">
-            <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0">
+            <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0 mx-auto">
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
                 className="graph-overlay hidden md:flex flex-col items-start absolute z-20 pointer-events-auto"
-                style={{ top: '6%', left: '8.5%', width: '40%', maxWidth: '520px' }}
+                style={{ top: '6%', left: `${((75 + 18) / viewBoxW) * 100}%`, width: '40%', maxWidth: '520px' }}
               >
                 <p className="graph-overlay-text text-slate-600 font-medium">
                   Hardware supply, integration and managed services for data centers of every size, from edge rooms to hyperscale campuses.
@@ -968,7 +995,7 @@ export const HomePage: React.FC = () => {
               </div>
 
               <svg
-                viewBox={`0 24 ${Math.round(1160 * gk)} 476`}
+                viewBox={`0 24 ${viewBoxW} 476`}
                 className="w-full h-auto block select-none overflow-visible"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -1018,7 +1045,7 @@ export const HomePage: React.FC = () => {
                     stroke={tier.color}
                     strokeWidth="1.5"
                     strokeDasharray="4 4"
-                    opacity="0.75"
+                    opacity="0.35"
                   />
                 ))}
 
@@ -1238,8 +1265,8 @@ export const HomePage: React.FC = () => {
                   );
                 })}
 
-                {/* X axis Title */}
-                <text x={gx(600)} y="490" fill="#5A6578" fontSize="11" fontWeight="500" fontFamily="Inter, sans-serif" textAnchor="middle">
+                {/* X axis Title: Centered exactly at the middle of the X-axis line */}
+                <text x={Math.round(viewBoxW / 2)} y="490" fill="#5A6578" fontSize="11" fontWeight="500" fontFamily="Inter, sans-serif" textAnchor="middle">
                   Size (capacity)
                 </text>
               </svg>

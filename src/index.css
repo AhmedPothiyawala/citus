@@ -1073,8 +1073,11 @@
 }
 .logo-marquee-track { animation: logo-marquee linear infinite; }
 .logo-marquee-track.is-reverse { animation-direction: reverse; }
-.logo-marquee:hover .logo-marquee-track,
-.logo-marquee:active .logo-marquee-track { animation-play-state: paused; }
+/* Pause on hover only on devices with a real mouse. On phones a tap leaves a
+   "sticky" hover/active state, which used to freeze the strip for good. */
+@media (hover: hover) and (pointer: fine) {
+  .logo-marquee:hover .logo-marquee-track { animation-play-state: paused; }
+}
 @keyframes logo-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
   .logo-marquee-track { animation: none; }
@@ -1106,8 +1109,8 @@
   position: absolute; inset: 0;
   transform: rotateX(62deg); transform-origin: 50% 0%;
   background-image:
-    linear-gradient(rgba(37, 99, 235, 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37, 99, 235, 0.16) 1px, transparent 1px);
+    linear-gradient(rgba(59, 130, 246, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.055) 1px, transparent 1px);
   background-size: 64px 64px;
   animation: hero-floor-move 6s linear infinite;
 }
