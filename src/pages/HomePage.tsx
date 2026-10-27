@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SmartLink } from '../components/SmartLink';
-import { NetworkGlobe } from '../components/fx/NetworkGlobe';
+import { NetworkField } from '../components/fx/NetworkField';
 import { InteractiveFx } from '../components/fx/InteractiveFx';
-import { LINKS, COMPANY_INFO, PARTNERS_LIST, CLIENTS_LIST } from '../data/site';
+import { LINKS, COMPANY_INFO, PARTNERS_LIST, CLIENTS_LIST, MAIN_NAV } from '../data/site';
 
 /* ── COLOR TOKENS ── */
 const C = {
@@ -119,6 +119,23 @@ const CAPACITY_TIERS: CapacityTier[] = [
   },
 ];
 
+/* ── SOLUTIONS & FOCUS VERTICALS (from the existing site content) ── */
+const HOME_SOLUTIONS = [
+  { title: 'Networking', href: LINKS.networking, image: '/images/Router-and-Switches-1-1.jpg', desc: 'Switches, routers & SD-WAN solutions' },
+  { title: 'FTTX', href: LINKS.fttx, image: '/images/optical-fiber.jpg', desc: 'Fiber-to-the-x, GPON & OLT/ONT deployments' },
+  { title: 'Server & Storage', href: LINKS.serverStorage, image: '/images/Servers-and-Storage-1.jpg', desc: 'Enterprise compute & storage infrastructure' },
+  { title: 'Security Solutions', href: LINKS.securitySolutions, image: '/images/Firewall-security-solution.jpg', desc: 'DDoS mitigation, DPI & firewall protection' },
+  { title: 'Data Center & Cloud', href: LINKS.dataCenterCloud, image: '/images/cloud.jpg', desc: 'Data center setup, cloud migration & hybrid cloud' },
+];
+
+const HOME_VERTICALS = [
+  { name: 'Cable & Broadband', icon: '/images/Network-and-Broadband.png' },
+  { name: 'Telecom', icon: '/images/Telecom.png' },
+  { name: 'Enterprises', icon: '/images/Enterprises.png' },
+  { name: 'Data Center and Cloud', icon: '/images/Data-and-Cloud.png' },
+  { name: 'Government and PSUs', icon: '/images/Government.png' },
+];
+
 /* ── DYNAMIC ROTATING DC CATEGORIES FOR TYPEWRITER ANIMATION ── */
 const DC_ROTATING_PHRASES = [
   'Greenfield and Brownfield Projects and Upgrades.',
@@ -225,6 +242,7 @@ function useSnapSlider(
 
 export const HomePage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
   const [activeClientSlide, setActiveClientSlide] = useState(0);
   const isClientAutoScrollPausedRef = useRef(false);
@@ -505,35 +523,58 @@ export const HomePage: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-[#00C4CC] shadow-[0_0_8px_#00C4CC]" />
           </SmartLink>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-7">
-            <SmartLink
-              to="/"
-              className="relative text-[14px] font-semibold py-2 text-white transition-colors"
-            >
-              Home
-              <span
-                className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-[#00C4CC] shadow-[0_0_6px_#00C4CC]"
-              />
-            </SmartLink>
-            <SmartLink
-              to={LINKS.companyProfile}
-              className="text-[14px] font-medium text-slate-300 hover:text-white transition-colors py-2"
-            >
-              About Us
-            </SmartLink>
-            <SmartLink
-              to={LINKS.products}
-              className="text-[14px] font-medium text-slate-300 hover:text-white transition-colors py-2"
-            >
-              Services
-            </SmartLink>
-            <SmartLink
-              to={LINKS.whyUs}
-              className="text-[14px] font-medium text-slate-300 hover:text-white transition-colors py-2"
-            >
-              How We Work
-            </SmartLink>
+          {/* Desktop Nav — full site menu with dropdowns */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
+            {MAIN_NAV.filter((item) => item.label !== 'CONTACT').map((item) => {
+              const label = item.label.charAt(0) + item.label.slice(1).toLowerCase().replace(/ (\w)/g, (_m, c) => ' ' + c.toUpperCase());
+              const isHome = item.href === '/';
+              if (item.children && item.children.length) {
+                return (
+                  <div key={item.label} className="relative group py-2">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1.5 text-[14px] font-medium text-slate-300 group-hover:text-white transition-colors"
+                      aria-haspopup="true"
+                    >
+                      {label}
+                      <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
+                      <div className="w-[300px] rounded-2xl bg-[#0E224F]/95 backdrop-blur-xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] p-2 overflow-hidden">
+                        <div className="h-[2px] -mx-2 -mt-2 mb-2 bg-gradient-to-r from-[#00C4CC] via-[#3B82F6] to-[#6366F1]" />
+                        {item.children.map((sub) => (
+                          <SmartLink
+                            key={sub.label}
+                            to={sub.href}
+                            className="block rounded-xl px-3.5 py-2.5 hover:bg-white/[0.07] transition-colors group/item"
+                          >
+                            <span className="flex items-center justify-between text-[14px] font-semibold text-white">
+                              {sub.label}
+                              <span className="text-[#00C4CC] opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all">&rarr;</span>
+                            </span>
+                            {sub.desc && <span className="block text-[12px] leading-[18px] text-slate-400 mt-0.5">{sub.desc}</span>}
+                          </SmartLink>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <SmartLink
+                  key={item.label}
+                  to={item.href}
+                  className={`relative text-[14px] py-2 transition-colors ${isHome ? 'font-semibold text-white' : 'font-medium text-slate-300 hover:text-white'}`}
+                >
+                  {label}
+                  {isHome && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-[#00C4CC] shadow-[0_0_6px_#00C4CC]" />
+                  )}
+                </SmartLink>
+              );
+            })}
 
             <SmartLink
               to={LINKS.contact}
@@ -548,7 +589,7 @@ export const HomePage: React.FC = () => {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
-            className="md:hidden p-2 text-slate-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#00C4CC]/50 rounded-lg transition-colors"
+            className="lg:hidden p-2 text-slate-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#00C4CC]/50 rounded-lg transition-colors"
           >
             {mobileMenuOpen ? (
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -562,38 +603,55 @@ export const HomePage: React.FC = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Navigation Drawer — full site menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0B1B3D] border-t border-slate-800 shadow-2xl px-6 py-5 space-y-3">
-            <SmartLink
-              to="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-[15px] font-semibold text-[#00C4CC] py-2 border-b border-slate-800/80"
-            >
-              Home
-            </SmartLink>
-            <SmartLink
-              to={LINKS.companyProfile}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-[15px] font-medium text-slate-200 hover:text-white py-2 border-b border-slate-800/80"
-            >
-              About Us
-            </SmartLink>
-            <SmartLink
-              to={LINKS.products}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-[15px] font-medium text-slate-200 hover:text-white py-2 border-b border-slate-800/80"
-            >
-              Services
-            </SmartLink>
-            <SmartLink
-              to={LINKS.whyUs}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-[15px] font-medium text-slate-200 hover:text-white py-2 border-b border-slate-800/80"
-            >
-              How We Work
-            </SmartLink>
-            <div className="pt-2">
+          <div className="lg:hidden bg-[#0B1B3D] border-t border-slate-800 shadow-2xl px-6 py-4 max-h-[calc(100vh-56px)] overflow-y-auto">
+            {MAIN_NAV.filter((item) => item.label !== 'CONTACT').map((item) => {
+              const label = item.label.charAt(0) + item.label.slice(1).toLowerCase().replace(/ (\w)/g, (_m, c) => ' ' + c.toUpperCase());
+              if (item.children && item.children.length) {
+                const open = mobileSubmenu === item.label;
+                return (
+                  <div key={item.label} className="border-b border-slate-800/80">
+                    <button
+                      type="button"
+                      onClick={() => setMobileSubmenu(open ? null : item.label)}
+                      className="w-full flex items-center justify-between text-[15px] font-medium text-slate-200 py-3"
+                      aria-expanded={open}
+                    >
+                      {label}
+                      <svg className={`w-4 h-4 transition-transform duration-300 ${open ? 'rotate-180 text-[#00C4CC]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div className={`grid transition-all duration-300 ${open ? 'grid-rows-[1fr] pb-2' : 'grid-rows-[0fr]'}`}>
+                      <div className="overflow-hidden">
+                        {item.children.map((sub) => (
+                          <SmartLink
+                            key={sub.label}
+                            to={sub.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block pl-4 py-2 text-[14px] text-slate-300 hover:text-[#00C4CC] border-l-2 border-slate-700 hover:border-[#00C4CC] transition-colors"
+                          >
+                            {sub.label}
+                          </SmartLink>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <SmartLink
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block text-[15px] py-3 border-b border-slate-800/80 ${item.href === '/' ? 'font-semibold text-[#00C4CC]' : 'font-medium text-slate-200 hover:text-white'}`}
+                >
+                  {label}
+                </SmartLink>
+              );
+            })}
+            <div className="pt-4">
               <SmartLink
                 to={LINKS.contact}
                 onClick={() => setMobileMenuOpen(false)}
@@ -609,13 +667,18 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           B · FIRST PAGE HERO: 2-LINE HEADLINE + FULL CAPACITY GRAPH
       ═══════════════════════════════════════════════════ */}
-      <section className="relative bg-white min-h-0 lg:h-[calc(100vh-60px)] flex flex-col justify-between pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
-        {/* Rotating 3D network globe + soft aurora behind the hero */}
-        <div className="absolute -top-24 -right-24 w-[520px] h-[520px] rounded-full bg-gradient-to-br from-[#00C4CC]/10 via-[#2563EB]/8 to-transparent blur-3xl pointer-events-none" aria-hidden="true" />
-        <NetworkGlobe className="hero-globe hidden md:block top-[-110px] right-[-110px] w-[360px] h-[360px] lg:w-[420px] lg:h-[420px] opacity-60" />
+      <section className="hero-aurora relative min-h-0 lg:min-h-[calc(100vh-60px)] flex flex-col justify-between pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
+        {/* Animated network background across the whole hero */}
+        <div className="hero-aurora-blobs absolute inset-0 pointer-events-none" aria-hidden="true">
+          <span className="blob blob-1" />
+          <span className="blob blob-2" />
+          <span className="blob blob-3" />
+        </div>
+        <div className="hero-aurora-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+        <NetworkField className="absolute inset-0 w-full h-full pointer-events-none" />
         {/* Eyebrow & 2-Line Headline at Top */}
         <div className="relative z-[1] w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 shrink-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-3 md:mb-4">
             <span className="inline-block w-2 h-2 rounded-full bg-[#00C4CC] animate-live-dot shrink-0" />
             <p
               className="hero-eyebrow text-[11px] sm:text-xs font-bold uppercase tracking-normal sm:tracking-wider leading-snug"
@@ -643,8 +706,8 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
-        <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 flex-1 min-h-0 flex flex-col items-center justify-center">
-          <div className="hidden md:flex w-full h-full items-center justify-center overflow-x-auto select-none scrollbar-thin">
+        <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 flex-1 min-h-0 flex flex-col items-center justify-center mt-6 md:mt-10 lg:mt-12">
+          <div className="hidden md:flex w-full items-center justify-center overflow-visible select-none">
             <div className="relative w-full max-w-[1160px] flex items-center justify-center shrink-0">
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
@@ -672,7 +735,7 @@ export const HomePage: React.FC = () => {
 
               <svg
                 viewBox="0 24 1160 476"
-                className="w-full h-auto max-h-full block select-none min-w-[700px] md:min-w-0"
+                className="w-full h-auto block select-none overflow-visible"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
@@ -987,9 +1050,130 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════
+          C.2 · WHO WE ARE (from the company profile)
+      ═══════════════════════════════════════════════════ */}
+      <section className="section-bg section-bg-b pt-10 md:pt-16 pb-10 md:pb-14">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+            {/* Stacked photos with depth */}
+            <div className="home-reveal relative w-full max-w-[520px] aspect-[520/500] mx-auto lg:mx-0">
+              <div className="absolute top-0 left-0 w-[72%] aspect-square rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5">
+                <img src="/images/home-about-02.jpg" alt="CITIUSCOMM technology team" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <div className="tilt-3d absolute bottom-0 right-0 w-[64%] aspect-square rounded-3xl overflow-hidden shadow-[0_30px_70px_-20px_rgba(11,27,61,0.45)] ring-4 ring-white" data-tilt-max="10">
+                <img src="/images/home-about-01.jpg" alt="Carrier-grade network infrastructure" className="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <div className="absolute left-[6%] bottom-[8%] float-badge rounded-2xl bg-[#0B1B3D] text-white px-4 py-3 shadow-2xl border border-white/10">
+                <p className="text-[11px] uppercase tracking-wider text-[#00C4CC] font-bold">Technology Aggregator</p>
+                <p className="text-[14px] font-semibold leading-tight mt-0.5">Carrier-grade solutions</p>
+              </div>
+            </div>
+
+            {/* Story */}
+            <div className="home-reveal stagger-2">
+              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
+                WHO WE ARE
+              </p>
+              <h2 className="text-[26px] md:text-[32px] lg:text-[40px] font-bold leading-[1.15] mb-5" style={{ color: C.headline }}>
+                Keeping You{' '}
+                <span className="bg-gradient-to-r from-[#008B94] via-[#0E7490] to-[#2563EB] bg-clip-text text-transparent">One Step Ahead</span>
+              </h2>
+              <p className="text-[15px] md:text-[16px] leading-[27px] mb-4" style={{ color: C.body }}>
+                <strong className="text-[#0B1B3D]">&ldquo;CITIUSCOMM&rdquo; a Multi-National Company</strong>, is the fastest growing Technology Aggregator and <strong className="text-[#0B1B3D]">offers carrier-grade solutions</strong> for the dynamically developing <strong className="text-[#0B1B3D]">Communications and Networking Industry</strong>.
+              </p>
+              <p className="text-[15px] md:text-[16px] leading-[27px] mb-6" style={{ color: C.body }}>
+                CITIUSCOMM is providing E2E bespoke turnkey solutions which include:
+              </p>
+              <div className="grid grid-cols-2 gap-3 mb-7">
+                {['Product', 'Service Delivery', 'NOC Operations', 'Project Management'].map((pillar, i) => (
+                  <div
+                    key={pillar}
+                    className={`home-reveal stagger-${i + 1} glow-border flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-sm`}
+                    style={{ border: `1px solid ${C.border}` }}
+                  >
+                    <span className="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br from-[#00C4CC] to-[#2563EB] text-white flex items-center justify-center shadow-md">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    <span className="text-[14px] font-semibold" style={{ color: C.headline }}>{pillar}</span>
+                  </div>
+                ))}
+              </div>
+              <SmartLink
+                to={LINKS.companyProfile}
+                className="group inline-flex items-center gap-2 rounded-lg px-6 py-3 text-white text-sm font-semibold shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                style={{ backgroundColor: C.navy }}
+              >
+                Know more about us
+                <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+              </SmartLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          C.3 · SOLUTIONS (links to every solution page)
+      ═══════════════════════════════════════════════════ */}
+      <section className="section-bg section-bg-a pt-10 md:pt-14 pb-8 md:pb-12">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+          <div className="home-reveal flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-6 md:mb-8">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
+                OUR SOLUTIONS
+              </p>
+              <h2 className="text-[26px] md:text-[32px] lg:text-[36px] font-bold leading-[1.2]" style={{ color: C.headline }}>
+                Solutions
+              </h2>
+            </div>
+            <SmartLink to={LINKS.products} className="group inline-flex items-center gap-2 text-sm font-semibold text-[#0E7490] hover:text-[#2563EB]">
+              View all products
+              <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+            </SmartLink>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-5">
+            {HOME_SOLUTIONS.map((sol, idx) => (
+              <SmartLink
+                key={sol.title}
+                to={sol.href}
+                className={`solution-card tilt-3d group relative block overflow-hidden rounded-2xl h-[240px] md:h-[300px] home-reveal stagger-${(idx % 3) + 1} ${
+                  idx < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
+                }`}
+                data-tilt-max="6"
+              >
+                <img
+                  src={sol.image}
+                  alt={sol.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#060f24]/95 via-[#0B1B3D]/45 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#00C4CC]/0 to-[#2563EB]/0 group-hover:from-[#00C4CC]/20 group-hover:to-[#6366F1]/25 transition-colors duration-500" />
+                <div className="absolute left-5 right-5 bottom-5 md:left-6 md:bottom-6 text-white">
+                  <span className="inline-flex items-center rounded-full bg-white/10 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#7FF3F7] mb-2.5 border border-white/15">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-[20px] md:text-[22px] font-bold leading-tight">{sol.title}</h3>
+                  <p className="text-[13px] leading-[19px] text-slate-200/90 mt-1.5 max-w-[360px] max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-500">
+                    {sol.desc}
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#00C4CC]">
+                    Read more
+                    <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
+                  </span>
+                </div>
+              </SmartLink>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
           D · SUPPORT FOR EVERY BUSINESS MODEL
       ═══════════════════════════════════════════════════ */}
-      <section className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
+      <section className="section-bg section-bg-a pt-8 md:pt-12 pb-5 md:pb-8">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Eyebrow & Title with Entrance Animation */}
           <div className="home-reveal">
@@ -1036,7 +1220,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           E · PARTNERSHIP CALLOUT BANNER
       ═══════════════════════════════════════════════════ */}
-      <section className="py-2.5 md:py-3 bg-white">
+      <section className="section-bg section-bg-b pt-4 md:pt-6 pb-1">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
             className="home-reveal-scale card-hover-cool glow-border rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-r from-[#F3F6FA] via-[#EDF5FB] to-[#F3F6FA]"
@@ -1064,7 +1248,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           F · END-TO-END CAPABILITIES
       ═══════════════════════════════════════════════════ */}
-      <section className="pt-3 md:pt-4 pb-6 md:pb-8 bg-white">
+      <section className="section-bg section-bg-b pt-5 md:pt-7 pb-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1118,6 +1302,41 @@ export const HomePage: React.FC = () => {
           <p className="home-reveal stagger-3 mt-4 text-[12px] md:text-[13px] leading-[20px] max-w-[800px]" style={{ color: C.bodyLight }}>
             Power, cooling and civil scope is coordinated through specialist partners and program-managed by Citiuscomm.
           </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          F.2 · FOCUS VERTICALS
+      ═══════════════════════════════════════════════════ */}
+      <section className="section-bg section-bg-c pt-8 md:pt-12 pb-10 md:pb-14">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+          <div className="home-reveal text-center mb-7 md:mb-10">
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
+              INDUSTRIES WE SERVE
+            </p>
+            <h2 className="text-[26px] md:text-[32px] lg:text-[36px] font-bold leading-[1.2]" style={{ color: C.headline }}>
+              Focus Verticals
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
+            {HOME_VERTICALS.map((v, idx) => (
+              <SmartLink
+                key={v.name}
+                to={LINKS.industryApplications}
+                className={`vertical-card tilt-3d glow-border group relative flex flex-col items-center text-center rounded-2xl bg-white/90 backdrop-blur px-4 pt-7 pb-6 home-reveal stagger-${(idx % 4) + 1} ${
+                  idx === 4 ? 'col-span-2 sm:col-span-1' : ''
+                }`}
+                style={{ border: `1px solid ${C.border}` }}
+              >
+                <span className="vertical-icon relative w-[92px] h-[92px] md:w-[104px] md:h-[104px] rounded-full flex items-center justify-center mb-4">
+                  <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#E6FAFB] to-[#EEF2FF] group-hover:from-[#CFF7F9] group-hover:to-[#E0E7FF] transition-colors" />
+                  <span className="absolute -inset-1 rounded-full border border-dashed border-[#00C4CC]/40 vertical-ring" />
+                  <img src={v.icon} alt="" className="relative w-[56px] h-[56px] md:w-[62px] md:h-[62px] object-contain transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                </span>
+                <h3 className="text-[15px] md:text-[16px] font-bold leading-snug" style={{ color: C.headline }}>{v.name}</h3>
+              </SmartLink>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1310,7 +1529,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           H · FROM REQUIREMENT TO RUNNING
       ═══════════════════════════════════════════════════ */}
-      <section className="pt-6 md:pt-8 pb-3 md:pb-4 bg-white">
+      <section className="section-bg section-bg-c pt-8 md:pt-12 pb-4 md:pb-6">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1349,7 +1568,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           I · INDEPENDENT ADVICE, ONE ACCOUNTABLE TEAM
       ═══════════════════════════════════════════════════ */}
-      <section className="pt-3 md:pt-4 pb-6 md:pb-8 bg-white">
+      <section className="section-bg section-bg-c pt-4 md:pt-6 pb-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1383,7 +1602,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           J · BOTTOM CALL-TO-ACTION (Cool Navy Glow UI)
       ═══════════════════════════════════════════════════ */}
-      <section className="pt-2 pb-6 md:pt-3 md:pb-8 bg-white">
+      <section className="section-bg section-bg-a pt-6 pb-8 md:pt-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
             className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"

@@ -804,3 +804,136 @@
 .slider-track::-webkit-scrollbar { display: none; }
 .slider-track.is-dragging { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; user-select: none; }
 .slider-track.is-settling { scroll-snap-type: none; }
+
+/* ════════ Decorative section backgrounds (no photos) ════════ */
+.section-bg { position: relative; overflow: hidden; isolation: isolate; }
+.section-bg > * { position: relative; z-index: 1; }
+.section-bg::before,
+.section-bg::after { content: ''; position: absolute; pointer-events: none; z-index: 0; }
+
+/* A: cool mesh gradient + fading dot grid + drifting glow */
+.section-bg-a {
+  background:
+    radial-gradient(900px 420px at 0% 0%, rgba(0, 196, 204, 0.10), transparent 60%),
+    radial-gradient(800px 420px at 100% 100%, rgba(37, 99, 235, 0.09), transparent 60%),
+    linear-gradient(180deg, #f7fbfe 0%, #ffffff 100%);
+}
+.section-bg-a::before {
+  inset: 0;
+  background-image: radial-gradient(rgba(11, 27, 61, 0.13) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 30%, transparent 75%);
+}
+.section-bg-a::after {
+  width: 520px; height: 520px; right: -140px; top: -180px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 196, 204, 0.18), rgba(99, 102, 241, 0.10) 45%, transparent 70%);
+  filter: blur(10px);
+  animation: bg-orb-drift 16s ease-in-out infinite alternate;
+}
+
+/* B: soft blue wash + blueprint line grid + violet glow */
+.section-bg-b {
+  background:
+    radial-gradient(700px 380px at 100% 0%, rgba(99, 102, 241, 0.09), transparent 60%),
+    radial-gradient(700px 380px at 0% 100%, rgba(0, 196, 204, 0.08), transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%);
+}
+.section-bg-b::before {
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 25%, #000 70%, transparent);
+  animation: bg-grid-pan 30s linear infinite;
+}
+.section-bg-b::after {
+  width: 460px; height: 460px; left: -160px; bottom: -200px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.16), rgba(0, 196, 204, 0.08) 50%, transparent 70%);
+  filter: blur(10px);
+  animation: bg-orb-drift 18s ease-in-out infinite alternate-reverse;
+}
+
+/* C: light teal-to-white with diagonal light beams */
+.section-bg-c {
+  background:
+    radial-gradient(800px 400px at 50% 0%, rgba(0, 196, 204, 0.09), transparent 65%),
+    linear-gradient(180deg, #f6fbfc 0%, #ffffff 60%, #f7f9fd 100%);
+}
+.section-bg-c::before {
+  inset: -50% -10%;
+  background: repeating-linear-gradient(115deg, transparent 0 120px, rgba(37, 99, 235, 0.035) 120px 180px, transparent 180px 320px);
+  animation: bg-beams 22s linear infinite;
+}
+.section-bg-c::after {
+  width: 420px; height: 420px; right: 8%; bottom: -220px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.10), rgba(124, 58, 237, 0.08) 45%, transparent 70%);
+  filter: blur(12px);
+  animation: bg-orb-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bg-orb-drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-60px, 40px) scale(1.12); } }
+@keyframes bg-grid-pan { from { background-position: 0 0, 0 0; } to { background-position: 48px 48px, 48px 48px; } }
+@keyframes bg-beams { from { transform: translateX(0); } to { transform: translateX(320px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .section-bg::before, .section-bg::after { animation: none !important; }
+}
+
+/* Who We Are floating badge + vertical icon ring */
+.float-badge { animation: float-badge 5s ease-in-out infinite; }
+@keyframes float-badge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.vertical-ring { animation: ring-spin 18s linear infinite; }
+.vertical-card:hover .vertical-ring { animation-duration: 4s; border-color: rgba(0, 196, 204, 0.8); }
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .float-badge, .vertical-ring { animation: none; }
+}
+
+/* ════════ Hero: soft tinted aurora background ════════ */
+.hero-aurora {
+  background:
+    linear-gradient(160deg, #eef5fc 0%, #f3f6fd 35%, #f6f3fd 70%, #eef8fa 100%);
+}
+.hero-aurora-blobs .blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.55;
+  will-change: transform;
+}
+.hero-aurora-blobs .blob-1 {
+  width: 520px; height: 520px; left: -120px; top: -160px;
+  background: radial-gradient(circle, #9fe7ec 0%, rgba(159, 231, 236, 0) 70%);
+  animation: aurora-a 22s ease-in-out infinite alternate;
+}
+.hero-aurora-blobs .blob-2 {
+  width: 600px; height: 600px; right: -160px; top: 10%;
+  background: radial-gradient(circle, #c7d2fe 0%, rgba(199, 210, 254, 0) 70%);
+  animation: aurora-b 26s ease-in-out infinite alternate;
+}
+.hero-aurora-blobs .blob-3 {
+  width: 520px; height: 520px; left: 35%; bottom: -260px;
+  background: radial-gradient(circle, #f5d0fe 0%, rgba(245, 208, 254, 0) 70%);
+  opacity: 0.45;
+  animation: aurora-c 30s ease-in-out infinite alternate;
+}
+.hero-aurora-grid {
+  background-image:
+    linear-gradient(rgba(11, 27, 61, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 27, 61, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 40%, transparent 85%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 40%, transparent 85%);
+}
+@keyframes aurora-a { to { transform: translate(140px, 90px) scale(1.15); } }
+@keyframes aurora-b { to { transform: translate(-160px, 60px) scale(0.9); } }
+@keyframes aurora-c { to { transform: translate(-120px, -80px) scale(1.2); } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora-blobs .blob { animation: none; }
+}
