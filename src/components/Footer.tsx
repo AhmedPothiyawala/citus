@@ -5,7 +5,7 @@ import { COMPANY_INFO } from '../data/site';
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#166fb0] text-white">
-      <div className="w-full max-w-[1440px] mx-auto px-5 sm:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Left: Citius Communication Pvt. Ltd. (No Logo) */}
         <div className="flex items-center">
           <span className="font-semibold text-[13px] tracking-tight">

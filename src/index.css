@@ -194,3 +194,479 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   letter-spacing: -0.02em;
 }
+
+/* ==========================================================
+   Animated Trajectory Capacity Graph (Section C) Keyframes
+   ========================================================== */
+
+/* 1. Curve Optical Data Flow */
+@keyframes curveFlow {
+  from {
+    stroke-dashoffset: 200;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.curve-flow {
+  stroke-dasharray: 8 28;
+  animation: curveFlow 2.6s linear infinite;
+}
+
+/* 2. Glowing Curve Pulse */
+@keyframes curvePulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(34, 211, 238, 0.4)) drop-shadow(0 0 6px rgba(99, 102, 241, 0.25));
+    opacity: 0.95;
+  }
+  50% {
+    filter: drop-shadow(0 0 7px rgba(34, 211, 238, 0.85)) drop-shadow(0 0 16px rgba(168, 85, 247, 0.55));
+    opacity: 1;
+  }
+}
+
+.animate-curve-pulse {
+  animation: curvePulseGlow 3s ease-in-out infinite;
+}
+
+/* 3. Expanding Concentric Radar Rings */
+@keyframes signalRadar {
+  0% {
+    r: 5.5;
+    opacity: 0.9;
+    stroke-width: 2.2;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    r: 22;
+    opacity: 0;
+    stroke-width: 0.5;
+  }
+}
+
+.signal-ring {
+  animation: signalRadar 2.4s cubic-bezier(0.1, 0.4, 0.8, 1) infinite;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.signal-ring-2 {
+  animation: signalRadar 2.4s cubic-bezier(0.1, 0.4, 0.8, 1) infinite;
+  animation-delay: 1.2s;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+/* 4. Moving Dashed Drop Lines */
+@keyframes dashMove {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-dash-move {
+  stroke-dasharray: 4 4;
+  animation: dashMove 1.2s linear infinite;
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO HEADLINE FLUID TYPOGRAPHY & ENTRANCE ANIMATIONS
+   ══════════════════════════════════════════════════════════ */
+
+/* Fluid dynamic headline scaling across mobile, tablet, and desktop */
+.hero-fluid-headline {
+  font-size: clamp(1.25rem, 0.5rem + 2.1vw, 3.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 1023px) {
+  .hero-headline-line-1,
+  .hero-headline-line-2 {
+    text-wrap: balance;
+  }
+}
+
+@keyframes heroLineReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroEyebrowReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-eyebrow {
+  animation: heroEyebrowReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+.hero-headline-line-1 {
+  animation: heroLineReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.hero-headline-line-2 {
+  animation: heroLineReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+.hero-desc {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.hero-cta {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-eyebrow,
+  .hero-headline-line-1,
+  .hero-headline-line-2,
+  .hero-desc,
+  .hero-cta,
+  .animate-tech-orb-1,
+  .animate-tech-orb-2,
+  .animate-grid-drift,
+  .animate-grid-drift-reverse,
+  .animate-laser-sweep,
+  .animate-cta-aurora,
+  .animate-card-shimmer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   COOL INTERACTIVE CARD & UI ENHANCEMENTS
+   ══════════════════════════════════════════════════════════ */
+.card-hover-cool {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease;
+}
+
+.card-hover-cool:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 32px -8px rgba(11, 27, 61, 0.12), 0 0 1px rgba(11, 27, 61, 0.18);
+  border-color: #cbd5e1;
+}
+
+.chip-hover-cool {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chip-hover-cool:hover {
+  transform: translateY(-2px) scale(1.04);
+  background-color: #0B1B3D !important;
+  color: #FFFFFF !important;
+  border-color: #0B1B3D !important;
+  box-shadow: 0 6px 14px -2px rgba(11, 27, 61, 0.2);
+}
+
+/* Smooth fade & lift animation for auto-scrolling client carousel */
+@keyframes clientSlideFade {
+  0% {
+    opacity: 0.2;
+    transform: translateY(6px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.client-slide-fade {
+  animation: clientSlideFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BACKGROUND ANIMATIONS: Technology Partners, Our Clients, CTA
+   ══════════════════════════════════════════════════════════ */
+
+@keyframes techOrbDrift1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.20;
+  }
+  50% {
+    transform: translate3d(65px, 40px, 0) scale(1.25);
+    opacity: 0.38;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.20;
+  }
+}
+
+@keyframes techOrbDrift2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+    opacity: 0.18;
+  }
+  50% {
+    transform: translate3d(-55px, -45px, 0) scale(0.9);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+    opacity: 0.18;
+  }
+}
+
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 90px 90px;
+  }
+}
+
+@keyframes gridDriftReverse {
+  0% {
+    background-position: 90px 0;
+  }
+  100% {
+    background-position: 0 90px;
+  }
+}
+
+@keyframes laserSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.75;
+  }
+  80% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(200%);
+    opacity: 0;
+  }
+}
+
+@keyframes ctaAurora {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.95);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.3);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) scale(0.95);
+    opacity: 0.25;
+  }
+}
+
+@keyframes cardShimmer {
+  0% {
+    transform: translateX(-160%) rotate(15deg);
+  }
+  100% {
+    transform: translateX(160%) rotate(15deg);
+  }
+}
+
+.animate-tech-orb-1 {
+  animation: techOrbDrift1 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-tech-orb-2 {
+  animation: techOrbDrift2 16s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-grid-drift {
+  animation: gridDrift 22s linear infinite;
+}
+
+.animate-grid-drift-reverse {
+  animation: gridDriftReverse 26s linear infinite;
+}
+
+.animate-laser-sweep {
+  animation: laserSweep 7s ease-in-out infinite;
+}
+
+.animate-cta-aurora {
+  animation: ctaAurora 16s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-card-shimmer {
+  animation: cardShimmer 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ==========================================================
+   Typewriter & Headline Text Animations
+   ========================================================== */
+
+@keyframes cursorBlink {
+  0%, 45% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+.animate-cursor-blink {
+  animation: cursorBlink 0.85s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: opacity;
+}
+
+@keyframes liveDotPulse {
+  0% {
+    transform: scale(0.92);
+    box-shadow: 0 0 0 0 rgba(0, 196, 204, 0.7);
+  }
+  70% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 6px rgba(0, 196, 204, 0);
+  }
+  100% {
+    transform: scale(0.92);
+    box-shadow: 0 0 0 0 rgba(0, 196, 204, 0);
+  }
+}
+
+.animate-live-dot {
+  animation: liveDotPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.shimmer-text-glow {
+  background: linear-gradient(
+    90deg,
+    #0B1B3D 0%,
+    #0E7490 25%,
+    #00C4CC 50%,
+    #0E7490 75%,
+    #0B1B3D 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 7s linear infinite;
+}
+
+/* ==========================================================
+   Homepage Scroll-Triggered Widget & Card Entrance Animations
+   ========================================================== */
+
+.home-reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.home-reveal-scale {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.home-reveal-scale.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Stagger transition delays for grid cards */
+.stagger-1 { transition-delay: 50ms; }
+.stagger-2 { transition-delay: 130ms; }
+.stagger-3 { transition-delay: 210ms; }
+.stagger-4 { transition-delay: 290ms; }
+.stagger-5 { transition-delay: 370ms; }
+.stagger-6 { transition-delay: 450ms; }
+
+/* Pulse animation on step numbers in Section H */
+@keyframes numberPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(0, 196, 204, 0));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 10px rgba(0, 196, 204, 0.5));
+  }
+}
+
+.step-num-glow {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.group:hover .step-num-glow {
+  animation: numberPulseGlow 1.6s ease-in-out infinite;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .home-reveal,
+  .home-reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .animate-cursor-blink,
+  .animate-live-dot,
+  .shimmer-text-glow,
+  .step-num-glow {
+    animation: none !important;
+  }
+}
+
+
+
