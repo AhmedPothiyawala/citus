@@ -124,7 +124,7 @@ const HOME_SOLUTIONS = [
   { title: 'FTTX', href: LINKS.fttx, image: '/images/optical-fiber.jpg', desc: 'Fiber-to-the-x, GPON & OLT/ONT deployments' },
   { title: 'Server & Storage', href: LINKS.serverStorage, image: '/images/Servers-and-Storage-1.jpg', desc: 'Enterprise compute & storage infrastructure' },
   { title: 'Security Solutions', href: LINKS.securitySolutions, image: '/images/Firewall-security-solution.jpg', desc: 'DDoS mitigation, DPI & firewall protection' },
-  { title: 'Data Center & Cloud', href: LINKS.dataCenterCloud, image: '/images/cloud.jpg', desc: 'Data center setup, cloud migration & hybrid cloud' },
+  { title: 'Data Center & Cloud', href: LINKS.dataCenterCloud, image: '/images/data-center-cloud.jpg', desc: 'Data center setup, cloud migration & hybrid cloud' },
 ];
 
 const HOME_VERTICALS = [
@@ -144,111 +144,7 @@ const DC_ROTATING_PHRASES = [
   'Edge Data Centers & Server Room Expansions.',
 ];
 
-/* ── Mobile capacity graph: compact rising column chart + detail card (auto-plays, tap to pick) ── */
-const MobileCapacityGraph: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-  const [active, setActive] = useState(0);
-  const pausedUntil = useRef(0);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) { setShown(true); return; }
-    const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { setShown(true); io.disconnect(); } }, { threshold: 0.2 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // step through the tiers once the chart is visible; a tap pauses the autoplay for a while
-  useEffect(() => {
-    if (!shown) return;
-    const t = window.setInterval(() => {
-      if (Date.now() < pausedUntil.current) return;
-      setActive((v) => (v + 1) % CAPACITY_TIERS.length);
-    }, 3200);
-    return () => window.clearInterval(t);
-  }, [shown]);
-
-  const heights = [26, 42, 58, 76, 96];
-  const tier = CAPACITY_TIERS[active];
-  const pick = (i: number) => { setActive(i); pausedUntil.current = Date.now() + 9000; };
-
-  return (
-    <div ref={ref} className={`m-cap md:hidden w-full pt-3 pb-1 ${shown ? 'is-shown' : ''}`}>
-      <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-white shadow-[0_18px_50px_-20px_rgba(11,27,61,0.35)] p-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Capacity we support</p>
-          <span className="text-[11px] font-semibold text-slate-400">Offering &uarr;</span>
-        </div>
-
-        {/* columns */}
-        <div className="relative h-[190px]">
-          {/* faint guide lines */}
-          {[25, 50, 75].map((g) => (
-            <span key={g} className="absolute left-0 right-0 border-t border-dashed border-slate-200" style={{ bottom: `${g}%` }} />
-          ))}
-          <div className="absolute inset-0 flex items-end gap-2.5">
-            {CAPACITY_TIERS.map((t, i) => (
-              <button
-                key={t.pillText}
-                type="button"
-                onClick={() => pick(i)}
-                aria-label={`${t.pillText}: ${t.boxLines.join(' ')}`}
-                aria-pressed={active === i}
-                className="m-cap-bar relative flex-1 rounded-t-xl rounded-b-md focus:outline-none"
-                style={{
-                  height: `${heights[i]}%`,
-                  background: `linear-gradient(180deg, ${t.color} 0%, ${t.color}33 100%)`,
-                  transitionDelay: `${i * 0.12}s`,
-                  boxShadow: active === i ? `0 0 0 2px #fff, 0 0 0 4px ${t.color}, 0 12px 26px -8px ${t.color}` : 'none',
-                  opacity: active === i ? 1 : 0.55,
-                }}
-              >
-                <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-[3px]" style={{ borderColor: t.color }} />
-                {active === i && <span className="m-cap-ping absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full" style={{ backgroundColor: t.color }} />}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* MW labels */}
-        <div className="flex gap-2.5 mt-2">
-          {CAPACITY_TIERS.map((t, i) => (
-            <button
-              key={t.pillText}
-              type="button"
-              onClick={() => pick(i)}
-              className="flex-1 text-center text-[10.5px] font-bold leading-tight rounded-full py-1 transition-colors"
-              style={active === i ? { backgroundColor: t.color, color: '#fff' } : { color: '#64748B' }}
-            >
-              {t.pillText}
-            </button>
-          ))}
-        </div>
-
-        {/* detail card for the selected tier */}
-        <div className="relative mt-4 rounded-2xl bg-[#0B1B3D] text-white p-4 overflow-hidden min-h-[104px]" aria-live="polite">
-          <span className="absolute inset-x-0 top-0 h-1 transition-colors duration-500" style={{ backgroundColor: tier.color }} />
-          <span className="absolute -right-10 -top-10 w-32 h-32 rounded-full blur-2xl opacity-40 transition-colors duration-500" style={{ backgroundColor: tier.color }} />
-          <div key={active} className="m-cap-detail relative">
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ backgroundColor: tier.color }}>{tier.pillText}</span>
-              <span className="text-[11px] font-semibold text-slate-400">Tier {active + 1} of {CAPACITY_TIERS.length}</span>
-            </div>
-            <p className="text-[16px] font-bold leading-snug">{tier.boxLines.join(' ')}</p>
-            <p className="text-[13px] leading-[19px] text-slate-300 mt-1">{tier.annotationLines.join(' ')}</p>
-          </div>
-          <div className="relative flex gap-1.5 mt-3">
-            {CAPACITY_TIERS.map((t, i) => (
-              <span key={t.pillText} className="h-1 rounded-full transition-all duration-500" style={{ width: active === i ? 22 : 8, backgroundColor: active === i ? t.color : 'rgba(255,255,255,0.25)' }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* ── Logo marquee: continuous, seamless, pauses on hover / touch ── */
 const uniqueByName = <T extends { name: string }>(list: (T | undefined)[]) => {
@@ -256,44 +152,328 @@ const uniqueByName = <T extends { name: string }>(list: (T | undefined)[]) => {
   return list.filter((x): x is T => !!x && !seen.has(x.name) && !!seen.add(x.name));
 };
 
-const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?: boolean }> = ({ items, reverse }) => (
-  <div className="logo-marquee home-reveal stagger-1 relative z-[2] w-full overflow-hidden pt-4 pb-3">
-    <div
-      className={`logo-marquee-track flex w-max ${reverse ? 'is-reverse' : ''}`}
-      style={{ animationDuration: `${Math.max(30, items.length * 4.5)}s` }}
-    >
-      {[0, 1].map((copy) =>
-        items.map((item) => (
-          <div
-            key={`${copy}-${item.name}`}
-            className="w-[150px] sm:w-[180px] lg:w-[200px] shrink-0 mx-2 md:mx-2.5 flex flex-col items-center group"
-            aria-hidden={copy === 1 ? true : undefined}
-          >
-            <div className="logo-tile w-full bg-white rounded-2xl p-2 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 overflow-hidden">
-              {item.logo ? (
-                <img
-                  src={item.logo}
-                  alt={copy === 0 ? item.name : ''}
-                  className="w-full h-full object-contain scale-[1.18] group-hover:scale-[1.26] transition-transform duration-300 select-none pointer-events-none mix-blend-multiply"
-                  draggable={false}
-                  loading="lazy"
-                />
-              ) : (
-                // No official logo file yet: show the company name cleanly instead of a stock photo
-                <span className="px-3 text-center text-[17px] md:text-[19px] font-bold leading-tight text-[#0B1B3D]">
-                  {item.name}
-                </span>
-              )}
+const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?: boolean }> = ({ items, reverse = false }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const firstSetRef = useRef<HTMLDivElement>(null);
+  const singleSetWidthRef = useRef<number>(0);
+
+  const isPausedRef = useRef<boolean>(false);
+  const isInteractingRef = useRef<boolean>(false);
+  const resumeTimerRef = useRef<number | null>(null);
+
+  // Dragging state
+  const isPointerDownRef = useRef<boolean>(false);
+  const startXRef = useRef<number>(0);
+  const startScrollLeftRef = useRef<number>(0);
+  const lastPointerXRef = useRef<number>(0);
+  const lastPointerTimeRef = useRef<number>(0);
+  const velocityXRef = useRef<number>(0);
+  const hasMovedRef = useRef<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const scheduleResume = (delay = 1200) => {
+    if (resumeTimerRef.current) {
+      window.clearTimeout(resumeTimerRef.current);
+    }
+    resumeTimerRef.current = window.setTimeout(() => {
+      isInteractingRef.current = false;
+      isPausedRef.current = false;
+    }, delay);
+  };
+
+  const wrapCheck = () => {
+    const el = containerRef.current;
+    const W = singleSetWidthRef.current;
+    if (!el || W <= 0) return;
+
+    if (el.scrollLeft >= W * 2.2) {
+      el.scrollLeft -= W;
+    } else if (el.scrollLeft <= W * 0.4) {
+      el.scrollLeft += W;
+    }
+  };
+
+  // Measure single copy width
+  useEffect(() => {
+    const measure = () => {
+      if (firstSetRef.current && containerRef.current) {
+        const w = firstSetRef.current.offsetWidth;
+        if (w > 0) {
+          singleSetWidthRef.current = w;
+          if (containerRef.current.scrollLeft === 0) {
+            containerRef.current.scrollLeft = reverse ? w * 1.5 : w;
+          }
+        }
+      }
+    };
+
+    measure();
+    const timer = window.setTimeout(measure, 350);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('resize', measure);
+    };
+  }, [items, reverse]);
+
+  // Continuous auto-scroll animation
+  useEffect(() => {
+    let rafId: number;
+    let lastTime = performance.now();
+    const speed = 40; // px/sec
+
+    const loop = (now: number) => {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      const el = containerRef.current;
+      const W = singleSetWidthRef.current;
+
+      if (!isPausedRef.current && !isInteractingRef.current && el && W > 0) {
+        const step = (reverse ? -1 : 1) * speed * dt;
+        el.scrollLeft += step;
+
+        if (el.scrollLeft >= W * 2.2) {
+          el.scrollLeft -= W;
+        } else if (el.scrollLeft <= W * 0.4) {
+          el.scrollLeft += W;
+        }
+      }
+
+      rafId = requestAnimationFrame(loop);
+    };
+
+    rafId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (resumeTimerRef.current) window.clearTimeout(resumeTimerRef.current);
+    };
+  }, [reverse]);
+
+  // Wheel listener: enables cursor wheel horizontal scrolling
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      isInteractingRef.current = true;
+      scheduleResume(1400);
+
+      // Trackpad 2-finger horizontal swipe
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        wrapCheck();
+        return;
+      }
+
+      // Shift + mouse wheel
+      if (e.shiftKey) {
+        wrapCheck();
+        return;
+      }
+
+      // Vertical mouse wheel with cursor over marquee:
+      // Translate deltaY to horizontal scroll so cursor scrolling works smoothly!
+      e.preventDefault();
+      el.scrollLeft += e.deltaY;
+      wrapCheck();
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, []);
+
+  // Pointer drag events for cursor drag-to-scroll
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    isPointerDownRef.current = true;
+    isInteractingRef.current = true;
+    hasMovedRef.current = false;
+    startXRef.current = e.clientX;
+    startScrollLeftRef.current = el.scrollLeft;
+    lastPointerXRef.current = e.clientX;
+    lastPointerTimeRef.current = performance.now();
+    velocityXRef.current = 0;
+
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch (_) {}
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current || !containerRef.current) return;
+    const currentX = e.clientX;
+    const deltaX = currentX - startXRef.current;
+
+    if (Math.abs(deltaX) > 4) {
+      if (!hasMovedRef.current) {
+        hasMovedRef.current = true;
+        setIsDragging(true);
+      }
+    }
+
+    const now = performance.now();
+    const dt = now - lastPointerTimeRef.current;
+    if (dt > 8) {
+      velocityXRef.current = (currentX - lastPointerXRef.current) / dt;
+      lastPointerXRef.current = currentX;
+      lastPointerTimeRef.current = now;
+    }
+
+    const W = singleSetWidthRef.current;
+    let nextSl = startScrollLeftRef.current - deltaX;
+    if (W > 0) {
+      if (nextSl >= W * 2.2) {
+        nextSl -= W;
+        startScrollLeftRef.current -= W;
+      } else if (nextSl <= W * 0.4) {
+        nextSl += W;
+        startScrollLeftRef.current += W;
+      }
+    }
+    containerRef.current.scrollLeft = nextSl;
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current) return;
+    isPointerDownRef.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch (_) {}
+
+    setIsDragging(false);
+
+    // Apply inertia glide
+    const v = velocityXRef.current;
+    if (Math.abs(v) > 0.15 && containerRef.current) {
+      let currentV = v * 14;
+      const decay = () => {
+        if (!containerRef.current || Math.abs(currentV) < 0.2 || isPointerDownRef.current) {
+          scheduleResume(1200);
+          return;
+        }
+        containerRef.current.scrollLeft -= currentV;
+        wrapCheck();
+        currentV *= 0.92;
+        requestAnimationFrame(decay);
+      };
+      requestAnimationFrame(decay);
+    } else {
+      scheduleResume(1200);
+    }
+  };
+
+  const handleScrollBy = (offset: number) => {
+    const el = containerRef.current;
+    if (!el) return;
+    isInteractingRef.current = true;
+    el.scrollBy({ left: offset, behavior: 'smooth' });
+    scheduleResume(2000);
+  };
+
+  return (
+    <div className="relative group/marquee w-full home-reveal stagger-1">
+      {/* Left scroll chevron */}
+      <button
+        type="button"
+        aria-label="Scroll left"
+        onClick={() => handleScrollBy(-320)}
+        className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+      >
+        <svg className="w-5 h-5 -translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      {/* Right scroll chevron */}
+      <button
+        type="button"
+        aria-label="Scroll right"
+        onClick={() => handleScrollBy(320)}
+        className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+      >
+        <svg className="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Scrollable Marquee Container */}
+      <div
+        ref={containerRef}
+        onScroll={wrapCheck}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={(e) => {
+          if (hasMovedRef.current) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        onMouseEnter={() => {
+          isPausedRef.current = true;
+        }}
+        onMouseLeave={() => {
+          if (!isPointerDownRef.current) {
+            scheduleResume(600);
+          }
+        }}
+        className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
+        style={{
+          WebkitMaskImage:
+            'linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent)',
+          maskImage:
+            'linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent)',
+        }}
+      >
+        <div className="flex w-max">
+          {[0, 1, 2, 3].map((copy) => (
+            <div
+              key={copy}
+              ref={copy === 0 ? firstSetRef : undefined}
+              className="flex shrink-0"
+              aria-hidden={copy > 0 ? true : undefined}
+            >
+              {items.map((item) => (
+                <div
+                  key={`${copy}-${item.name}`}
+                  className="w-[150px] sm:w-[180px] lg:w-[200px] shrink-0 mx-2 md:mx-2.5 flex flex-col items-center group"
+                >
+                  <div className="logo-tile w-full bg-white rounded-2xl p-2 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 overflow-hidden">
+                    {item.logo ? (
+                      <img
+                        src={item.logo}
+                        alt={copy === 0 ? item.name : ''}
+                        className="w-full h-full object-contain scale-[1.18] group-hover:scale-[1.26] transition-transform duration-300 select-none pointer-events-none mix-blend-multiply"
+                        draggable={false}
+                        loading="lazy"
+                      />
+                    ) : (
+                      // No official logo file yet: show the company name cleanly instead of a stock photo
+                      <span className="px-3 text-center text-[17px] md:text-[19px] font-bold leading-tight text-[#0B1B3D]">
+                        {item.name}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-slate-200 text-[13px] md:text-[14px] font-semibold text-center mt-2.5 group-hover:text-cyan-400 transition-colors line-clamp-1 tracking-wide">
+                    {item.name}
+                  </span>
+                </div>
+              ))}
             </div>
-            <span className="text-slate-200 text-[13px] md:text-[14px] font-semibold text-center mt-2.5 group-hover:text-cyan-400 transition-colors line-clamp-1 tracking-wide">
-              {item.name}
-            </span>
-          </div>
-        ))
-      )}
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const HomePage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -761,7 +941,7 @@ export const HomePage: React.FC = () => {
 
         {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
         <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 min-h-0 flex flex-col items-center justify-start mt-1 md:mt-1">
-          <div className="hidden md:flex w-full items-center justify-center overflow-visible select-none">
+          <div className="w-full flex items-center justify-center overflow-visible select-none">
             <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0">
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
@@ -918,6 +1098,7 @@ export const HomePage: React.FC = () => {
                       className="cursor-pointer"
                       onMouseEnter={() => setHoveredTier(tier.index)}
                       onMouseLeave={() => setHoveredTier(null)}
+                      onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
                       style={{
                         transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
                         filter: isHovered
@@ -959,6 +1140,7 @@ export const HomePage: React.FC = () => {
                       className="cursor-pointer"
                       onMouseEnter={() => setHoveredTier(tier.index)}
                       onMouseLeave={() => setHoveredTier(null)}
+                      onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
                     >
                       {/* Concentric animated radar rings */}
                       <circle
@@ -1063,8 +1245,6 @@ export const HomePage: React.FC = () => {
               </svg>
             </div>
           </div>
-          {/* Phones: the capacity graph turned upright — it climbs from bottom (< 1 MW) to top (50-80 MW+) */}
-          <MobileCapacityGraph />
         </div>
       </section>
 
