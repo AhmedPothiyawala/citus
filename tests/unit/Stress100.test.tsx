@@ -22,7 +22,10 @@ const ALL_19_ROUTES: [string, RegExp][] = [
   ['/nepal-telecom/', /Nepal Telecom/i],
   ['/net-broadband/', /Net\+ Broadband/i],
   ['/careers/', /Careers/i],
-  ['/contact/', /^Contact$/i],
+  ['/contact/', /Plan Your Next Facility/i],
+  ['/about-us/', /From First Rack to Every Refresh/i],
+  ['/services/', /Services From Network to Application/i],
+  ['/components/', /Data Center Technical Architecture/i],
 ];
 
 describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
@@ -71,6 +74,7 @@ describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
 
         unmount();
       }
-    });
+      // 100 full renders of the larger pages (home, components) take longer than vitest's 5s default in jsdom
+    }, 60000);
   }
 });

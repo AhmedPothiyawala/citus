@@ -10,28 +10,14 @@ interface PageHeroProps {
   breadcrumbs?: { label: string; href?: string }[];
 }
 
-export const PageHero: React.FC<PageHeroProps> = ({
-  title,
-  backgroundImage = '/images/Data-Centers-1.jpg',
-}) => {
-  // Live theme: 400px title bar (header overlaps it), dark data-center image
-  // with a deep green/black tint, heavy centred Archivo title.
-  const isDefault = backgroundImage === '/images/Data-Centers-1.jpg';
+export const PageHero: React.FC<PageHeroProps> = ({ title, subtitle }) => {
+  // New site style: light gradient intro band with eyebrow + large navy heading (matches About / Services / Components)
   return (
-    <div className="relative h-[190px] md:h-[400px] pt-[56px] md:pt-[52px] flex items-center justify-center overflow-hidden bg-[#020a08]">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      />
-      <div
-        className={`absolute inset-0 ${
-          isDefault
-            ? 'bg-gradient-to-b from-[#03120d]/90 via-[#041a12]/85 to-[#020806]/92 mix-blend-normal'
-            : 'bg-[#0b1f33]/45'
-        }`}
-      />
-      <div className="relative site-container text-center">
-        <h1 className="page-hero-title text-white">{title}</h1>
+    <div className="inner-hero pt-12 md:pt-16 pb-8 md:pb-10 border-b border-[#EDF1F7]">
+      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0E8A8F] mb-2">Citiuscomm</p>
+        <h1 className="text-[32px] md:text-[44px] leading-[1.12] font-bold text-[#0B1B3D] tracking-tight">{title}</h1>
+        {subtitle && <p className="mt-3 max-w-[720px] text-[16px] md:text-[17px] leading-[27px] text-[#4A5568]">{subtitle}</p>}
       </div>
     </div>
   );

@@ -34,7 +34,10 @@ const ALL_ROUTES: [string, RegExp][] = [
   ['/nepal-telecom/', /^Nepal Telecom$/i],
   ['/net-broadband/', /^Net\+ Broadband$/i],
   ['/careers/', /^Careers$/i],
-  ['/contact/', /^Contact$/i],
+  ['/contact/', /Plan Your Next Facility/i],
+  ['/about-us/', /From First Rack to Every Refresh/i],
+  ['/services/', /Services From Network to Application/i],
+  ['/components/', /Data Center Technical Architecture/i],
 ];
 
 describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
@@ -71,12 +74,12 @@ describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole('heading', { level: 1, name: /^Contact$/i })).toBeInTheDocument();
-    expect(screen.getByText('Delhi Office')).toBeInTheDocument();
-    expect(screen.getByText('Mumbai Office')).toBeInTheDocument();
-    expect(screen.getByText('Kolkata Office')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Your Name (required)')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Your Email (required)')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /Plan Your Next Facility/i })).toBeInTheDocument();
+    expect(screen.getByText('New Delhi (Head Office)')).toBeInTheDocument();
+    expect(screen.getByText('Mumbai')).toBeInTheDocument();
+    expect(screen.getByText('Kolkata')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Full name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Work email/i)).toBeInTheDocument();
   });
 });
 
@@ -151,8 +154,8 @@ describe('Single Source of Truth (site.ts) Data Integrity', () => {
     expect(COMPANY_INFO.tagline).toBe('Keeping You One Step Ahead!');
   });
 
-  it('has 19 distinct route constants', () => {
-    expect(Object.keys(LINKS)).toHaveLength(19);
+  it('has 22 distinct route constants', () => {
+    expect(Object.keys(LINKS)).toHaveLength(22);
     for (const route of Object.values(LINKS)) {
       expect(route.startsWith('/')).toBe(true);
     }

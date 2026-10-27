@@ -81,6 +81,9 @@ export const LINKS = {
   netBroadband: '/net-broadband/',
   careers: '/careers/',
   contact: '/contact/',
+  aboutUs: '/about-us/',
+  services: '/services/',
+  components: '/components/',
 };
 
 export const COMPANY_INFO = {
@@ -424,3 +427,43 @@ export const OFFICES_LIST: OfficeLocation[] = [
     email: 'sales@citiuscomm.com',
   },
 ];
+
+
+/* ── Navigation for all inner pages (the home page keeps its own header) ── */
+export const SITE_NAV: NavLink[] = [
+  { label: 'Home', href: LINKS.home },
+  {
+    label: 'About Us',
+    href: LINKS.aboutUs,
+    children: [
+      { label: 'About Citiuscomm', href: LINKS.aboutUs, desc: 'Equipment, services and how we work' },
+      { label: 'Company Profile', href: LINKS.companyProfile, desc: 'Vision, mission & turnkey technology aggregations' },
+      { label: 'Leadership', href: LINKS.leadership, desc: 'Meet our executive leadership team' },
+      { label: 'Why Us', href: LINKS.whyUs, desc: 'What sets us apart and our core strengths' },
+    ],
+  },
+  {
+    label: 'Services',
+    href: LINKS.services,
+    children: [
+      { label: 'All Services', href: LINKS.services, desc: 'Every service category at a glance' },
+      { label: 'Networking', href: LINKS.networking, desc: 'Switches, routers & SD-WAN solutions' },
+      { label: 'FTTX', href: LINKS.fttx, desc: 'Fiber-to-the-x, GPON & OLT/ONT deployments' },
+      { label: 'Server & Storage', href: LINKS.serverStorage, desc: 'Enterprise compute & storage infrastructure' },
+      { label: 'Data Center & Cloud', href: LINKS.dataCenterCloud, desc: 'Data center setup, cloud migration & hybrid cloud' },
+      { label: 'Security Solutions', href: LINKS.securitySolutions, desc: 'DDoS mitigation, DPI & firewall protection' },
+    ],
+  },
+  { label: 'Components', href: LINKS.components },
+  { label: 'Industry Applications', href: LINKS.industryApplications },
+  { label: 'Partners', href: LINKS.partners },
+  { label: 'Careers', href: LINKS.careers },
+];
+
+/** Contact details shown on the Contact page. Leave a value empty to hide it until it is approved. */
+export const CONTACT_DETAILS = {
+  businessHours: '', // e.g. 'Monday – Saturday, 9:30 AM – 6:30 PM IST' (awaiting approval)
+  whatsapp: '', // e.g. '+91XXXXXXXXXX' (awaiting approval)
+  bookingUrl: '', // external booking link (Calendly / Google Calendar) once confirmed
+  formEndpoint: (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_CONTACT_FORM_ENDPOINT || '',
+};

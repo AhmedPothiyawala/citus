@@ -6,6 +6,10 @@ const HOME_TITLE = `${SITE} – Keeping You One Step Ahead!`;
 
 // Route slug → page name shown in the browser tab
 const PAGE_NAMES: Record<string, string> = {
+  'about-us': 'About Us',
+  services: 'Services',
+  components: 'Components',
+  'data-centre-services': 'Components',
   'company-profile': 'Company Profile',
   'why-us': 'Why Us',
   leadership: 'Leadership',

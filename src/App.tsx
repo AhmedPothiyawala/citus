@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
+import { SiteHeader } from './components/SiteHeader';
+import { SiteFooter } from './components/SiteFooter';
 import { ScrollToTop } from './components/ScrollToTop';
 import { PageTitle } from './components/PageTitle';
 import { ScrollReveal } from './components/ScrollReveal';
@@ -26,6 +26,9 @@ import { NepalTelecomPage } from './pages/NepalTelecomPage';
 import { NetBroadbandPage } from './pages/NetBroadbandPage';
 import { CareersPage } from './pages/CareersPage';
 import { ContactPage } from './pages/ContactPage';
+import { AboutUsPage } from './pages/AboutUsPage';
+import { ServicesPage } from './pages/ServicesPage';
+import { ComponentsPage } from './pages/ComponentsPage';
 
 export const AppContent: React.FC = () => {
   const location = useLocation();
@@ -44,10 +47,18 @@ export const AppContent: React.FC = () => {
           </Routes>
         </main>
       ) : (
-        <div className="flex flex-col min-h-screen bg-white">
-          <Header />
+        <div className="inner-site flex flex-col min-h-screen bg-white">
+          <SiteHeader />
           <main className="flex-grow">
             <Routes>
+              <Route path="/about-us" element={<AboutUsPage />} />
+              <Route path="/about-us/" element={<AboutUsPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/" element={<ServicesPage />} />
+              <Route path="/components" element={<ComponentsPage />} />
+              <Route path="/components/" element={<ComponentsPage />} />
+              <Route path="/data-centre-services" element={<ComponentsPage />} />
+              <Route path="/data-centre-services/" element={<ComponentsPage />} />
               <Route path="/company-profile" element={<CompanyProfilePage />} />
               <Route path="/company-profile/" element={<CompanyProfilePage />} />
               <Route path="/why-us" element={<WhyUsPage />} />
@@ -90,7 +101,7 @@ export const AppContent: React.FC = () => {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
-          <Footer />
+          <SiteFooter />
         </div>
       )}
     </>
