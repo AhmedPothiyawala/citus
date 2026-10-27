@@ -937,3 +937,97 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora-blobs .blob { animation: none; }
 }
+
+/* Calm, consistent background for all light home sections (no dot / grid pattern) */
+.section-bg-calm {
+  background: linear-gradient(180deg, #f3f7fc 0%, #f6f5fd 100%);
+}
+.section-bg-calm::before,
+.section-bg-calm::after { content: none; }
+.slider-track { scroll-behavior: auto; }
+
+/* Soft dotted background on every light home section (requested) */
+.section-bg-calm {
+  background-color: #f8fbfe;
+  background-image: radial-gradient(rgba(100, 116, 139, 0.22) 1.2px, transparent 1.4px);
+  background-size: 28px 28px;
+}
+
+/* Graph direction arrows: gentle forward nudge */
+.curve-arrow { animation: curve-arrow-nudge 1.6s ease-in-out infinite; filter: drop-shadow(0 0 3px rgba(255,255,255,0.9)); }
+@keyframes curve-arrow-nudge { 0%, 100% { transform: translateX(-3px); opacity: 0.7; } 50% { transform: translateX(3px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .curve-arrow { animation: none; } }
+
+/* Hero graph: 93% of the screen width, but never taller than the space left on
+   short laptop screens, so the MW labels and "Size (capacity)" stay visible. */
+@media (min-width: 768px) {
+  .hero-graph-box {
+    width: 92vw;
+  }
+}
+
+/* Text + buttons inside the hero graph scale with the graph's width */
+.hero-graph-box { container-type: inline-size; }
+.graph-overlay { gap: clamp(6px, 0.9cqw, 12px); }
+.graph-overlay-text { font-size: clamp(10.5px, 1.22cqw, 17px); line-height: 1.55; }
+.graph-overlay-actions { gap: clamp(6px, 0.8cqw, 12px); }
+.graph-overlay-btn {
+  font-size: clamp(10.5px, 1.1cqw, 15px);
+  padding: clamp(5px, 0.65cqw, 10px) clamp(10px, 1.45cqw, 22px);
+}
+
+/* ════════ Hero light background motion ════════ */
+.hero-aurora-blobs .blob { opacity: 0.7; }
+.hero-beam {
+  position: absolute;
+  top: -40%;
+  left: -30%;
+  width: 35%;
+  height: 180%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: rotate(18deg);
+  animation: hero-beam-sweep 11s ease-in-out infinite;
+}
+@keyframes hero-beam-sweep {
+  0% { left: -40%; opacity: 0; }
+  15% { opacity: 1; }
+  60% { opacity: 1; }
+  80%, 100% { left: 120%; opacity: 0; }
+}
+.hero-ring {
+  position: absolute;
+  right: 6%;
+  top: 8%;
+  width: 260px;
+  height: 260px;
+  border-radius: 9999px;
+  border: 1px solid rgba(99, 102, 241, 0.22);
+  animation: hero-ring-pulse 9s ease-out infinite;
+}
+.hero-ring-2 { animation-delay: 3s; }
+.hero-ring-3 { animation-delay: 6s; }
+@keyframes hero-ring-pulse {
+  0% { transform: scale(0.4); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.hero-speck {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 9999px;
+  background: rgba(14, 116, 144, 0.28);
+  box-shadow: 0 0 8px rgba(0, 196, 204, 0.35);
+  animation-name: hero-speck-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes hero-speck-rise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-45vh) translateX(18px); }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-90vh) translateX(-10px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-beam, .hero-ring, .hero-speck { animation: none; opacity: 0; }
+}

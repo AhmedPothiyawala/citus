@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SmartLink } from '../components/SmartLink';
-import { NetworkField } from '../components/fx/NetworkField';
 import { InteractiveFx } from '../components/fx/InteractiveFx';
 import { LINKS, COMPANY_INFO, PARTNERS_LIST, CLIENTS_LIST, MAIN_NAV } from '../data/site';
 
@@ -164,12 +163,38 @@ function useSnapSlider(
   const indexAt = (el: HTMLDivElement) => Math.round((el.scrollLeft / maxScroll(el)) * (pagesRef.current - 1));
   const leftFor = (el: HTMLDivElement, i: number) => (i / Math.max(1, pagesRef.current - 1)) * maxScroll(el);
 
+  // Slow, eased glide (the browser's built-in smooth scroll is too quick)
+  const glideRaf = useRef(0);
+  const gliding = useRef(false);
+  const glideTo = (el: HTMLDivElement, target: number) => {
+    cancelAnimationFrame(glideRaf.current);
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof requestAnimationFrame === 'undefined') { el.scrollLeft = target; return; }
+    const from = el.scrollLeft, dist = target - from, dur = 1400;
+    if (Math.abs(dist) < 1) return;
+    gliding.current = true;
+    el.classList.add('is-settling');
+    const t0 = performance.now();
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const step = (now: number) => {
+      const t = Math.min(1, (now - t0) / dur);
+      el.scrollLeft = from + dist * ease(t);
+      if (t < 1) {
+        glideRaf.current = requestAnimationFrame(step);
+      } else {
+        gliding.current = false;
+        el.classList.remove('is-settling');
+      }
+    };
+    glideRaf.current = requestAnimationFrame(step);
+  };
+
   // Move to the active slide when it changes from the timer or a dot click
   useEffect(() => {
     const el = trackRef.current;
     if (!el || !el.clientWidth) return;
-    if (indexAt(el) !== active && typeof el.scrollTo === 'function') {
-      el.scrollTo({ left: leftFor(el, active), behavior: 'smooth' });
+    if (indexAt(el) !== active) {
+      glideTo(el, leftFor(el, active));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
@@ -177,6 +202,7 @@ function useSnapSlider(
   const onScroll = () => {
     const el = trackRef.current;
     if (!el || !el.clientWidth) return;
+    if (gliding.current) return; // ignore our own animation
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
       setActive(indexAt(el));
@@ -185,6 +211,9 @@ function useSnapSlider(
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     pausedRef.current = true;
+    cancelAnimationFrame(glideRaf.current);
+    gliding.current = false;
+    trackRef.current?.classList.remove('is-settling');
     if (e.pointerType !== 'mouse') return; // touch uses native swipe
     const el = trackRef.current;
     if (!el) return;
@@ -210,11 +239,9 @@ function useSnapSlider(
       if (dx > el.clientWidth * 0.12) idx = Math.max(idx, start + 1);
       if (dx < -el.clientWidth * 0.12) idx = Math.min(idx, start - 1);
       idx = Math.min(pages - 1, Math.max(0, idx));
-      // Glide to the target first, then re-enable snapping so it can't pull back
-      el.classList.add('is-settling');
-      if (typeof el.scrollTo === 'function') el.scrollTo({ left: leftFor(el, idx), behavior: 'smooth' });
+      // Glide to the target, then snapping is re-enabled when the glide ends
       el.classList.remove('is-dragging');
-      window.setTimeout(() => el.classList.remove('is-settling'), 550);
+      glideTo(el, leftFor(el, idx));
       setActive(idx);
     }
     drag.current = null;
@@ -242,6 +269,33 @@ function useSnapSlider(
 
 export const HomePage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Hero graph: stretch horizontally to fill the box without growing taller
+  const graphBoxRef = useRef<HTMLDivElement>(null);
+  const [gk, setGk] = useState(1);
+  useEffect(() => {
+    const el = graphBoxRef.current;
+    if (!el || typeof window === 'undefined') return;
+    const BASE = 1160 / 476;
+    const update = () => {
+      const W = el.clientWidth;
+      if (!W) return;
+      const capH = Math.max(680, (window.innerHeight - 250) * 2.44) / BASE;
+      const H = Math.min(W / BASE, capH);
+      const k = Math.max(1, Math.min(2.2, W / H / BASE));
+      setGk((prev) => (Math.abs(prev - k) > 0.005 ? k : prev));
+    };
+    update();
+    const ro = 'ResizeObserver' in window ? new ResizeObserver(update) : null;
+    ro?.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+  const gx = (x: number) => 75 + (x - 75) * gk;
+  const stretchPath = (d: string) =>
+    d.replace(/(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g, (_m, x, y) => `${gx(parseFloat(x)).toFixed(1)} ${y}`);
   const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
   const [activeClientSlide, setActiveClientSlide] = useState(0);
@@ -300,7 +354,7 @@ export const HomePage: React.FC = () => {
       if (!isPartnerAutoScrollPausedRef.current) {
         setActivePartnerSlide((prev) => (prev + 1) % 4);
       }
-    }, 3200);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -310,7 +364,7 @@ export const HomePage: React.FC = () => {
       if (!isClientAutoScrollPausedRef.current) {
         setActiveClientSlide((prev) => (prev + 1) % 4);
       }
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -513,14 +567,10 @@ export const HomePage: React.FC = () => {
             className="flex items-center gap-3 group transition-opacity hover:opacity-95"
           >
             <img
-              src="/images/citiuscomm-white-retina-logo.png"
+              src="/images/citiuscomm-logo-white.svg"
               alt="CITIUSCOMM"
               className="h-6 sm:h-7 w-auto object-contain block"
             />
-            <span className="hidden sm:inline-block text-[13px] tracking-wide text-slate-300 font-semibold border-l border-slate-700/80 pl-3">
-              Citius Communication
-            </span>
-            <span className="w-2 h-2 rounded-full bg-[#00C4CC] shadow-[0_0_8px_#00C4CC]" />
           </SmartLink>
 
           {/* Desktop Nav — full site menu with dropdowns */}
@@ -667,15 +717,33 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           B · FIRST PAGE HERO: 2-LINE HEADLINE + FULL CAPACITY GRAPH
       ═══════════════════════════════════════════════════ */}
-      <section className="hero-aurora relative min-h-0 lg:min-h-[calc(100vh-60px)] flex flex-col justify-between pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
+      <section className="hero-aurora relative min-h-0 flex flex-col justify-start pt-5 sm:pt-6 md:pt-7 pb-3 sm:pb-4 md:pb-5 overflow-hidden">
         {/* Animated network background across the whole hero */}
         <div className="hero-aurora-blobs absolute inset-0 pointer-events-none" aria-hidden="true">
           <span className="blob blob-1" />
           <span className="blob blob-2" />
           <span className="blob blob-3" />
         </div>
-        <div className="hero-aurora-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
-        <NetworkField className="absolute inset-0 w-full h-full pointer-events-none" />
+        {/* Light background motion: slow sweeping light beam, soft radar rings, rising specks */}
+        <div className="hero-fx absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <span className="hero-beam" />
+          <span className="hero-ring hero-ring-1" />
+          <span className="hero-ring hero-ring-2" />
+          <span className="hero-ring hero-ring-3" />
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span
+              key={i}
+              className="hero-speck"
+              style={{
+                left: `${(i * 71) % 100}%`,
+                animationDelay: `${(i * 1.7) % 12}s`,
+                animationDuration: `${12 + (i % 5) * 3}s`,
+                width: `${3 + (i % 3)}px`,
+                height: `${3 + (i % 3)}px`,
+              }}
+            />
+          ))}
+        </div>
         {/* Eyebrow & 2-Line Headline at Top */}
         <div className="relative z-[1] w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 shrink-0">
           <div className="flex items-center gap-2 mb-3 md:mb-4">
@@ -706,27 +774,27 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
-        <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 flex-1 min-h-0 flex flex-col items-center justify-center mt-6 md:mt-10 lg:mt-12">
+        <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 min-h-0 flex flex-col items-center justify-start mt-1 md:mt-1">
           <div className="hidden md:flex w-full items-center justify-center overflow-visible select-none">
-            <div className="relative w-full max-w-[1160px] flex items-center justify-center shrink-0">
+            <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0">
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
-                className="hidden md:flex flex-col items-start gap-2.5 absolute z-20 pointer-events-auto"
-                style={{ top: '6%', left: '8.5%', width: '40%', maxWidth: '460px' }}
+                className="graph-overlay hidden md:flex flex-col items-start absolute z-20 pointer-events-auto"
+                style={{ top: '6%', left: '8.5%', width: '40%', maxWidth: '520px' }}
               >
-                <p className="text-[13.5px] lg:text-[14.5px] leading-[21px] lg:leading-[23px] text-slate-600 font-medium">
+                <p className="graph-overlay-text text-slate-600 font-medium">
                   Hardware supply, integration and managed services for data centers of every size, from edge rooms to hyperscale campuses.
                 </p>
-                <div className="flex items-center gap-2.5 mt-0.5">
+                <div className="graph-overlay-actions flex items-center">
                   <SmartLink
                     to={LINKS.contact}
-                    className="inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-lg px-4 lg:px-5 py-2 font-semibold text-[13px] hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-cyan-500/20 hover:-translate-y-0.5 whitespace-nowrap"
+                    className="graph-overlay-btn inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-cyan-500/20 hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     Explore Services
                   </SmartLink>
                   <SmartLink
                     to={LINKS.contact}
-                    className="inline-flex items-center justify-center border border-slate-300 text-slate-800 bg-white rounded-lg px-4 lg:px-5 py-2 font-semibold text-[13px] hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 shadow-sm hover:-translate-y-0.5 whitespace-nowrap"
+                    className="graph-overlay-btn inline-flex items-center justify-center border border-slate-300 text-slate-800 bg-white rounded-lg font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 shadow-sm hover:-translate-y-0.5 whitespace-nowrap"
                   >
                     Talk to an expert
                   </SmartLink>
@@ -734,7 +802,7 @@ export const HomePage: React.FC = () => {
               </div>
 
               <svg
-                viewBox="0 24 1160 476"
+                viewBox={`0 24 ${Math.round(1160 * gk)} 476`}
                 className="w-full h-auto block select-none overflow-visible"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -758,7 +826,7 @@ export const HomePage: React.FC = () => {
 
                 {/* Fill under curve */}
                 <path
-                  d="M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125 L 1020 430 L 180 430 Z"
+                  d={stretchPath("M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125 L 1020 430 L 180 430 Z")}
                   fill="url(#curveFill)"
                 />
 
@@ -770,16 +838,16 @@ export const HomePage: React.FC = () => {
                 </text>
 
                 {/* X axis */}
-                <line x1="75" y1="430" x2="1090" y2="430" stroke="#94A3B8" strokeWidth="1.5" />
-                <polygon points="1097,430 1087,426 1087,434" fill="#64748B" />
+                <line x1="75" y1="430" x2={gx(1090)} y2="430" stroke="#94A3B8" strokeWidth="1.5" />
+                <polygon points={`${gx(1097)},430 ${gx(1087)},426 ${gx(1087)},434`} fill="#64748B" />
 
                 {/* Vertical drop dashed grid lines from each point to X axis */}
                 {CAPACITY_TIERS.map((tier) => (
                   <line
                     key={`grid-${tier.index}`}
-                    x1={tier.x}
+                    x1={gx(tier.x)}
                     y1={tier.y}
-                    x2={tier.x}
+                    x2={gx(tier.x)}
                     y2="430"
                     stroke={tier.color}
                     strokeWidth="1.5"
@@ -790,7 +858,7 @@ export const HomePage: React.FC = () => {
 
                 {/* Dynamic Illuminated Glowing Base Curve */}
                 <path
-                  d="M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125"
+                  d={stretchPath("M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125")}
                   stroke="url(#curveGrad)"
                   strokeWidth="3.5"
                   strokeLinecap="round"
@@ -800,7 +868,7 @@ export const HomePage: React.FC = () => {
 
                 {/* Curve Optical Data Flow: continuous gliding white-cyan packet stream */}
                 <path
-                  d="M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125"
+                  d={stretchPath("M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125")}
                   stroke="#FFFFFF"
                   strokeWidth="3.5"
                   strokeLinecap="round"
@@ -812,13 +880,32 @@ export const HomePage: React.FC = () => {
                   }}
                 />
 
+                {/* Direction arrows just before each tier point */}
+                {CAPACITY_TIERS.slice(1).map((tier, i) => {
+                  // tangent of the curve as it arrives at this point (from its last control point)
+                  const ctrl = [[315, 300], [525, 248], [735, 192], [945, 138]][i];
+                  const ang = (Math.atan2(tier.y - ctrl[1], gx(tier.x) - gx(ctrl[0])) * 180) / Math.PI;
+                  const back = 22;
+                  const rad = (ang * Math.PI) / 180;
+                  const ax = gx(tier.x) - Math.cos(rad) * back;
+                  const ay = tier.y - Math.sin(rad) * back;
+                  return (
+                    <g key={`arrow-${tier.index}`} transform={`translate(${ax} ${ay}) rotate(${ang})`} style={{ pointerEvents: 'none' }}>
+                      <g className="curve-arrow" style={{ animationDelay: `${i * 0.25}s` }}>
+                        <path d="M -7 -6 L 3 0 L -7 6" fill="none" stroke={tier.color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M -14 -6 L -4 0 L -14 6" fill="none" stroke={tier.color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.45" />
+                      </g>
+                    </g>
+                  );
+                })}
+
                 {/* Annotations above the curve */}
                 {CAPACITY_TIERS.map((tier) => {
                   const isHovered = hoveredTier === tier.index;
                   return (
                     <text
                       key={`annotation-${tier.index}`}
-                      x={tier.x}
+                      x={gx(tier.x)}
                       y={tier.annotationY}
                       fill={isHovered ? '#0B1B3D' : '#5A6578'}
                       fontWeight={isHovered ? '600' : '400'}
@@ -828,7 +915,7 @@ export const HomePage: React.FC = () => {
                       style={{ transition: 'fill 0.2s ease, font-weight 0.2s ease', pointerEvents: 'none' }}
                     >
                       {tier.annotationLines.map((line, li) => (
-                        <tspan key={li} x={tier.x} dy={li === 0 ? 0 : 13}>
+                        <tspan key={li} x={gx(tier.x)} dy={li === 0 ? 0 : 13}>
                           {line}
                         </tspan>
                       ))}
@@ -853,9 +940,9 @@ export const HomePage: React.FC = () => {
                         transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
                       }}
                     >
-                      <rect x={tier.boxX} y={tier.boxY} width={tier.boxW} height={tier.boxH} rx="6" fill="#0B1B3D" />
+                      <rect x={gx(tier.x) - tier.boxW / 2} y={tier.boxY} width={tier.boxW} height={tier.boxH} rx="6" fill="#0B1B3D" />
                       <rect
-                        x={tier.boxX}
+                        x={gx(tier.x) - tier.boxW / 2}
                         y={tier.boxY}
                         width={tier.boxW}
                         height={isHovered ? 5 : 4}
@@ -866,9 +953,9 @@ export const HomePage: React.FC = () => {
                           filter: isHovered ? `drop-shadow(0 0 4px ${tier.color})` : 'none',
                         }}
                       />
-                      <text x={tier.x} y={tier.boxY + 20} fill="white" fontSize="10" fontWeight="600" fontFamily="Inter, sans-serif" textAnchor="middle">
+                      <text x={gx(tier.x)} y={tier.boxY + 20} fill="white" fontSize="10" fontWeight="600" fontFamily="Inter, sans-serif" textAnchor="middle">
                         {tier.boxLines.map((line, li) => (
-                          <tspan key={li} x={tier.x} dy={li === 0 ? 0 : 14}>
+                          <tspan key={li} x={gx(tier.x)} dy={li === 0 ? 0 : 14}>
                             {line}
                           </tspan>
                         ))}
@@ -889,7 +976,7 @@ export const HomePage: React.FC = () => {
                     >
                       {/* Concentric animated radar rings */}
                       <circle
-                        cx={tier.x}
+                        cx={gx(tier.x)}
                         cy={tier.y}
                         r="5.5"
                         stroke={tier.color}
@@ -897,7 +984,7 @@ export const HomePage: React.FC = () => {
                         className="signal-ring"
                       />
                       <circle
-                        cx={tier.x}
+                        cx={gx(tier.x)}
                         cy={tier.y}
                         r="5.5"
                         stroke={tier.color}
@@ -907,7 +994,7 @@ export const HomePage: React.FC = () => {
 
                       {/* Static / hover halo */}
                       <circle
-                        cx={tier.x}
+                        cx={gx(tier.x)}
                         cy={tier.y}
                         r={isHovered ? 14 : 10}
                         fill={tier.color}
@@ -919,7 +1006,7 @@ export const HomePage: React.FC = () => {
                       />
                       {/* Outer ring */}
                       <circle
-                        cx={tier.x}
+                        cx={gx(tier.x)}
                         cy={tier.y}
                         r={isHovered ? 7 : 5.5}
                         fill="white"
@@ -929,7 +1016,7 @@ export const HomePage: React.FC = () => {
                       />
                       {/* Center dot */}
                       <circle
-                        cx={tier.x}
+                        cx={gx(tier.x)}
                         cy={tier.y}
                         r={isHovered ? 3 : 2}
                         fill={tier.color}
@@ -957,7 +1044,7 @@ export const HomePage: React.FC = () => {
                       }}
                     >
                       <rect
-                        x={tier.pillX}
+                        x={gx(tier.x) - tier.pillW / 2}
                         y="445"
                         width={tier.pillW}
                         height="24"
@@ -968,7 +1055,7 @@ export const HomePage: React.FC = () => {
                         style={{ transition: 'stroke-width 0.2s ease' }}
                       />
                       <text
-                        x={tier.x}
+                        x={gx(tier.x)}
                         y="461"
                         fill="white"
                         fontSize="10.5"
@@ -984,7 +1071,7 @@ export const HomePage: React.FC = () => {
                 })}
 
                 {/* X axis Title */}
-                <text x="600" y="490" fill="#5A6578" fontSize="11" fontWeight="500" fontFamily="Inter, sans-serif" textAnchor="middle">
+                <text x={gx(600)} y="490" fill="#5A6578" fontSize="11" fontWeight="500" fontFamily="Inter, sans-serif" textAnchor="middle">
                   Size (capacity)
                 </text>
               </svg>
@@ -1052,7 +1139,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           C.2 · WHO WE ARE (from the company profile)
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-b pt-10 md:pt-16 pb-10 md:pb-14">
+      <section className="section-bg section-bg-calm pt-10 md:pt-16 pb-10 md:pb-14">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
             {/* Stacked photos with depth */}
@@ -1116,7 +1203,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           C.3 · SOLUTIONS (links to every solution page)
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-a pt-10 md:pt-14 pb-8 md:pb-12">
+      <section className="section-bg section-bg-calm pt-10 md:pt-14 pb-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-6 md:mb-8">
             <div>
@@ -1173,7 +1260,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           D · SUPPORT FOR EVERY BUSINESS MODEL
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-a pt-8 md:pt-12 pb-5 md:pb-8">
+      <section className="section-bg section-bg-calm pt-8 md:pt-12 pb-5 md:pb-8">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Eyebrow & Title with Entrance Animation */}
           <div className="home-reveal">
@@ -1220,7 +1307,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           E · PARTNERSHIP CALLOUT BANNER
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-b pt-4 md:pt-6 pb-1">
+      <section className="section-bg section-bg-calm pt-4 md:pt-6 pb-1">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
             className="home-reveal-scale card-hover-cool glow-border rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-gradient-to-r from-[#F3F6FA] via-[#EDF5FB] to-[#F3F6FA]"
@@ -1248,7 +1335,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           F · END-TO-END CAPABILITIES
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-b pt-5 md:pt-7 pb-8 md:pb-12">
+      <section className="section-bg section-bg-calm pt-5 md:pt-7 pb-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1308,7 +1395,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           F.2 · FOCUS VERTICALS
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-c pt-8 md:pt-12 pb-10 md:pb-14">
+      <section className="section-bg section-bg-calm pt-8 md:pt-12 pb-10 md:pb-14">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal text-center mb-7 md:mb-10">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1529,7 +1616,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           H · FROM REQUIREMENT TO RUNNING
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-c pt-8 md:pt-12 pb-4 md:pb-6">
+      <section className="section-bg section-bg-calm pt-8 md:pt-12 pb-4 md:pb-6">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1568,7 +1655,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           I · INDEPENDENT ADVICE, ONE ACCOUNTABLE TEAM
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-c pt-4 md:pt-6 pb-8 md:pb-12">
+      <section className="section-bg section-bg-calm pt-4 md:pt-6 pb-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
@@ -1602,7 +1689,7 @@ export const HomePage: React.FC = () => {
       {/* ═══════════════════════════════════════════════════
           J · BOTTOM CALL-TO-ACTION (Cool Navy Glow UI)
       ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-a pt-6 pb-8 md:pt-8 md:pb-12">
+      <section className="section-bg section-bg-calm pt-6 pb-8 md:pt-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
             className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"
