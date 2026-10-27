@@ -1031,3 +1031,92 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-beam, .hero-ring, .hero-speck { animation: none; opacity: 0; }
 }
+
+/* ════════ Mobile capacity graph (bottom → top) ════════ */
+.m-graph-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.15s; }
+.m-graph.is-shown .m-graph-line { stroke-dashoffset: 0; }
+.m-graph-flow { opacity: 0; transition: opacity 0.6s ease 1.8s; }
+.m-graph.is-shown .m-graph-flow { opacity: 1; }
+.m-graph-node { opacity: 0; transform-box: fill-box; transform-origin: center; transition: opacity 0.5s ease; }
+.m-graph.is-shown .m-graph-node { opacity: 1; }
+.m-graph-pulse { transform-box: fill-box; transform-origin: center; animation: m-graph-pulse 2.4s ease-out infinite; }
+@keyframes m-graph-pulse { 0% { transform: scale(0.6); opacity: 0.35; } 100% { transform: scale(1.9); opacity: 0; } }
+.m-graph-arrow { animation: m-graph-arrow 1.4s ease-in-out infinite; }
+@keyframes m-graph-arrow { 0%, 100% { transform: translateY(3px); opacity: 0.6; } 50% { transform: translateY(-3px); opacity: 1; } }
+.m-graph-card { opacity: 0; transform: translateX(24px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.m-graph.is-shown .m-graph-card { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .m-graph-line { stroke-dashoffset: 0; transition: none; }
+  .m-graph-flow, .m-graph-node, .m-graph-card { opacity: 1; transform: none; transition: none; }
+  .m-graph-pulse, .m-graph-arrow { animation: none; }
+}
+
+/* ════════ Mobile capacity column chart ════════ */
+.m-cap-bar { transform-origin: bottom; transform: scaleY(0); transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, box-shadow 0.4s ease; }
+.m-cap.is-shown .m-cap-bar { transform: scaleY(1); }
+.m-cap-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.4s ease 0.8s; }
+.m-cap.is-shown .m-cap-line { stroke-dashoffset: 0; }
+.m-cap-ping { animation: m-cap-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite; }
+@keyframes m-cap-ping { 0% { transform: translateX(-50%) scale(1); opacity: 0.6; } 100% { transform: translateX(-50%) scale(2.6); opacity: 0; } }
+.m-cap-detail { animation: m-cap-in 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes m-cap-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .m-cap-bar { transform: none; transition: none; }
+  .m-cap-line { stroke-dashoffset: 0; transition: none; }
+  .m-cap-ping, .m-cap-detail { animation: none; }
+}
+
+/* ════════ Logo marquee (Partners / Clients) ════════ */
+.logo-marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.logo-marquee-track { animation: logo-marquee linear infinite; }
+.logo-marquee-track.is-reverse { animation-direction: reverse; }
+.logo-marquee:hover .logo-marquee-track,
+.logo-marquee:active .logo-marquee-track { animation-play-state: paused; }
+@keyframes logo-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee-track { animation: none; }
+  .logo-marquee { overflow-x: auto; }
+}
+
+/* Hero flowing waves */
+.hero-wave { animation: hero-wave-flow linear infinite; will-change: transform; }
+@keyframes hero-wave-flow { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.hero-waves { -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 85%, transparent); mask-image: linear-gradient(180deg, transparent, #000 30%, #000 85%, transparent); }
+@media (prefers-reduced-motion: reduce) { .hero-wave { animation: none; } }
+
+/* ════════ Hero: professional spotlight + perspective grid floor ════════ */
+.hero-aurora { background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 55%, #e6eef9 100%); }
+.hero-spot {
+  position: absolute; left: 50%; top: -35%;
+  width: 120%; height: 90%; transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(0, 196, 204, 0.16) 0%, rgba(37, 99, 235, 0.08) 35%, transparent 65%);
+  animation: hero-spot-breathe 10s ease-in-out infinite alternate;
+}
+@keyframes hero-spot-breathe { from { opacity: 0.7; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.08); } }
+.hero-floor-plane {
+  position: absolute; left: -50%; right: -50%; bottom: -10%; height: 70%;
+  perspective: 600px; perspective-origin: 50% 0%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 45%, #000 100%);
+}
+.hero-floor-grid {
+  position: absolute; inset: 0;
+  transform: rotateX(62deg); transform-origin: 50% 0%;
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.16) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: hero-floor-move 6s linear infinite;
+}
+@keyframes hero-floor-move { from { background-position: 0 0, 0 0; } to { background-position: 0 64px, 0 0; } }
+.hero-horizon {
+  position: absolute; left: 0; right: 0; top: 30%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 196, 204, 0.0) 10%, rgba(0, 196, 204, 0.35) 50%, rgba(0, 196, 204, 0) 90%, transparent);
+  filter: blur(1px);
+  opacity: 0;
+}
+@media (max-width: 767px) { .hero-floor-plane { height: 45%; } }
+@media (prefers-reduced-motion: reduce) { .hero-floor-grid, .hero-spot { animation: none; } }

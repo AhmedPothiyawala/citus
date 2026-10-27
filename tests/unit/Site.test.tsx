@@ -49,8 +49,8 @@ describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
     expect(heading).toBeInTheDocument();
 
     if (path === '/') {
-      // Homepage has its own self-contained header with logo brand
-      expect(screen.getAllByAltText(/CITIUSCOMM/i).length).toBeGreaterThanOrEqual(1);
+      // Homepage has its own self-contained header with text brand
+      expect(screen.getAllByText(/Citius Communication/i).length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText(/All Rights Reserved/i)).toBeInTheDocument();
     } else {
       // Other pages use the shared CITIUSCOMM header/footer

@@ -45,8 +45,8 @@ describe('CITIUSCOMM - 100+ Times Stress & Sanity Test per Page', () => {
 
         // 2. Sanity check: Header brand
         if (route === '/') {
-          // Homepage has SVG logo brand
-          expect(screen.getAllByAltText(/CITIUSCOMM/i).length).toBeGreaterThanOrEqual(1);
+          // Homepage brand name appears in the footer
+          expect(screen.getAllByText(/Citius Communication/i).length).toBeGreaterThanOrEqual(1);
         } else {
           const logos = screen.getAllByAltText(/CITIUSCOMM Logo/i);
           expect(logos.length).toBeGreaterThanOrEqual(1);
