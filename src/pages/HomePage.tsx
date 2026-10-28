@@ -502,7 +502,6 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
 };
 
 export const HomePage: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Hero graph: stretch horizontally to fill the box without growing taller
   const graphBoxRef = useRef<HTMLDivElement>(null);
   const [gk, setGk] = useState(1);
@@ -764,167 +763,6 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="homepage-root bg-white w-full overflow-x-clip" data-no-reveal>
-      <div id="home-scroll-progress" aria-hidden="true" />
-      <InteractiveFx />
-
-      {/* ═══════════════════════════════════════════════════
-          A · NAVIGATION BAR (Distinct Dark Navy Brand Theme - Sticky Header)
-      ═══════════════════════════════════════════════════ */}
-      <header className="w-full bg-[#0B1B3D] text-white shadow-md border-b border-slate-800/80 sticky top-0 z-50">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 h-[56px] md:h-[60px] flex items-center justify-between">
-          {/* Brand: Full CITIUSCOMM Brand Logo + Name */}
-          <SmartLink
-            to="/"
-            className="flex items-center gap-3 group transition-opacity hover:opacity-95"
-          >
-            <img
-              src="/images/citiuscomm-logo-white.svg"
-              alt="CITIUSCOMM"
-              className="h-6 sm:h-7 w-auto object-contain block"
-            />
-          </SmartLink>
-
-          {/* Desktop Nav — full site menu with dropdowns */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
-            {MAIN_NAV.filter((item) => item.label !== 'CONTACT').map((item) => {
-              const label = item.label.charAt(0) + item.label.slice(1).toLowerCase().replace(/ (\w)/g, (_m, c) => ' ' + c.toUpperCase());
-              const isHome = item.href === '/';
-              if (item.children && item.children.length) {
-                return (
-                  <div key={item.label} className="relative group py-2">
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1.5 text-[14px] font-medium text-slate-300 group-hover:text-white transition-colors"
-                      aria-haspopup="true"
-                    >
-                      {label}
-                      <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-300 z-50">
-                      <div className="w-[300px] rounded-2xl bg-[#0E224F]/95 backdrop-blur-xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.45)] p-2 overflow-hidden">
-                        <div className="h-[2px] -mx-2 -mt-2 mb-2 bg-gradient-to-r from-[#00C4CC] via-[#3B82F6] to-[#6366F1]" />
-                        {item.children.map((sub) => (
-                          <SmartLink
-                            key={sub.label}
-                            to={sub.href}
-                            className="block rounded-xl px-3.5 py-2.5 hover:bg-white/[0.07] transition-colors group/item"
-                          >
-                            <span className="flex items-center justify-between text-[14px] font-semibold text-white">
-                              {sub.label}
-                              <span className="text-[#00C4CC] opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all">&rarr;</span>
-                            </span>
-                            {sub.desc && <span className="block text-[12px] leading-[18px] text-slate-400 mt-0.5">{sub.desc}</span>}
-                          </SmartLink>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <SmartLink
-                  key={item.label}
-                  to={item.href}
-                  className={`relative text-[14px] py-2 transition-colors ${isHome ? 'font-semibold text-white' : 'font-medium text-slate-300 hover:text-white'}`}
-                >
-                  {label}
-                  {isHome && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-[#00C4CC] shadow-[0_0_6px_#00C4CC]" />
-                  )}
-                </SmartLink>
-              );
-            })}
-
-            <SmartLink
-              to={LINKS.contact}
-              className="inline-flex items-center justify-center bg-[#00C4CC] text-[#0B1B3D] rounded-full px-5 py-2 font-bold text-[13px] hover:bg-cyan-300 transition-all duration-200 shadow-[0_0_15px_rgba(0,196,204,0.35)] hover:shadow-[0_0_20px_rgba(0,196,204,0.6)]"
-            >
-              Contact Us
-            </SmartLink>
-          </nav>
-
-          {/* Mobile Menu Toggle Button */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-            className="lg:hidden p-2 text-slate-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#00C4CC]/50 rounded-lg transition-colors"
-          >
-            {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-
-        {/* Mobile Navigation Drawer — full site menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#0B1B3D] border-t border-slate-800 shadow-2xl px-6 py-4 max-h-[calc(100vh-56px)] overflow-y-auto">
-            {MAIN_NAV.filter((item) => item.label !== 'CONTACT').map((item) => {
-              const label = item.label.charAt(0) + item.label.slice(1).toLowerCase().replace(/ (\w)/g, (_m, c) => ' ' + c.toUpperCase());
-              if (item.children && item.children.length) {
-                const open = mobileSubmenu === item.label;
-                return (
-                  <div key={item.label} className="border-b border-slate-800/80">
-                    <button
-                      type="button"
-                      onClick={() => setMobileSubmenu(open ? null : item.label)}
-                      className="w-full flex items-center justify-between text-[15px] font-medium text-slate-200 py-3"
-                      aria-expanded={open}
-                    >
-                      {label}
-                      <svg className={`w-4 h-4 transition-transform duration-300 ${open ? 'rotate-180 text-[#00C4CC]' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    <div className={`grid transition-all duration-300 ${open ? 'grid-rows-[1fr] pb-2' : 'grid-rows-[0fr]'}`}>
-                      <div className="overflow-hidden">
-                        {item.children.map((sub) => (
-                          <SmartLink
-                            key={sub.label}
-                            to={sub.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="block pl-4 py-2 text-[14px] text-slate-300 hover:text-[#00C4CC] border-l-2 border-slate-700 hover:border-[#00C4CC] transition-colors"
-                          >
-                            {sub.label}
-                          </SmartLink>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-              return (
-                <SmartLink
-                  key={item.label}
-                  to={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block text-[15px] py-3 border-b border-slate-800/80 ${item.href === '/' ? 'font-semibold text-[#00C4CC]' : 'font-medium text-slate-200 hover:text-white'}`}
-                >
-                  {label}
-                </SmartLink>
-              );
-            })}
-            <div className="pt-4">
-              <SmartLink
-                to={LINKS.contact}
-                onClick={() => setMobileMenuOpen(false)}
-                className="inline-flex w-full items-center justify-center bg-[#00C4CC] text-[#0B1B3D] rounded-full py-2.5 font-bold text-[14px] hover:bg-cyan-300 shadow-[0_0_15px_rgba(0,196,204,0.35)]"
-              >
-                Contact Us
-              </SmartLink>
-            </div>
-          </div>
-        )}
-      </header>
-
       {/* ═══════════════════════════════════════════════════
           B · FIRST PAGE HERO: 2-LINE HEADLINE + FULL CAPACITY GRAPH
       ═══════════════════════════════════════════════════ */}
@@ -1790,33 +1628,6 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* ═══════════════════════════════════════════════════
-          K · MINIMAL FOOTER
-      ═══════════════════════════════════════════════════ */}
-      <footer className="py-4 bg-white" style={{ borderTop: `1px solid ${C.border}` }}>
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
-          {/* Left: Citius Communication Pvt. Ltd. (No Logo) */}
-          <div className="flex items-center justify-center md:justify-start">
-            <span className="text-[13px] font-bold" style={{ color: C.headline }}>
-              Citius Communication Pvt. Ltd.
-            </span>
-          </div>
-
-          {/* Right: Email, Phone, & Copyright */}
-          <div className="text-[12px] flex flex-wrap items-center justify-center md:justify-end gap-3" style={{ color: C.bodyLight }}>
-            <a href={`mailto:${COMPANY_INFO.email}`} className="hover:underline">
-              Email: {COMPANY_INFO.email}
-            </a>
-            <span>&middot;</span>
-            <a href={`tel:${COMPANY_INFO.phoneFormatted}`} className="hover:underline">
-              Phone: {COMPANY_INFO.phone}
-            </a>
-            <span>&middot;</span>
-            <span>{COMPANY_INFO.copyright}</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

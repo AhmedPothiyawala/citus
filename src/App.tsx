@@ -5,6 +5,7 @@ import { SiteFooter } from './components/SiteFooter';
 import { ScrollToTop } from './components/ScrollToTop';
 import { PageTitle } from './components/PageTitle';
 import { ScrollReveal } from './components/ScrollReveal';
+import { InteractiveFx } from './components/fx/InteractiveFx';
 
 // Page components
 import { HomePage } from './pages/HomePage';
@@ -38,72 +39,66 @@ export const AppContent: React.FC = () => {
     <>
       <ScrollToTop />
       <PageTitle />
-      {!isHomePage && <ScrollReveal />}
-      {isHomePage ? (
-        /* Homepage has its own built-in header & footer per reference design */
-        <main className="homepage-main min-h-screen bg-white">
+      <div id="home-scroll-progress" aria-hidden="true" />
+      <InteractiveFx />
+      <ScrollReveal />
+      <div className={`site-shell flex flex-col min-h-screen ${isHomePage ? 'homepage-shell' : 'inner-site'}`}>
+        <SiteHeader />
+        <main className={`flex-grow ${isHomePage ? 'homepage-main' : ''}`}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/about-us" element={<AboutUsPage />} />
+            <Route path="/about-us/" element={<AboutUsPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/services/" element={<ServicesPage />} />
+            <Route path="/components" element={<ComponentsPage />} />
+            <Route path="/components/" element={<ComponentsPage />} />
+            <Route path="/data-centre-services" element={<ComponentsPage />} />
+            <Route path="/data-centre-services/" element={<ComponentsPage />} />
+            <Route path="/company-profile" element={<CompanyProfilePage />} />
+            <Route path="/company-profile/" element={<CompanyProfilePage />} />
+            <Route path="/why-us" element={<WhyUsPage />} />
+            <Route path="/why-us/" element={<WhyUsPage />} />
+            <Route path="/leadership" element={<LeadershipPage />} />
+            <Route path="/leadership/" element={<LeadershipPage />} />
+            <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/partners/" element={<PartnersPage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/products/" element={<ProductsPage />} />
+            <Route path="/digital-services" element={<DigitalServicesPage />} />
+            <Route path="/digital-services/" element={<DigitalServicesPage />} />
+            <Route path="/networking" element={<NetworkingPage />} />
+            <Route path="/networking/" element={<NetworkingPage />} />
+            <Route path="/fttx" element={<FttxPage />} />
+            <Route path="/fttx/" element={<FttxPage />} />
+            <Route path="/server-storage" element={<ServerStoragePage />} />
+            <Route path="/server-storage/" element={<ServerStoragePage />} />
+            <Route path="/data-center-cloud" element={<DataCenterCloudPage />} />
+            <Route path="/data-center-cloud/" element={<DataCenterCloudPage />} />
+            <Route path="/industry-applications" element={<IndustryApplicationsPage />} />
+            <Route path="/industry-applications/" element={<IndustryApplicationsPage />} />
+            <Route path="/security-solutions" element={<SecuritySolutionsPage />} />
+            <Route path="/security-solutions/" element={<SecuritySolutionsPage />} />
+            <Route path="/case-studies" element={<CaseStudiesPage />} />
+            <Route path="/case-studies/" element={<CaseStudiesPage />} />
+            <Route path="/category/case-studies" element={<CaseStudiesPage />} />
+            <Route path="/category/case-studies/" element={<CaseStudiesPage />} />
+            <Route path="/rakuten-mobile" element={<RakutenMobilePage />} />
+            <Route path="/rakuten-mobile/" element={<RakutenMobilePage />} />
+            <Route path="/nepal-telecom" element={<NepalTelecomPage />} />
+            <Route path="/nepal-telecom/" element={<NepalTelecomPage />} />
+            <Route path="/net-broadband" element={<NetBroadbandPage />} />
+            <Route path="/net-broadband/" element={<NetBroadbandPage />} />
+            <Route path="/careers" element={<CareersPage />} />
+            <Route path="/careers/" element={<CareersPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/contact/" element={<ContactPage />} />
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-      ) : (
-        <div className="inner-site flex flex-col min-h-screen bg-white">
-          <SiteHeader />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/about-us" element={<AboutUsPage />} />
-              <Route path="/about-us/" element={<AboutUsPage />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/services/" element={<ServicesPage />} />
-              <Route path="/components" element={<ComponentsPage />} />
-              <Route path="/components/" element={<ComponentsPage />} />
-              <Route path="/data-centre-services" element={<ComponentsPage />} />
-              <Route path="/data-centre-services/" element={<ComponentsPage />} />
-              <Route path="/company-profile" element={<CompanyProfilePage />} />
-              <Route path="/company-profile/" element={<CompanyProfilePage />} />
-              <Route path="/why-us" element={<WhyUsPage />} />
-              <Route path="/why-us/" element={<WhyUsPage />} />
-              <Route path="/leadership" element={<LeadershipPage />} />
-              <Route path="/leadership/" element={<LeadershipPage />} />
-              <Route path="/partners" element={<PartnersPage />} />
-              <Route path="/partners/" element={<PartnersPage />} />
-              <Route path="/products" element={<ProductsPage />} />
-              <Route path="/products/" element={<ProductsPage />} />
-              <Route path="/digital-services" element={<DigitalServicesPage />} />
-              <Route path="/digital-services/" element={<DigitalServicesPage />} />
-              <Route path="/networking" element={<NetworkingPage />} />
-              <Route path="/networking/" element={<NetworkingPage />} />
-              <Route path="/fttx" element={<FttxPage />} />
-              <Route path="/fttx/" element={<FttxPage />} />
-              <Route path="/server-storage" element={<ServerStoragePage />} />
-              <Route path="/server-storage/" element={<ServerStoragePage />} />
-              <Route path="/data-center-cloud" element={<DataCenterCloudPage />} />
-              <Route path="/data-center-cloud/" element={<DataCenterCloudPage />} />
-              <Route path="/industry-applications" element={<IndustryApplicationsPage />} />
-              <Route path="/industry-applications/" element={<IndustryApplicationsPage />} />
-              <Route path="/security-solutions" element={<SecuritySolutionsPage />} />
-              <Route path="/security-solutions/" element={<SecuritySolutionsPage />} />
-              <Route path="/case-studies" element={<CaseStudiesPage />} />
-              <Route path="/case-studies/" element={<CaseStudiesPage />} />
-              <Route path="/category/case-studies" element={<CaseStudiesPage />} />
-              <Route path="/category/case-studies/" element={<CaseStudiesPage />} />
-              <Route path="/rakuten-mobile" element={<RakutenMobilePage />} />
-              <Route path="/rakuten-mobile/" element={<RakutenMobilePage />} />
-              <Route path="/nepal-telecom" element={<NepalTelecomPage />} />
-              <Route path="/nepal-telecom/" element={<NepalTelecomPage />} />
-              <Route path="/net-broadband" element={<NetBroadbandPage />} />
-              <Route path="/net-broadband/" element={<NetBroadbandPage />} />
-              <Route path="/careers" element={<CareersPage />} />
-              <Route path="/careers/" element={<CareersPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/contact/" element={<ContactPage />} />
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-          <SiteFooter />
-        </div>
-      )}
+        <SiteFooter />
+      </div>
     </>
   );
 };

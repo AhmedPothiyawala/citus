@@ -15,7 +15,10 @@ export const PageHero: React.FC<PageHeroProps> = ({ title, subtitle }) => {
   return (
     <div className="inner-hero pt-12 md:pt-16 pb-8 md:pb-10 border-b border-[#EDF1F7]">
       <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0E8A8F] mb-2">Citiuscomm</p>
+        <p className="inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0E8A8F] mb-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#00C4CC] animate-live-dot shrink-0" />
+          <span>Citiuscomm</span>
+        </p>
         <h1 className="text-[32px] md:text-[44px] leading-[1.12] font-bold text-[#0B1B3D] tracking-tight">{title}</h1>
         {subtitle && <p className="mt-3 max-w-[720px] text-[16px] md:text-[17px] leading-[27px] text-[#4A5568]">{subtitle}</p>}
       </div>

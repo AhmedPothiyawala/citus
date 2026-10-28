@@ -1124,18 +1124,51 @@
 @media (max-width: 767px) { .hero-floor-plane { height: 45%; } }
 @media (prefers-reduced-motion: reduce) { .hero-floor-grid, .hero-spot { animation: none; } }
 
-/* ════════ Inner pages: same typography & colour system as the new home page ════════ */
+/* ════════ All pages: signature high-tech calm dotted matrix background & theme ════════ */
+.site-shell,
+.inner-site,
+.homepage-shell,
+.homepage-root {
+  background-color: #f8fbfe;
+  background-image: radial-gradient(rgba(100, 116, 139, 0.18) 1.2px, transparent 1.4px);
+  background-size: 28px 28px;
+}
+
 .inner-site, .inner-site * {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 .inner-site h1, .inner-site h2, .inner-site h3, .inner-site h4 { letter-spacing: -0.01em; }
 .inner-site .page-hero-title { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+
 .inner-hero {
+  position: relative;
   background:
-    radial-gradient(900px 360px at 85% -10%, rgba(0, 196, 204, 0.10), transparent 60%),
-    radial-gradient(700px 320px at 0% 0%, rgba(37, 99, 235, 0.06), transparent 60%),
+    radial-gradient(900px 360px at 85% -10%, rgba(0, 196, 204, 0.14), transparent 60%),
+    radial-gradient(700px 320px at 0% 0%, rgba(37, 99, 235, 0.08), transparent 60%),
     linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border-bottom: 1px solid #EDF1F7;
+  overflow: hidden;
 }
+.inner-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00C4CC 30%, #3B82F6 70%, transparent);
+  opacity: 0.7;
+}
+
+.card-hover-cool {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-hover-cool:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px -12px rgba(11, 27, 61, 0.16), 0 0 0 1px rgba(0, 196, 204, 0.25);
+  border-color: rgba(0, 196, 204, 0.4);
+}
+
 .flow-step { animation: flow-step-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
 @keyframes flow-step-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .flow-step { animation: none; } }

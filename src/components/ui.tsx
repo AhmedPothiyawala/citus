@@ -8,7 +8,10 @@ export const Container: React.FC<{ children: React.ReactNode; className?: string
 );
 
 export const Eyebrow: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <p className={`text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0E8A8F] mb-2 ${className}`}>{children}</p>
+  <p className={`inline-flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-[#0E8A8F] mb-2 ${className}`}>
+    <span className="inline-block w-2 h-2 rounded-full bg-[#00C4CC] animate-live-dot shrink-0" />
+    <span>{children}</span>
+  </p>
 );
 
 export const SectionTitle: React.FC<{ eyebrow?: string; title: string; intro?: React.ReactNode; id?: string; as?: 'h1' | 'h2' }> = ({ eyebrow, title, intro, id, as = 'h2' }) => {
