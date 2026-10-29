@@ -87,7 +87,7 @@ export const Header: React.FC = () => {
         {/* Logo */}
         <SmartLink to={LINKS.home} className="inline-block py-1">
           <img
-            src={useDark ? COMPANY_INFO.logoRetina : '/images/citiuscomm-white-logo.png'}
+            src={useDark ? COMPANY_INFO.logoRetina : COMPANY_INFO.logoWhiteRetina}
             alt="CITIUSCOMM Logo"
             className="h-[26px] sm:h-[30px] w-auto object-contain transition-opacity duration-200"
             loading="eager"

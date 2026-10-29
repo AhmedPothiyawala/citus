@@ -58,7 +58,7 @@ export const SiteHeader: React.FC = () => {
     <header className="w-full bg-white text-[#0B1B3D] border-b border-slate-200 sticky top-0 z-50">
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 h-[56px] md:h-[60px] flex items-center justify-between">
         <SmartLink to="/" onClick={closeMenu} className="flex items-center hover:opacity-95 transition-opacity" aria-label="CITIUSCOMM home">
-          <img src="/images/citiuscomm-retina-logo.png" alt="CITIUSCOMM Logo" className="h-6 sm:h-7 w-auto block" />
+          <img src="/images/citiuscomm-logo.svg" alt="CITIUSCOMM Logo" className="h-6 sm:h-7 w-auto block" />
         </SmartLink>
 
         {/* Desktop Nav */}

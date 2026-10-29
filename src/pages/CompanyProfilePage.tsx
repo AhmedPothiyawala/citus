@@ -39,31 +39,22 @@ export const CompanyProfilePage: React.FC = () => {
       </section>
 
       {/* Vision & Mission Section */}
-      <section className="relative bg-black text-white pt-[60px] pb-[110px] overflow-hidden [clip-path:ellipse(85%_100%_at_50%_0%)]">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{ backgroundImage: `url('/images/Video-Background.png')` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-
+      <section className="relative bg-[#F3F6FC] text-[#0B1B3D] pt-[60px] pb-[80px] overflow-hidden border-t border-slate-200">
         <div className="relative site-container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
             {/* Vision */}
             <div className="space-y-6 text-center">
-              <h2 className="text-[35px] leading-[45px] font-normal font-heading text-white">
+              <h2 className="text-[32px] leading-[42px] font-bold font-heading text-[#0B1B3D]">
                 Vision
               </h2>
-              <ul className="space-y-4 text-[18px] text-white font-sans leading-[28px]">
+              <ul className="space-y-4 text-[17px] text-slate-700 font-sans leading-[28px]">
                 <li>
-                  
                   <span>We realize the dreams of our clients through long-term relationships.</span>
                 </li>
                 <li>
-                  
                   <span>We enhance our creativity by balancing Innovation and Reliability</span>
                 </li>
                 <li>
-                  
                   <span>We want to be the most preferred and admired brand in Technology Aggregation</span>
                 </li>
               </ul>
@@ -71,10 +62,10 @@ export const CompanyProfilePage: React.FC = () => {
 
             {/* Mission */}
             <div className="space-y-6 text-center">
-              <h2 className="text-[35px] leading-[45px] font-normal font-heading text-white">
+              <h2 className="text-[32px] leading-[42px] font-bold font-heading text-[#0B1B3D]">
                 Mission
               </h2>
-              <p className="text-[18px] text-white font-sans leading-[28px]">
+              <p className="text-[17px] text-slate-700 font-sans leading-[28px]">
                 Increase our Coverage and Competency to be the main Solution Provider that meets all Technological Requirements and contributes to a more harmonious society.
               </p>
             </div>

@@ -255,35 +255,27 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     };
   }, [reverse]);
 
-  // Wheel listener: enables cursor wheel horizontal scrolling
+  // Wheel listener: enables horizontal scrolling for intentional swipe gestures without trapping vertical page scroll
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const onWheel = (e: WheelEvent) => {
-      isInteractingRef.current = true;
-      scheduleResume(1400);
-
-      // Trackpad 2-finger horizontal swipe
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      // Only handle intentional horizontal gestures:
+      // 1. Trackpad 2-finger horizontal swipe (|deltaX| > |deltaY|)
+      // 2. Shift + mouse wheel
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+        isInteractingRef.current = true;
+        scheduleResume(1400);
         wrapCheck();
         return;
       }
 
-      // Shift + mouse wheel
-      if (e.shiftKey) {
-        wrapCheck();
-        return;
-      }
-
-      // Vertical mouse wheel with cursor over marquee:
-      // Translate deltaY to horizontal scroll so cursor scrolling works smoothly!
-      e.preventDefault();
-      el.scrollLeft += e.deltaY;
-      wrapCheck();
+      // DO NOT call e.preventDefault() for normal vertical mouse wheel!
+      // This allows the user to smoothly scroll down the webpage naturally without getting trapped!
     };
 
-    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('wheel', onWheel, { passive: true });
     return () => {
       el.removeEventListener('wheel', onWheel);
     };
@@ -398,7 +390,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
         type="button"
         aria-label="Scroll left"
         onClick={() => handleScrollBy(-320)}
-        className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+        className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/95 border border-slate-200 text-slate-700 hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
       >
         <svg className="w-5 h-5 -translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -410,7 +402,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
         type="button"
         aria-label="Scroll right"
         onClick={() => handleScrollBy(320)}
-        className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+        className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/95 border border-slate-200 text-slate-700 hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
       >
         <svg className="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -470,23 +462,23 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
                   key={`${copy}-${item.name}`}
                   className="w-[150px] sm:w-[180px] lg:w-[200px] shrink-0 mx-2 md:mx-2.5 flex flex-col items-center group"
                 >
-                  <div className="logo-tile w-full bg-white rounded-2xl p-2 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 overflow-hidden">
+                  <div className="logo-tile w-full bg-white rounded-2xl p-3 flex items-center justify-center aspect-square border border-slate-200/90 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#00C4CC]/60 hover:-translate-y-1 overflow-hidden">
                     {item.logo ? (
                       <img
                         src={item.logo}
                         alt={copy === 0 ? item.name : ''}
-                        className="w-full h-full object-contain scale-[1.18] group-hover:scale-[1.26] transition-transform duration-300 select-none pointer-events-none mix-blend-multiply"
+                        className="w-full h-full object-contain scale-[1.15] group-hover:scale-[1.22] transition-transform duration-300 select-none pointer-events-none mix-blend-multiply"
                         draggable={false}
                         loading="lazy"
                       />
                     ) : (
                       // No official logo file yet: show the company name cleanly instead of a stock photo
-                      <span className="px-3 text-center text-[17px] md:text-[19px] font-bold leading-tight text-[#0B1B3D]">
+                      <span className="px-3 text-center text-[16px] md:text-[18px] font-bold leading-tight text-[#0B1B3D]">
                         {item.name}
                       </span>
                     )}
                   </div>
-                  <span className="text-slate-200 text-[13px] md:text-[14px] font-semibold text-center mt-2.5 group-hover:text-cyan-400 transition-colors line-clamp-1 tracking-wide">
+                  <span className="text-slate-700 text-[13px] md:text-[14px] font-semibold text-center mt-2 group-hover:text-[#00C4CC] transition-colors line-clamp-1 tracking-wide">
                     {item.name}
                   </span>
                 </div>
@@ -1480,35 +1472,15 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="partners"
-        className="spotlight pt-8 pb-6 md:pt-10 md:pb-8 bg-[#0B1B3D] text-white relative overflow-hidden border-b border-slate-800/60"
+        className="pt-10 pb-8 md:pt-14 md:pb-10 bg-white relative overflow-hidden border-t border-slate-100"
       >
-        {/* Dynamic Animated Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
-
-        {/* Floating Ambient Cyan & Blue Glowing Orbs */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#00C4CC]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-1" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#3B82F6]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-2" />
-
-        {/* Continuous Drifting Tech Matrix Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none animate-grid-drift"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 20px 20px, white 2%, transparent 0%), radial-gradient(circle at 70px 70px, #00C4CC 2%, transparent 0%)',
-            backgroundSize: '90px 90px',
-          }}
-        />
-
-        {/* Traveling Laser Pulse Line */}
-        <div className="absolute top-0 left-0 w-1/3 h-[1px] bg-gradient-to-r from-transparent via-[#00C4CC] to-transparent opacity-60 animate-laser-sweep pointer-events-none" />
-
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#00C4CC]">
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: C.teal }}>
               MULTI-OEM SOURCING ECOSYSTEM
             </p>
-            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold tracking-tight" style={{ color: C.headline }}>
               Technology Partners
             </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
@@ -1524,42 +1496,22 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="clients"
-        className="spotlight pt-6 pb-8 md:pt-8 md:pb-10 bg-[#0B1B3D] text-white relative overflow-hidden"
+        className="pt-6 pb-10 md:pt-8 md:pb-14 bg-white relative overflow-hidden border-b border-slate-100"
       >
-        {/* Dynamic Animated Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
-
-        {/* Floating Ambient Indigo & Cyan Glowing Orbs */}
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#6366F1]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-2" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#00C4CC]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-1" />
-
-        {/* Continuous Drifting Tech Matrix Grid (Reverse Angle) */}
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none animate-grid-drift-reverse"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 70px 20px, white 2%, transparent 0%), radial-gradient(circle at 20px 70px, #3B82F6 2%, transparent 0%)',
-            backgroundSize: '90px 90px',
-          }}
-        />
-
-        {/* Traveling Laser Pulse Line */}
-        <div className="absolute top-0 left-0 w-1/3 h-[1px] bg-gradient-to-r from-transparent via-[#3B82F6] to-transparent opacity-60 animate-laser-sweep pointer-events-none" />
-
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#00C4CC]">
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: C.teal }}>
               TRUSTED ACROSS BROADCAST, TELECOM & DATA CENTER NETWORKS
             </p>
-            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold tracking-tight" style={{ color: C.headline }}>
               Our Clients
             </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
           </div>
 
-          {/* Continuous marquee: every logo glides by in one line; pauses on hover */}
-          <LogoMarquee items={uniqueByName(clientSlides.flat())} reverse={true} />
+          {/* Continuous marquee: exact same scrolling as Technology Partners */}
+          <LogoMarquee items={uniqueByName(clientSlides.flat())} reverse={false} />
         </div>
       </section>
 
