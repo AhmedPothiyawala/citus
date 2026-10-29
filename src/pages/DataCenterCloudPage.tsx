@@ -19,9 +19,9 @@ export const DataCenterCloudPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
           <div>
             <img
-              src="/images/Data-Centers-1.jpg"
+              src="/images/solutions/data-center-cloud.jpg"
               alt="Data Center & Cloud"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover rounded-xl shadow-md"
             />
           </div>
 

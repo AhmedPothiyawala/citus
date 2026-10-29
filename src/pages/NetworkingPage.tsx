@@ -22,9 +22,9 @@ export const NetworkingPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-10 lg:gap-[50px] items-center">
           <div>
             <img
-              src="/images/Router-and-Switches-1-1.jpg"
+              src="/images/solutions/networking.jpg"
               alt="Router and Switches"
-              className="w-full max-w-[545px] mx-auto h-auto object-cover"
+              className="w-full max-w-[545px] mx-auto h-auto object-cover rounded-xl shadow-md"
             />
           </div>
 

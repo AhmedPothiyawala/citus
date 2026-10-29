@@ -18,9 +18,9 @@ export const ServerStoragePage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
           <div>
             <img
-              src="/images/Servers-and-Storage-1.jpg"
+              src="/images/solutions/server-storage.jpg"
               alt="Server and Storage Infrastructure"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover rounded-xl shadow-md"
             />
           </div>
 

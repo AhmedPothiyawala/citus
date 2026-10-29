@@ -43,9 +43,9 @@ export const FttxPage: React.FC = () => {
 
           <div>
             <img
-              src="/images/optical-fiber.jpg"
+              src="/images/solutions/fttx.jpg"
               alt="FTTX Optical Fiber Solutions"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover rounded-xl shadow-md"
             />
           </div>
         </div>

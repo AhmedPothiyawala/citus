@@ -10,9 +10,9 @@ export const SecuritySolutionsPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[38fr_62fr] gap-10 lg:gap-[50px] items-center">
           <div>
             <img
-              src="/images/Firewall-security-solution.jpg"
+              src="/images/solutions/security-solutions.jpg"
               alt="Security Solutions"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover rounded-xl shadow-md"
             />
           </div>
 
