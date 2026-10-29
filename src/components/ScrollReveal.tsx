@@ -44,13 +44,13 @@ export const ScrollReveal = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
           const el = entry.target as HTMLElement;
-          el.classList.add('reveal-in');
-          observer.unobserve(el);
+          // Replays in both scroll directions; resets once fully off screen.
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.12) el.classList.add('reveal-in');
+          else if (!entry.isIntersecting) el.classList.remove('reveal-in');
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+      { threshold: [0, 0.12], rootMargin: '0px 0px -60px 0px' }
     );
 
     // 1. Line-reveal headings

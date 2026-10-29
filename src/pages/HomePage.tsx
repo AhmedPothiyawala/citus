@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SmartLink } from '../components/SmartLink';
-import { InteractiveFx } from '../components/fx/InteractiveFx';
-import { LINKS, COMPANY_INFO, PARTNERS_LIST, CLIENTS_LIST, MAIN_NAV } from '../data/site';
+import { LINKS, PARTNERS_LIST, CLIENTS_LIST } from '../data/site';
 
 /* ── COLOR TOKENS ── */
 const C = {
@@ -262,29 +261,16 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     if (!el) return;
 
     const onWheel = (e: WheelEvent) => {
-      isInteractingRef.current = true;
-      scheduleResume(1400);
-
-      // Trackpad 2-finger horizontal swipe
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      // Only a sideways gesture (trackpad swipe or Shift + wheel) moves the logos.
+      // A normal up/down wheel is left alone so the page keeps scrolling both ways.
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+        isInteractingRef.current = true;
+        scheduleResume(1400);
         wrapCheck();
-        return;
       }
-
-      // Shift + mouse wheel
-      if (e.shiftKey) {
-        wrapCheck();
-        return;
-      }
-
-      // Vertical mouse wheel with cursor over marquee:
-      // Translate deltaY to horizontal scroll so cursor scrolling works smoothly!
-      e.preventDefault();
-      el.scrollLeft += e.deltaY;
-      wrapCheck();
     };
 
-    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('wheel', onWheel, { passive: true });
     return () => {
       el.removeEventListener('wheel', onWheel);
     };
@@ -399,7 +385,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
         type="button"
         aria-label="Scroll left"
         onClick={() => handleScrollBy(-320)}
-        className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+        className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 text-[#0B1B3D] hover:text-white hover:bg-[#0B1B3D] hover:border-[#0B1B3D] items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
       >
         <svg className="w-5 h-5 -translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -411,7 +397,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
         type="button"
         aria-label="Scroll right"
         onClick={() => handleScrollBy(320)}
-        className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-[#0B1B3D]/85 border border-[#00C4CC]/40 text-[#00C4CC] hover:text-white hover:bg-[#00C4CC] hover:border-[#00C4CC] backdrop-blur-md items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_24px_rgba(0,196,204,0.6)] hover:scale-105 active:scale-95 cursor-pointer"
+        className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 text-[#0B1B3D] hover:text-white hover:bg-[#0B1B3D] hover:border-[#0B1B3D] items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all duration-300 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
       >
         <svg className="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -448,7 +434,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
             }
           }
         }}
-        className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+        className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         }`}
         style={{
@@ -472,7 +458,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
                   key={`${copy}-${item.name}`}
                   className="w-[150px] sm:w-[180px] lg:w-[200px] shrink-0 mx-2 md:mx-2.5 flex flex-col items-center group"
                 >
-                  <div className="logo-tile w-full bg-white rounded-2xl p-2 flex items-center justify-center aspect-square shadow-xl transition-all duration-300 hover:shadow-[0_16px_36px_rgba(0,196,204,0.35)] hover:-translate-y-2 overflow-hidden">
+                  <div className="logo-tile w-full bg-white rounded-2xl p-2 flex items-center justify-center aspect-square border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-[0_10px_24px_rgba(11,27,61,0.12)] hover:-translate-y-2 overflow-hidden">
                     {item.logo ? (
                       <img
                         src={item.logo}
@@ -488,7 +474,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
                       </span>
                     )}
                   </div>
-                  <span className="text-slate-200 text-[13px] md:text-[14px] font-semibold text-center mt-2.5 group-hover:text-cyan-400 transition-colors line-clamp-1 tracking-wide">
+                  <span className="text-[#0B1B3D] text-[13px] md:text-[14px] font-semibold text-center mt-2.5 group-hover:text-[#2563EB] transition-colors line-clamp-1 tracking-wide">
                     {item.name}
                   </span>
                 </div>
@@ -530,8 +516,67 @@ export const HomePage: React.FC = () => {
   const viewBoxW = Math.round(gx(1097) + 75);
   const stretchPath = (d: string) =>
     d.replace(/(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g, (_m, x, y) => `${gx(parseFloat(x)).toFixed(1)} ${y}`);
-  const [mobileSubmenu, setMobileSubmenu] = useState<string | null>(null);
+  const [_mobileSubmenu] = useState<string | null>(null);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
+
+  // Graph sequential animation: loops continuously while in viewport
+  const graphSvgRef = useRef<HTMLDivElement>(null);
+  const [graphAnimated, setGraphAnimated] = useState(false);
+  useEffect(() => {
+    const el = graphSvgRef.current;
+    if (!el || typeof window === 'undefined') return;
+
+    let loopActive = false;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const clearTimers = () => timers.splice(0).forEach(t => clearTimeout(t));
+
+    const startLoop = () => {
+      if (loopActive) return;
+      loopActive = true;
+
+      const cycle = () => {
+        if (!loopActive) return;
+        // Phase 1: animate in
+        // Last element (card-4) appears at ~3.09s + 0.4s fade = 3.49s.
+        // Hold fully-visible for another 1.5s → total on-phase = 5 000ms
+        setGraphAnimated(true);
+        const t1 = setTimeout(() => {
+          if (!loopActive) return;
+          // Phase 2: instant reset then short pause before next cycle
+          setGraphAnimated(false);
+          const t2 = setTimeout(() => { if (loopActive) cycle(); }, 500);
+          timers.push(t2);
+        }, 6500);
+        timers.push(t1);
+      };
+
+      cycle();
+    };
+
+    const stopLoop = () => {
+      loopActive = false;
+      clearTimers();
+      setGraphAnimated(false);
+    };
+
+    if (!('IntersectionObserver' in window)) {
+      startLoop();
+      return stopLoop;
+    }
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { threshold: 0.10 }
+    );
+    obs.observe(el);
+    return () => { stopLoop(); obs.disconnect(); };
+  }, []);
 
 
   // Typewriter text animation state for hero headline
@@ -592,13 +637,17 @@ export const HomePage: React.FC = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          // Replays every time: fades up when it comes into view (scrolling down or back up),
+          // resets once it has fully left the screen.
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.12) {
             entry.target.classList.add('revealed');
+          } else if (!entry.isIntersecting) {
+            entry.target.classList.remove('revealed');
           }
         });
       },
       {
-        threshold: 0.12,
+        threshold: [0, 0.12],
         rootMargin: '0px 0px -30px 0px',
       }
     );
@@ -808,6 +857,8 @@ export const HomePage: React.FC = () => {
         <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 min-h-0 flex flex-col items-center justify-start mt-1 md:mt-1">
           <div className="w-full flex items-center justify-center overflow-visible select-none">
             <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0 mx-auto">
+              {/* Sequential animation wrapper — observes viewport entry */}
+              <div ref={graphSvgRef} className={`w-full graph-simple${graphAnimated ? ' graph-animated' : ''}`}>
               {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
               <div
                 className="graph-overlay hidden md:flex flex-col items-start absolute z-20 pointer-events-auto"
@@ -839,7 +890,7 @@ export const HomePage: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <defs>
-                  <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="curveGrad" x1={gx(180)} y1="0" x2={gx(1020)} y2="0" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stopColor="#22D3EE" />
                     <stop offset="25%" stopColor="#3B82F6" />
                     <stop offset="50%" stopColor="#6366F1" />
@@ -859,6 +910,7 @@ export const HomePage: React.FC = () => {
                 <path
                   d={stretchPath("M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125 L 1020 430 L 180 430 Z")}
                   fill="url(#curveFill)"
+                  className="graph-fill-draw"
                 />
 
                 {/* Y axis */}
@@ -883,18 +935,45 @@ export const HomePage: React.FC = () => {
                     stroke={tier.color}
                     strokeWidth="1.5"
                     strokeDasharray="4 4"
-                    opacity="0.35"
+                    className={`graph-dropline graph-dropline-${tier.index}`}
                   />
                 ))}
-
-                {/* Dynamic Illuminated Glowing Base Curve */}
+                {/* Dynamic Illuminated Glowing Base Curve — segment-by-segment draw */}
+                {/* Seg 0: P0 → P1 */}
                 <path
-                  d={stretchPath("M 180 340 C 285 313, 315 300, 390 286 C 495 260, 525 248, 600 233 C 705 206, 735 192, 810 178 C 915 152, 945 138, 1020 125")}
+                  d={stretchPath("M 180 340 C 285 313, 315 300, 390 286")}
                   stroke="url(#curveGrad)"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
-                  className="animate-curve-pulse"
+                  className="animate-curve-pulse graph-seg graph-seg-0"
+                />
+                {/* Seg 1: P1 → P2 */}
+                <path
+                  d={stretchPath("M 390 286 C 495 260, 525 248, 600 233")}
+                  stroke="url(#curveGrad)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  fill="none"
+                  className="animate-curve-pulse graph-seg graph-seg-1"
+                />
+                {/* Seg 2: P2 → P3 */}
+                <path
+                  d={stretchPath("M 600 233 C 705 206, 735 192, 810 178")}
+                  stroke="url(#curveGrad)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  fill="none"
+                  className="animate-curve-pulse graph-seg graph-seg-2"
+                />
+                {/* Seg 3: P3 → P4 */}
+                <path
+                  d={stretchPath("M 810 178 C 915 152, 945 138, 1020 125")}
+                  stroke="url(#curveGrad)"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  fill="none"
+                  className="animate-curve-pulse graph-seg graph-seg-3"
                 />
 
                 {/* Curve Optical Data Flow: continuous gliding white-cyan packet stream */}
@@ -904,7 +983,7 @@ export const HomePage: React.FC = () => {
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   fill="none"
-                  className="curve-flow"
+                  className="curve-flow graph-flow"
                   style={{
                     filter: 'drop-shadow(0 0 3px #22D3EE) drop-shadow(0 0 7px rgba(34, 211, 238, 0.85))',
                     pointerEvents: 'none',
@@ -921,7 +1000,7 @@ export const HomePage: React.FC = () => {
                   const ax = gx(tier.x) - Math.cos(rad) * back;
                   const ay = tier.y - Math.sin(rad) * back;
                   return (
-                    <g key={`arrow-${tier.index}`} transform={`translate(${ax} ${ay}) rotate(${ang})`} style={{ pointerEvents: 'none' }}>
+                    <g key={`arrow-${tier.index}`} transform={`translate(${ax} ${ay}) rotate(${ang})`} style={{ pointerEvents: 'none' }} className="graph-flow">
                       <g className="curve-arrow" style={{ animationDelay: `${i * 0.25}s` }}>
                         <path d="M -7 -6 L 3 0 L -7 6" fill="none" stroke={tier.color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M -14 -6 L -4 0 L -14 6" fill="none" stroke={tier.color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" opacity="0.45" />
@@ -943,6 +1022,7 @@ export const HomePage: React.FC = () => {
                       fontSize="10"
                       fontFamily="Inter, sans-serif"
                       textAnchor="middle"
+                      className={`graph-annotation graph-annotation-${tier.index}`}
                       style={{ transition: 'fill 0.2s ease, font-weight 0.2s ease', pointerEvents: 'none' }}
                     >
                       {tier.annotationLines.map((line, li) => (
@@ -960,7 +1040,7 @@ export const HomePage: React.FC = () => {
                   return (
                     <g
                       key={`card-${tier.index}`}
-                      className="cursor-pointer"
+                      className={`cursor-pointer graph-card graph-card-${tier.index}`}
                       onMouseEnter={() => setHoveredTier(tier.index)}
                       onMouseLeave={() => setHoveredTier(null)}
                       onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
@@ -969,7 +1049,6 @@ export const HomePage: React.FC = () => {
                         filter: isHovered
                           ? `drop-shadow(0 10px 18px rgba(11, 27, 61, 0.28)) drop-shadow(0 0 10px ${tier.color}77)`
                           : 'drop-shadow(0 2px 4px rgba(11, 27, 61, 0.08))',
-                        transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
                       }}
                     >
                       <rect x={gx(tier.x) - tier.boxW / 2} y={tier.boxY} width={tier.boxW} height={tier.boxH} rx="6" fill="#0B1B3D" />
@@ -997,12 +1076,13 @@ export const HomePage: React.FC = () => {
                 })}
 
                 {/* Circle Points on Curve + Expanding Concentric Radar Rings */}
+                {/* Circle Points on Curve + Expanding Concentric Radar Rings */}
                 {CAPACITY_TIERS.map((tier) => {
                   const isHovered = hoveredTier === tier.index;
                   return (
                     <g
                       key={`point-${tier.index}`}
-                      className="cursor-pointer"
+                      className={`cursor-pointer graph-point graph-point-${tier.index}`}
                       onMouseEnter={() => setHoveredTier(tier.index)}
                       onMouseLeave={() => setHoveredTier(null)}
                       onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
@@ -1065,7 +1145,7 @@ export const HomePage: React.FC = () => {
                   return (
                     <g
                       key={`pill-${tier.index}`}
-                      className="cursor-pointer"
+                      className={`cursor-pointer graph-pill graph-pill-${tier.index}`}
                       onMouseEnter={() => setHoveredTier(tier.index)}
                       onMouseLeave={() => setHoveredTier(null)}
                       style={{
@@ -1108,6 +1188,7 @@ export const HomePage: React.FC = () => {
                   Size (capacity)
                 </text>
               </svg>
+              </div>{/* end graph-animated wrapper */}
             </div>
           </div>
         </div>
@@ -1434,35 +1515,16 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="partners"
-        className="spotlight pt-8 pb-6 md:pt-10 md:pb-8 bg-[#0B1B3D] text-white relative overflow-hidden border-b border-slate-800/60"
+        className="spotlight pt-8 pb-6 md:pt-10 md:pb-8 bg-white text-[#0B1B3D] relative overflow-hidden border-b border-slate-100"
       >
-        {/* Dynamic Animated Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
-
-        {/* Floating Ambient Cyan & Blue Glowing Orbs */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#00C4CC]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-1" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#3B82F6]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-2" />
-
-        {/* Continuous Drifting Tech Matrix Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none animate-grid-drift"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 20px 20px, white 2%, transparent 0%), radial-gradient(circle at 70px 70px, #00C4CC 2%, transparent 0%)',
-            backgroundSize: '90px 90px',
-          }}
-        />
-
-        {/* Traveling Laser Pulse Line */}
-        <div className="absolute top-0 left-0 w-1/3 h-[1px] bg-gradient-to-r from-transparent via-[#00C4CC] to-transparent opacity-60 animate-laser-sweep pointer-events-none" />
 
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#00C4CC]">
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#0E8F96]">
               MULTI-OEM SOURCING ECOSYSTEM
             </p>
-            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-[#0B1B3D] tracking-tight">
               Technology Partners
             </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
@@ -1478,42 +1540,23 @@ export const HomePage: React.FC = () => {
       ═══════════════════════════════════════════════════ */}
       <section
         id="clients"
-        className="spotlight pt-6 pb-8 md:pt-8 md:pb-10 bg-[#0B1B3D] text-white relative overflow-hidden"
+        className="spotlight pt-6 pb-8 md:pt-8 md:pb-10 bg-white text-[#0B1B3D] relative overflow-hidden"
       >
-        {/* Dynamic Animated Tech Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13274c] via-[#0B1B3D] to-[#060e20] opacity-95" />
-
-        {/* Floating Ambient Indigo & Cyan Glowing Orbs */}
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#6366F1]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-2" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#00C4CC]/20 rounded-full blur-3xl pointer-events-none animate-tech-orb-1" />
-
-        {/* Continuous Drifting Tech Matrix Grid (Reverse Angle) */}
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none animate-grid-drift-reverse"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 70px 20px, white 2%, transparent 0%), radial-gradient(circle at 20px 70px, #3B82F6 2%, transparent 0%)',
-            backgroundSize: '90px 90px',
-          }}
-        />
-
-        {/* Traveling Laser Pulse Line */}
-        <div className="absolute top-0 left-0 w-1/3 h-[1px] bg-gradient-to-r from-transparent via-[#3B82F6] to-transparent opacity-60 animate-laser-sweep pointer-events-none" />
 
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#00C4CC]">
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5 text-[#0E8F96]">
               TRUSTED ACROSS BROADCAST, TELECOM & DATA CENTER NETWORKS
             </p>
-            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-[38px] font-extrabold text-[#0B1B3D] tracking-tight">
               Our Clients
             </h2>
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
           </div>
 
           {/* Continuous marquee: every logo glides by in one line; pauses on hover */}
-          <LogoMarquee items={uniqueByName(clientSlides.flat())} reverse={true} />
+          <LogoMarquee items={uniqueByName(clientSlides.flat())} reverse={false} />
         </div>
       </section>
 
@@ -1596,32 +1639,17 @@ export const HomePage: React.FC = () => {
       <section className="section-bg section-bg-calm pt-6 pb-8 md:pt-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
-            className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"
+            className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-[#F3F6FC] text-[#0B1B3D] border border-slate-200 relative overflow-hidden border border-slate-700/60"
           >
-            {/* Animated Rotating Pulsing Aurora Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[360px] bg-gradient-to-r from-[#00C4CC]/25 via-[#3B82F6]/20 to-[#6366F1]/25 rounded-full blur-3xl pointer-events-none animate-cta-aurora" />
-
-            {/* Moving Tech Matrix Grid */}
-            <div
-              className="absolute inset-0 opacity-[0.07] pointer-events-none animate-grid-drift"
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 20px 20px, white 2%, transparent 0%), radial-gradient(circle at 70px 70px, #00C4CC 2%, transparent 0%)',
-                backgroundSize: '80px 80px',
-              }}
-            />
-
-            {/* Ambient Shimmer Glider */}
-            <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none animate-card-shimmer" />
-            <h2 className="text-[22px] md:text-[30px] font-extrabold leading-[1.2] mb-2 max-w-[560px] mx-auto text-white relative z-10">
+            <h2 className="text-[22px] md:text-[30px] font-extrabold leading-[1.2] mb-2 max-w-[560px] mx-auto text-[#0B1B3D] relative z-10">
               Planning your next facility?
             </h2>
-            <p className="text-[13px] md:text-[15px] leading-[22px] mb-5 max-w-[520px] mx-auto text-slate-300 relative z-10 font-normal">
+            <p className="text-[13px] md:text-[15px] leading-[22px] mb-5 max-w-[520px] mx-auto text-slate-600 relative z-10 font-normal">
               Tell us your capacity and timeline. We will recommend the right system architecture in under a day.
             </p>
             <SmartLink
               to={LINKS.contact}
-              className="inline-flex items-center justify-center bg-[#00C4CC] text-[#0B1B3D] rounded-full px-7 py-3 mx-auto font-bold text-[14px] hover:bg-cyan-300 shadow-[0_0_20px_rgba(0,196,204,0.4)] hover:shadow-[0_0_30px_rgba(0,196,204,0.7)] hover:-translate-y-0.5 transition-all duration-200 relative z-10"
+              className="inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-full px-7 py-3 mx-auto font-bold text-[14px] hover:bg-[#1A2F5E] shadow-[0_0_20px_rgba(0,196,204,0.4)] hover:shadow-[0_0_30px_rgba(0,196,204,0.7)] hover:-translate-y-0.5 transition-all duration-200 relative z-10"
             >
               Talk to an expert
             </SmartLink>

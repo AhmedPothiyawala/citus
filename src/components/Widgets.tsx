@@ -367,27 +367,27 @@ export const CTASection: React.FC<{
   buttonHref = LINKS.contact,
 }) => {
   return (
-    <div className="relative bg-gradient-to-r from-[#0b1f33] via-[#0f5487] to-[#166fb0] py-16 px-4 sm:px-8 text-white text-center overflow-hidden">
+    <div className="relative bg-[#F3F6FC] border-y border-slate-200 py-16 px-4 sm:px-8 text-[#0B1B3D] text-center overflow-hidden">
       <div className="max-w-4xl mx-auto relative z-10">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
           {title}
         </h2>
-        <p className="text-base sm:text-lg text-sky-100 max-w-2xl mx-auto mb-8 leading-relaxed">
+        <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed">
           {subtitle}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <SmartLink
             to={buttonHref}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold bg-white text-[#166fb0] hover:bg-sky-50 shadow-lg hover:shadow-xl transition-all"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold bg-[#0B1B3D] text-white hover:bg-[#1A2F5E] transition-colors"
           >
             <span>{buttonText}</span>
             <IconArrowRight className="w-4 h-4" />
           </SmartLink>
           <a
             href="tel:+911140107947"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold border border-white/30 text-white hover:bg-white/10 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-semibold border border-slate-300 text-[#0B1B3D] bg-white hover:bg-slate-50 transition-colors"
           >
-            <IconPhone className="w-4 h-4 text-sky-200" />
+            <IconPhone className="w-4 h-4 text-[#2563EB]" />
             <span>+91 11 4010 7947</span>
           </a>
         </div>
