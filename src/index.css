@@ -969,70 +969,70 @@
 .graph-dropline   { opacity: 0; }
 .graph-flow       { opacity: 0; }
 
-/* ── SEGMENTS: each draws after its start-point appears ──
-   Seg timing (each 0.65s duration):
-     Seg0: delay 0.35s → completes t=1.00s
-     Seg1: delay 1.00s → completes t=1.65s
-     Seg2: delay 1.65s → completes t=2.30s
-     Seg3: delay 2.30s → completes t=2.95s            */
-.graph-animated .graph-seg-0 { stroke-dashoffset: 0; transition: stroke-dashoffset 0.65s ease-in-out 0.35s; }
-.graph-animated .graph-seg-1 { stroke-dashoffset: 0; transition: stroke-dashoffset 0.65s ease-in-out 1.00s; }
-.graph-animated .graph-seg-2 { stroke-dashoffset: 0; transition: stroke-dashoffset 0.65s ease-in-out 1.65s; }
-.graph-animated .graph-seg-3 { stroke-dashoffset: 0; transition: stroke-dashoffset 0.65s ease-in-out 2.30s; }
+/* ── SEGMENTS: each draws after its start-point appears (smooth, graceful pace) ──
+   Seg timing (each 1.10s duration):
+     Seg0: delay 0.40s → completes t=1.50s
+     Seg1: delay 1.50s → completes t=2.60s
+     Seg2: delay 2.60s → completes t=3.70s
+     Seg3: delay 3.70s → completes t=4.80s            */
+.graph-animated .graph-seg-0 { stroke-dashoffset: 0; transition: stroke-dashoffset 1.10s ease-in-out 0.40s; }
+.graph-animated .graph-seg-1 { stroke-dashoffset: 0; transition: stroke-dashoffset 1.10s ease-in-out 1.50s; }
+.graph-animated .graph-seg-2 { stroke-dashoffset: 0; transition: stroke-dashoffset 1.10s ease-in-out 2.60s; }
+.graph-animated .graph-seg-3 { stroke-dashoffset: 0; transition: stroke-dashoffset 1.10s ease-in-out 3.70s; }
 
 /* ── FILL fades in near the end ── */
 .graph-animated .graph-fill-draw {
   opacity: 1;
-  transition: opacity 0.8s ease 2.85s;
+  transition: opacity 1.2s ease 4.60s;
 }
 
 /* ── POINTS pop in exactly as the line reaches each coordinate ──
      P0: before line starts (t=0s)
-     P1: as Seg0 completes  (t=0.95s)
-     P2: as Seg1 completes  (t=1.60s)
-     P3: as Seg2 completes  (t=2.25s)
-     P4: as Seg3 completes  (t=2.90s)                */
-.graph-animated .graph-point   { transition: opacity 0.4s ease; }
+     P1: as Seg0 completes  (t=1.45s)
+     P2: as Seg1 completes  (t=2.55s)
+     P3: as Seg2 completes  (t=3.65s)
+     P4: as Seg3 completes  (t=4.75s)                */
+.graph-animated .graph-point   { transition: opacity 0.5s ease; }
 .graph-animated .graph-point-0 { opacity: 1; transition-delay: 0s;    }
-.graph-animated .graph-point-1 { opacity: 1; transition-delay: 0.95s; }
-.graph-animated .graph-point-2 { opacity: 1; transition-delay: 1.60s; }
-.graph-animated .graph-point-3 { opacity: 1; transition-delay: 2.25s; }
-.graph-animated .graph-point-4 { opacity: 1; transition-delay: 2.90s; }
+.graph-animated .graph-point-1 { opacity: 1; transition-delay: 1.45s; }
+.graph-animated .graph-point-2 { opacity: 1; transition-delay: 2.55s; }
+.graph-animated .graph-point-3 { opacity: 1; transition-delay: 3.65s; }
+.graph-animated .graph-point-4 { opacity: 1; transition-delay: 4.75s; }
 
 /* ── CARDS appear just after each point ── */
-.graph-animated .graph-card   { transition: opacity 0.4s ease; }
-.graph-animated .graph-card-0 { opacity: 1; transition-delay: 0.12s;  }
-.graph-animated .graph-card-1 { opacity: 1; transition-delay: 1.07s;  }
-.graph-animated .graph-card-2 { opacity: 1; transition-delay: 1.72s;  }
-.graph-animated .graph-card-3 { opacity: 1; transition-delay: 2.37s;  }
-.graph-animated .graph-card-4 { opacity: 1; transition-delay: 3.02s;  }
+.graph-animated .graph-card   { transition: opacity 0.55s ease; }
+.graph-animated .graph-card-0 { opacity: 1; transition-delay: 0.15s;  }
+.graph-animated .graph-card-1 { opacity: 1; transition-delay: 1.55s;  }
+.graph-animated .graph-card-2 { opacity: 1; transition-delay: 2.65s;  }
+.graph-animated .graph-card-3 { opacity: 1; transition-delay: 3.75s;  }
+.graph-animated .graph-card-4 { opacity: 1; transition-delay: 4.85s;  }
 
 /* ── ANNOTATIONS appear with each point ── */
-.graph-animated .graph-annotation   { transition: opacity 0.35s ease; }
-.graph-animated .graph-annotation-0 { opacity: 1; transition-delay: 0.05s;  }
-.graph-animated .graph-annotation-1 { opacity: 1; transition-delay: 0.97s;  }
-.graph-animated .graph-annotation-2 { opacity: 1; transition-delay: 1.62s;  }
-.graph-animated .graph-annotation-3 { opacity: 1; transition-delay: 2.27s;  }
-.graph-animated .graph-annotation-4 { opacity: 1; transition-delay: 2.92s;  }
+.graph-animated .graph-annotation   { transition: opacity 0.5s ease; }
+.graph-animated .graph-annotation-0 { opacity: 1; transition-delay: 0.08s;  }
+.graph-animated .graph-annotation-1 { opacity: 1; transition-delay: 1.48s;  }
+.graph-animated .graph-annotation-2 { opacity: 1; transition-delay: 2.58s;  }
+.graph-animated .graph-annotation-3 { opacity: 1; transition-delay: 3.68s;  }
+.graph-animated .graph-annotation-4 { opacity: 1; transition-delay: 4.78s;  }
 
 /* ── PILLS appear with annotations ── */
-.graph-animated .graph-pill   { transition: opacity 0.35s ease; }
-.graph-animated .graph-pill-0 { opacity: 1; transition-delay: 0.05s;  }
-.graph-animated .graph-pill-1 { opacity: 1; transition-delay: 0.97s;  }
-.graph-animated .graph-pill-2 { opacity: 1; transition-delay: 1.62s;  }
-.graph-animated .graph-pill-3 { opacity: 1; transition-delay: 2.27s;  }
-.graph-animated .graph-pill-4 { opacity: 1; transition-delay: 2.92s;  }
+.graph-animated .graph-pill   { transition: opacity 0.5s ease; }
+.graph-animated .graph-pill-0 { opacity: 1; transition-delay: 0.08s;  }
+.graph-animated .graph-pill-1 { opacity: 1; transition-delay: 1.48s;  }
+.graph-animated .graph-pill-2 { opacity: 1; transition-delay: 2.58s;  }
+.graph-animated .graph-pill-3 { opacity: 1; transition-delay: 3.68s;  }
+.graph-animated .graph-pill-4 { opacity: 1; transition-delay: 4.78s;  }
 
 /* ── DROP LINES appear with each point (final opacity 0.35) ── */
-.graph-animated .graph-dropline   { transition: opacity 0.3s ease; }
-.graph-animated .graph-dropline-0 { opacity: 0.35; transition-delay: 0.05s;  }
-.graph-animated .graph-dropline-1 { opacity: 0.35; transition-delay: 0.97s;  }
-.graph-animated .graph-dropline-2 { opacity: 0.35; transition-delay: 1.62s;  }
-.graph-animated .graph-dropline-3 { opacity: 0.35; transition-delay: 2.27s;  }
-.graph-animated .graph-dropline-4 { opacity: 0.35; transition-delay: 2.92s;  }
+.graph-animated .graph-dropline   { transition: opacity 0.45s ease; }
+.graph-animated .graph-dropline-0 { opacity: 0.35; transition-delay: 0.08s;  }
+.graph-animated .graph-dropline-1 { opacity: 0.35; transition-delay: 1.48s;  }
+.graph-animated .graph-dropline-2 { opacity: 0.35; transition-delay: 2.58s;  }
+.graph-animated .graph-dropline-3 { opacity: 0.35; transition-delay: 3.68s;  }
+.graph-animated .graph-dropline-4 { opacity: 0.35; transition-delay: 4.78s;  }
 
 /* ── FLOW ARROWS appear after all 5 points are drawn ── */
-.graph-animated .graph-flow { opacity: 1; transition: opacity 0.6s ease 3.10s; }
+.graph-animated .graph-flow { opacity: 1; transition: opacity 0.8s ease 5.00s; }
 
 @media (prefers-reduced-motion: reduce) {
   .graph-seg { stroke-dashoffset: 0 !important; }

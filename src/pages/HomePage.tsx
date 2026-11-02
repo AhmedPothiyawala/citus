@@ -439,7 +439,7 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
             }
           }
         }}
-        className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        className={`relative z-[2] w-full overflow-x-auto select-none pt-4 pb-3 touch-pan-x touch-pan-y [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
           }`}
         style={{
           WebkitOverflowScrolling: 'touch',
@@ -523,63 +523,34 @@ export const HomePage: React.FC = () => {
   const [_mobileSubmenu] = useState<string | null>(null);
   const [hoveredTier, setHoveredTier] = useState<number | null>(null);
 
-  // Graph sequential animation: loops continuously while in viewport
+  // Graph sequential animation: runs once when in viewport, then remains static
   const graphSvgRef = useRef<HTMLDivElement>(null);
   const [graphAnimated, setGraphAnimated] = useState(false);
   useEffect(() => {
     const el = graphSvgRef.current;
-    if (!el || typeof window === 'undefined') return;
-
-    let loopActive = false;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const clearTimers = () => timers.splice(0).forEach(t => clearTimeout(t));
-
-    const startLoop = () => {
-      if (loopActive) return;
-      loopActive = true;
-
-      const cycle = () => {
-        if (!loopActive) return;
-        // Phase 1: animate in
-        // Last element (card-4) appears at ~3.09s + 0.4s fade = 3.49s.
-        // Hold fully-visible for another 1.5s → total on-phase = 5 000ms
-        setGraphAnimated(true);
-        const t1 = setTimeout(() => {
-          if (!loopActive) return;
-          // Phase 2: instant reset then short pause before next cycle
-          setGraphAnimated(false);
-          const t2 = setTimeout(() => { if (loopActive) cycle(); }, 500);
-          timers.push(t2);
-        }, 5000);
-        timers.push(t1);
-      };
-
-      cycle();
-    };
-
-    const stopLoop = () => {
-      loopActive = false;
-      clearTimers();
-      setGraphAnimated(false);
-    };
+    if (!el || typeof window === 'undefined') {
+      setGraphAnimated(true);
+      return;
+    }
 
     if (!('IntersectionObserver' in window)) {
-      startLoop();
-      return stopLoop;
+      setGraphAnimated(true);
+      return;
     }
 
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          startLoop();
-        } else {
-          stopLoop();
+          setGraphAnimated(true);
+          obs.disconnect();
         }
       },
       { threshold: 0.10 }
     );
     obs.observe(el);
-    return () => { stopLoop(); obs.disconnect(); };
+    return () => {
+      obs.disconnect();
+    };
   }, []);
 
 
@@ -1034,8 +1005,7 @@ export const HomePage: React.FC = () => {
                     );
                   })}
 
-                  {/* Circle Points on Curve + Expanding Concentric Radar Rings */}
-                  {/* Circle Points on Curve + Expanding Concentric Radar Rings */}
+                  {/* Circle Points on Curve */}
                   {CAPACITY_TIERS.map((tier) => {
                     const isHovered = hoveredTier === tier.index;
                     return (
@@ -1046,24 +1016,6 @@ export const HomePage: React.FC = () => {
                         onMouseLeave={() => setHoveredTier(null)}
                         onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
                       >
-                        {/* Concentric animated radar rings */}
-                        <circle
-                          cx={gx(tier.x)}
-                          cy={tier.y}
-                          r="5.5"
-                          stroke={tier.color}
-                          fill="none"
-                          className="signal-ring"
-                        />
-                        <circle
-                          cx={gx(tier.x)}
-                          cy={tier.y}
-                          r="5.5"
-                          stroke={tier.color}
-                          fill="none"
-                          className="signal-ring-2"
-                        />
-
                         {/* Static / hover halo */}
                         <circle
                           cx={gx(tier.x)}
@@ -1594,32 +1546,17 @@ export const HomePage: React.FC = () => {
       <section className="section-bg section-bg-calm pt-6 pb-8 md:pt-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
           <div
-            className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-gradient-to-br from-[#0B1B3D] via-[#0E224F] to-[#0B1B3D] text-white shadow-2xl relative overflow-hidden border border-slate-700/60"
+            className="spotlight home-reveal-scale rounded-2xl py-8 px-6 md:py-10 md:px-12 text-center bg-[#F3F6FC] text-[#0B1B3D] relative overflow-hidden border border-slate-200"
           >
-            {/* Animated Rotating Pulsing Aurora Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[360px] bg-gradient-to-r from-[#00C4CC]/25 via-[#3B82F6]/20 to-[#6366F1]/25 rounded-full blur-3xl pointer-events-none animate-cta-aurora" />
-
-            {/* Moving Tech Matrix Grid */}
-            <div
-              className="absolute inset-0 opacity-[0.07] pointer-events-none animate-grid-drift"
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 20px 20px, white 2%, transparent 0%), radial-gradient(circle at 70px 70px, #00C4CC 2%, transparent 0%)',
-                backgroundSize: '80px 80px',
-              }}
-            />
-
-            {/* Ambient Shimmer Glider */}
-            <div className="absolute -inset-full bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none animate-card-shimmer" />
-            <h2 className="text-[22px] md:text-[30px] font-extrabold leading-[1.2] mb-2 max-w-[560px] mx-auto text-white relative z-10">
+            <h2 className="text-[22px] md:text-[30px] font-extrabold leading-[1.2] mb-2 max-w-[560px] mx-auto text-[#0B1B3D] relative z-10">
               Planning your next facility?
             </h2>
-            <p className="text-[13px] md:text-[15px] leading-[22px] mb-5 max-w-[520px] mx-auto text-slate-300 relative z-10 font-normal">
+            <p className="text-[13px] md:text-[15px] leading-[22px] mb-5 max-w-[520px] mx-auto text-slate-600 relative z-10 font-normal">
               Tell us your capacity and timeline. We will recommend the right system architecture in under a day.
             </p>
             <SmartLink
               to={LINKS.contact}
-              className="inline-flex items-center justify-center bg-[#00C4CC] text-[#0B1B3D] rounded-full px-7 py-3 mx-auto font-bold text-[14px] hover:bg-cyan-300 shadow-[0_0_20px_rgba(0,196,204,0.4)] hover:shadow-[0_0_30px_rgba(0,196,204,0.7)] hover:-translate-y-0.5 transition-all duration-200 relative z-10"
+              className="inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-full px-7 py-3 mx-auto font-bold text-[14px] hover:bg-[#1A2F5E] transition-colors"
             >
               Talk to an expert
             </SmartLink>
