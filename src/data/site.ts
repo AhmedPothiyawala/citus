@@ -432,16 +432,7 @@ export const OFFICES_LIST: OfficeLocation[] = [
 /* ── Navigation for all inner pages (the home page keeps its own header) ── */
 export const SITE_NAV: NavLink[] = [
   { label: 'Home', href: LINKS.home },
-  {
-    label: 'About Us',
-    href: LINKS.aboutUs,
-    children: [
-      { label: 'About Citiuscomm', href: LINKS.aboutUs, desc: 'Equipment, services and how we work' },
-      { label: 'Company Profile', href: LINKS.companyProfile, desc: 'Vision, mission & turnkey technology aggregations' },
-      { label: 'Leadership', href: LINKS.leadership, desc: 'Meet our executive leadership team' },
-      { label: 'Why Us', href: LINKS.whyUs, desc: 'What sets us apart and our core strengths' },
-    ],
-  },
+  { label: 'About Us', href: LINKS.aboutUs },
   {
     label: 'Services',
     href: LINKS.services,
@@ -454,7 +445,7 @@ export const SITE_NAV: NavLink[] = [
       { label: 'Security Solutions', href: LINKS.securitySolutions, desc: 'DDoS mitigation, DPI & firewall protection' },
     ],
   },
-  { label: 'Components', href: LINKS.components },
+  { label: 'How We Work', href: LINKS.components },
   { label: 'Industry Applications', href: LINKS.industryApplications },
   { label: 'Partners', href: LINKS.partners },
   { label: 'Careers', href: LINKS.careers },

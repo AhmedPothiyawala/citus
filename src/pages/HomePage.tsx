@@ -117,23 +117,6 @@ const CAPACITY_TIERS: CapacityTier[] = [
   },
 ];
 
-/* ── SOLUTIONS & FOCUS VERTICALS (from the existing site content) ── */
-const HOME_SOLUTIONS = [
-  { title: 'Networking', href: LINKS.networking, image: '/images/solutions/networking.jpg', desc: 'Switches, routers & SD-WAN solutions', position: 'object-center' },
-  { title: 'FTTX', href: LINKS.fttx, image: '/images/solutions/fttx.jpg', desc: 'Fiber-to-the-x, GPON & OLT/ONT deployments', position: 'object-center' },
-  { title: 'Server & Storage', href: LINKS.serverStorage, image: '/images/solutions/server-storage.jpg', desc: 'Enterprise compute & storage infrastructure', position: 'object-center' },
-  { title: 'Security Solutions', href: LINKS.securitySolutions, image: '/images/solutions/security-solutions.jpg', desc: 'DDoS mitigation, DPI & firewall protection', position: 'object-center' },
-  { title: 'Data Center & Cloud', href: LINKS.dataCenterCloud, image: '/images/solutions/data-center-cloud.jpg', desc: 'Data center setup, cloud migration & hybrid cloud', position: 'object-center' },
-];
-
-const HOME_VERTICALS = [
-  { name: 'Cable & Broadband', icon: '/images/Network-and-Broadband.png' },
-  { name: 'Telecom', icon: '/images/Telecom.png' },
-  { name: 'Enterprises', icon: '/images/Enterprises.png' },
-  { name: 'Data Center and Cloud', icon: '/images/Data-and-Cloud.png' },
-  { name: 'Government and PSUs', icon: '/images/Government.png' },
-];
-
 /* ── DYNAMIC ROTATING DC CATEGORIES FOR TYPEWRITER ANIMATION ── */
 const DC_ROTATING_PHRASES = [
   'Greenfield and Brownfield Projects and Upgrades.',
@@ -230,12 +213,8 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
       const W = singleSetWidthRef.current;
 
       if (!isPausedRef.current && !isInteractingRef.current && el && W > 0) {
-        // Keep the exact (fractional) position ourselves. Phones (iOS Safari / Chrome) store
-        // scrollLeft as whole pixels, so adding ~0.7px per frame was rounded away to 0 and the
-        // forward-moving strip (Technology Partners) never moved. The reverse strip worked only
-        // because rounding went the other way.
         if (posRef.current === null || Math.abs(posRef.current - el.scrollLeft) > 2) {
-          posRef.current = el.scrollLeft; // user scrolled/swiped: continue from there
+          posRef.current = el.scrollLeft;
         }
         posRef.current += (reverse ? -1 : 1) * speed * dt;
         if (posRef.current >= W * 2.2) posRef.current -= W;
@@ -255,24 +234,18 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     };
   }, [reverse]);
 
-  // Wheel listener: enables horizontal scrolling for intentional swipe gestures without trapping vertical page scroll
+  // Wheel listener
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const onWheel = (e: WheelEvent) => {
-      // Only handle intentional horizontal gestures:
-      // 1. Trackpad 2-finger horizontal swipe (|deltaX| > |deltaY|)
-      // 2. Shift + mouse wheel
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
         isInteractingRef.current = true;
         scheduleResume(1400);
         wrapCheck();
         return;
       }
-
-      // DO NOT call e.preventDefault() for normal vertical mouse wheel!
-      // This allows the user to smoothly scroll down the webpage naturally without getting trapped!
     };
 
     el.addEventListener('wheel', onWheel, { passive: true });
@@ -281,9 +254,8 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     };
   }, []);
 
-  // Desktop Pointer drag events for mouse cursor drag-to-scroll
+  // Desktop Pointer drag events
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // Only handle mouse on desktop — let touch devices use native smooth touch scroll!
     if (e.pointerType !== 'mouse' || e.button !== 0) return;
     const el = containerRef.current;
     if (!el) return;
@@ -345,7 +317,6 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
 
     setIsDragging(false);
 
-    // Apply inertia glide
     const v = velocityXRef.current;
     if (Math.abs(v) > 0.15 && containerRef.current) {
       let currentV = v * 14;
@@ -365,7 +336,6 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
     }
   };
 
-  // Mobile Touch handlers: pause auto-scroll during finger touch and resume when lifted
   const handleTouchStart = () => {
     isInteractingRef.current = true;
     if (resumeTimerRef.current) window.clearTimeout(resumeTimerRef.current);
@@ -427,7 +397,6 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
           }
         }}
         onMouseEnter={() => {
-          // Only pause on mouse hover if the device actually supports hover (not mobile touch)
           if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
             isPausedRef.current = true;
           }
@@ -472,7 +441,6 @@ const LogoMarquee: React.FC<{ items: { name: string; logo: string }[]; reverse?:
                         loading="lazy"
                       />
                     ) : (
-                      // No official logo file yet: show the company name cleanly instead of a stock photo
                       <span className="px-3 text-center text-[16px] md:text-[18px] font-bold leading-tight text-[#0B1B3D]">
                         {item.name}
                       </span>
@@ -520,10 +488,7 @@ export const HomePage: React.FC = () => {
   const viewBoxW = Math.round(gx(1097) + 75);
   const stretchPath = (d: string) =>
     d.replace(/(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/g, (_m, x, y) => `${gx(parseFloat(x)).toFixed(1)} ${y}`);
-  const [_mobileSubmenu] = useState<string | null>(null);
-  const [hoveredTier, setHoveredTier] = useState<number | null>(null);
-
-  // Graph sequential animation: runs once when in viewport, then remains static
+  // Graph sequential animation
   const graphSvgRef = useRef<HTMLDivElement>(null);
   const [graphAnimated, setGraphAnimated] = useState(false);
   useEffect(() => {
@@ -598,7 +563,7 @@ export const HomePage: React.FC = () => {
 
 
 
-  // Scroll Reveal Observer for all widgets and UI elements
+  // Scroll Reveal Observer
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -630,59 +595,51 @@ export const HomePage: React.FC = () => {
   }, []);
 
   const partnerSlides = [
-    // Slide 0: Top OEM Networking & Compute Giants
     PARTNERS_LIST.slice(0, 6),
-    // Slide 1: Enterprise Servers, Storage & Cloud
     PARTNERS_LIST.slice(6, 12),
-    // Slide 2: Optical, Automation & Integration Partners
     PARTNERS_LIST.slice(12, 18),
-    // Slide 3: DDI, Security & IoT Specialists + Tier 1 Leaders
     [
-      PARTNERS_LIST[18], // EfficientIP
-      PARTNERS_LIST[19], // DIY CAM
-      PARTNERS_LIST[0],  // Cisco
-      PARTNERS_LIST[4],  // Dell Technologies
-      PARTNERS_LIST[7],  // HPE
-      PARTNERS_LIST[5],  // Juniper Networks
+      PARTNERS_LIST[18],
+      PARTNERS_LIST[19],
+      PARTNERS_LIST[0],
+      PARTNERS_LIST[4],
+      PARTNERS_LIST[7],
+      PARTNERS_LIST[5],
     ],
   ];
 
   const clientSlides = [
-    // Slide 0: Top Telecom & Carrier Giants
     [
-      CLIENTS_LIST[0], // Reliance Jio
-      CLIENTS_LIST[21], // Airtel
-      CLIENTS_LIST[1], // Vodafone Idea (Vi)
-      CLIENTS_LIST[2], // Rakuten Mobile
-      CLIENTS_LIST[3], // Nepal Telecom
-      CLIENTS_LIST[4], // GTPL Hathway
+      CLIENTS_LIST[0],
+      CLIENTS_LIST[21],
+      CLIENTS_LIST[1],
+      CLIENTS_LIST[2],
+      CLIENTS_LIST[3],
+      CLIENTS_LIST[4],
     ],
-    // Slide 1: Major MSOs & Broadband Providers
     [
-      CLIENTS_LIST[5], // Hathway
-      CLIENTS_LIST[6], // DEN Networks
-      CLIENTS_LIST[7], // Fastway
-      CLIENTS_LIST[8], // Net+ Broadband
-      CLIENTS_LIST[9], // Kerala Vision
-      CLIENTS_LIST[10], // TCCL
+      CLIENTS_LIST[5],
+      CLIENTS_LIST[6],
+      CLIENTS_LIST[7],
+      CLIENTS_LIST[8],
+      CLIENTS_LIST[9],
+      CLIENTS_LIST[10],
     ],
-    // Slide 2: Regional Powerhouses (Exact match to user screenshot)
     [
-      CLIENTS_LIST[11], // VK Digital
-      CLIENTS_LIST[12], // You Broadband
-      CLIENTS_LIST[13], // Siti Digital
-      CLIENTS_LIST[14], // UCN
-      CLIENTS_LIST[15], // Metrocast
-      CLIENTS_LIST[16], // Meghbela Broadband
+      CLIENTS_LIST[11],
+      CLIENTS_LIST[12],
+      CLIENTS_LIST[13],
+      CLIENTS_LIST[14],
+      CLIENTS_LIST[15],
+      CLIENTS_LIST[16],
     ],
-    // Slide 3: South Asia & Media Leaders
     [
-      CLIENTS_LIST[17], // WorldLink Nepal
-      CLIENTS_LIST[18], // Subisu
-      CLIENTS_LIST[19], // Vianet
-      CLIENTS_LIST[20], // Discovery
-      CLIENTS_LIST[22], // Sony / SET
-      CLIENTS_LIST[0], // Reliance Jio
+      CLIENTS_LIST[17],
+      CLIENTS_LIST[18],
+      CLIENTS_LIST[19],
+      CLIENTS_LIST[20],
+      CLIENTS_LIST[22],
+      CLIENTS_LIST[0],
     ],
   ];
 
@@ -816,11 +773,10 @@ export const HomePage: React.FC = () => {
           </h1>
         </div>
 
-        {/* Full Capacity Graph Centered on Desktop, Left-Aligned Scroll on Mobile */}
+        {/* Full Capacity Graph */}
         <div className="relative z-[1] w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 min-h-0 flex flex-col items-center justify-start mt-1 md:mt-1">
           <div className="w-full flex items-center justify-center overflow-visible select-none">
             <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0 mx-auto">
-              {/* Sequential animation wrapper — observes viewport entry */}
               <div ref={graphSvgRef} className={`w-full${graphAnimated ? ' graph-animated' : ''}`}>
                 {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
                 <div
@@ -832,7 +788,7 @@ export const HomePage: React.FC = () => {
                   </p>
                   <div className="graph-overlay-actions flex items-center">
                     <SmartLink
-                      to={LINKS.contact}
+                      to={LINKS.services}
                       className="graph-overlay-btn inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-cyan-500/20 hover:-translate-y-0.5 whitespace-nowrap"
                     >
                       Explore Services
@@ -887,7 +843,7 @@ export const HomePage: React.FC = () => {
                   <line x1="75" y1="430" x2={gx(1090)} y2="430" stroke="#94A3B8" strokeWidth="1.5" />
                   <polygon points={`${gx(1097)},430 ${gx(1087)},426 ${gx(1087)},434`} fill="#64748B" />
 
-                  {/* Vertical drop dashed grid lines from each point to X axis */}
+                  {/* Vertical drop dashed grid lines */}
                   {CAPACITY_TIERS.map((tier) => (
                     <line
                       key={`grid-${tier.index}`}
@@ -901,59 +857,25 @@ export const HomePage: React.FC = () => {
                       className={`graph-dropline graph-dropline-${tier.index}`}
                     />
                   ))}
-                {/* Dynamic Illuminated Glowing Base Curve — segment-by-segment draw */}
-                {/* Seg 0: P0 → P1 (straight) */}
-                <path
-                  d={stretchPath("M 180 340 L 390 286")}
-                  stroke="url(#curveGrad)"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  fill="none"
-                  className="graph-seg graph-seg-0"
-                />
-                {/* Seg 1: P1 → P2 (straight) */}
-                <path
-                  d={stretchPath("M 390 286 L 600 233")}
-                  stroke="url(#curveGrad)"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  fill="none"
-                  className="graph-seg graph-seg-1"
-                />
-                {/* Seg 2: P2 → P3 (straight) */}
-                <path
-                  d={stretchPath("M 600 233 L 810 178")}
-                  stroke="url(#curveGrad)"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  fill="none"
-                  className="graph-seg graph-seg-2"
-                />
-                {/* Seg 3: P3 → P4 (straight) */}
-                <path
-                  d={stretchPath("M 810 178 L 1020 125")}
-                  stroke="url(#curveGrad)"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  fill="none"
-                  className="graph-seg graph-seg-3"
-                />
+                {/* Curve segments */}
+                <path d={stretchPath("M 180 340 L 390 286")} stroke="url(#curveGrad)" strokeWidth="3.5" strokeLinecap="round" fill="none" className="graph-seg graph-seg-0" />
+                <path d={stretchPath("M 390 286 L 600 233")} stroke="url(#curveGrad)" strokeWidth="3.5" strokeLinecap="round" fill="none" className="graph-seg graph-seg-1" />
+                <path d={stretchPath("M 600 233 L 810 178")} stroke="url(#curveGrad)" strokeWidth="3.5" strokeLinecap="round" fill="none" className="graph-seg graph-seg-2" />
+                <path d={stretchPath("M 810 178 L 1020 125")} stroke="url(#curveGrad)" strokeWidth="3.5" strokeLinecap="round" fill="none" className="graph-seg graph-seg-3" />
 
-                {/* Annotations above the curve */}
-                {CAPACITY_TIERS.map((tier) => {
-                  const isHovered = hoveredTier === tier.index;
-                    return (
+                {/* Annotations above the curve (static) */}
+                {CAPACITY_TIERS.map((tier) => (
                       <text
                         key={`annotation-${tier.index}`}
                         x={gx(tier.x)}
                         y={tier.annotationY}
-                        fill={isHovered ? '#0B1B3D' : '#5A6578'}
-                        fontWeight={isHovered ? '600' : '400'}
+                        fill="#5A6578"
+                        fontWeight="400"
                         fontSize="10"
                         fontFamily="Inter, sans-serif"
                         textAnchor="middle"
                         className={`graph-annotation graph-annotation-${tier.index}`}
-                        style={{ transition: 'fill 0.2s ease, font-weight 0.2s ease', pointerEvents: 'none' }}
+                        style={{ pointerEvents: 'none' }}
                       >
                         {tier.annotationLines.map((line, li) => (
                           <tspan key={li} x={gx(tier.x)} dy={li === 0 ? 0 : 13}>
@@ -961,39 +883,17 @@ export const HomePage: React.FC = () => {
                           </tspan>
                         ))}
                       </text>
-                    );
-                  })}
+                  ))}
 
-                  {/* Navy Node Cards with Colored Top Accent Bars & Interactive Elevation */}
-                  {CAPACITY_TIERS.map((tier) => {
-                    const isHovered = hoveredTier === tier.index;
-                    return (
+                  {/* Navy Node Cards (static — no hover/click) */}
+                  {CAPACITY_TIERS.map((tier) => (
                       <g
                         key={`card-${tier.index}`}
-                        className={`cursor-pointer graph-card graph-card-${tier.index}`}
-                        onMouseEnter={() => setHoveredTier(tier.index)}
-                        onMouseLeave={() => setHoveredTier(null)}
-                        onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
-                        style={{
-                          transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
-                          filter: isHovered
-                            ? `drop-shadow(0 10px 18px rgba(11, 27, 61, 0.28)) drop-shadow(0 0 10px ${tier.color}77)`
-                            : 'drop-shadow(0 2px 4px rgba(11, 27, 61, 0.08))',
-                        }}
+                        className={`graph-card graph-card-${tier.index}`}
+                        style={{ filter: 'drop-shadow(0 2px 4px rgba(11, 27, 61, 0.08))' }}
                       >
                         <rect x={gx(tier.x) - tier.boxW / 2} y={tier.boxY} width={tier.boxW} height={tier.boxH} rx="6" fill="#0B1B3D" />
-                        <rect
-                          x={gx(tier.x) - tier.boxW / 2}
-                          y={tier.boxY}
-                          width={tier.boxW}
-                          height={isHovered ? 5 : 4}
-                          rx="2"
-                          fill={tier.color}
-                          style={{
-                            transition: 'height 0.2s ease',
-                            filter: isHovered ? `drop-shadow(0 0 4px ${tier.color})` : 'none',
-                          }}
-                        />
+                        <rect x={gx(tier.x) - tier.boxW / 2} y={tier.boxY} width={tier.boxW} height={4} rx="2" fill={tier.color} />
                         <text x={gx(tier.x)} y={tier.boxY + 20} fill="white" fontSize="10" fontWeight="600" fontFamily="Inter, sans-serif" textAnchor="middle">
                           {tier.boxLines.map((line, li) => (
                             <tspan key={li} x={gx(tier.x)} dy={li === 0 ? 0 : 14}>
@@ -1002,99 +902,35 @@ export const HomePage: React.FC = () => {
                           ))}
                         </text>
                       </g>
-                    );
-                  })}
+                  ))}
 
-                  {/* Circle Points on Curve */}
-                  {CAPACITY_TIERS.map((tier) => {
-                    const isHovered = hoveredTier === tier.index;
-                    return (
+                  {/* Circle Points on Curve (static — no hover/click) */}
+                  {CAPACITY_TIERS.map((tier) => (
                       <g
                         key={`point-${tier.index}`}
-                        className={`cursor-pointer graph-point graph-point-${tier.index}`}
-                        onMouseEnter={() => setHoveredTier(tier.index)}
-                        onMouseLeave={() => setHoveredTier(null)}
-                        onClick={() => setHoveredTier(hoveredTier === tier.index ? null : tier.index)}
+                        className={`graph-point graph-point-${tier.index}`}
                       >
-                        {/* Static / hover halo */}
-                        <circle
-                          cx={gx(tier.x)}
-                          cy={tier.y}
-                          r={isHovered ? 14 : 10}
-                          fill={tier.color}
-                          opacity={isHovered ? 0.35 : 0.2}
-                          style={{
-                            transition: 'r 0.25s ease, opacity 0.25s ease',
-                            filter: isHovered ? `drop-shadow(0 0 6px ${tier.color})` : 'none',
-                          }}
-                        />
-                        {/* Outer ring */}
-                        <circle
-                          cx={gx(tier.x)}
-                          cy={tier.y}
-                          r={isHovered ? 7 : 5.5}
-                          fill="white"
-                          stroke={tier.color}
-                          strokeWidth={isHovered ? 3 : 2.5}
-                          style={{ transition: 'all 0.25s ease' }}
-                        />
-                        {/* Center dot */}
-                        <circle
-                          cx={gx(tier.x)}
-                          cy={tier.y}
-                          r={isHovered ? 3 : 2}
-                          fill={tier.color}
-                          style={{ transition: 'r 0.25s ease' }}
-                        />
+                        <circle cx={gx(tier.x)} cy={tier.y} r={10} fill={tier.color} opacity={0.2} />
+                        <circle cx={gx(tier.x)} cy={tier.y} r={5.5} fill="white" stroke={tier.color} strokeWidth={2.5} />
+                        <circle cx={gx(tier.x)} cy={tier.y} r={2} fill={tier.color} />
                       </g>
-                    );
-                  })}
+                  ))}
 
-                  {/* Capacity Band Pills on X Axis with Interactive Hover Emphasis */}
-                  {CAPACITY_TIERS.map((tier) => {
-                    const isHovered = hoveredTier === tier.index;
-                    return (
+                  {/* Capacity Band Pills (static — no hover/click) */}
+                  {CAPACITY_TIERS.map((tier) => (
                       <g
                         key={`pill-${tier.index}`}
-                        className={`cursor-pointer graph-pill graph-pill-${tier.index}`}
-                        onMouseEnter={() => setHoveredTier(tier.index)}
-                        onMouseLeave={() => setHoveredTier(null)}
-                        style={{
-                          transform: isHovered ? 'translateY(-3px)' : 'translateY(0)',
-                          filter: isHovered
-                            ? `drop-shadow(0 6px 12px ${tier.color}99) drop-shadow(0 0 6px ${tier.color})`
-                            : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))',
-                          transition: 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                        }}
+                        className={`graph-pill graph-pill-${tier.index}`}
+                        style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12))' }}
                       >
-                        <rect
-                          x={gx(tier.x) - tier.pillW / 2}
-                          y="445"
-                          width={tier.pillW}
-                          height="24"
-                          rx="12"
-                          fill={tier.color}
-                          stroke={isHovered ? '#FFFFFF' : 'transparent'}
-                          strokeWidth={isHovered ? 1.5 : 0}
-                          style={{ transition: 'stroke-width 0.2s ease' }}
-                        />
-                        <text
-                          x={gx(tier.x)}
-                          y="461"
-                          fill="white"
-                          fontSize="10.5"
-                          fontWeight="700"
-                          fontFamily="Inter, sans-serif"
-                          textAnchor="middle"
-                          style={{ pointerEvents: 'none' }}
-                        >
+                        <rect x={gx(tier.x) - tier.pillW / 2} y="445" width={tier.pillW} height="24" rx="12" fill={tier.color} />
+                        <text x={gx(tier.x)} y="461" fill="white" fontSize="10.5" fontWeight="700" fontFamily="Inter, sans-serif" textAnchor="middle" style={{ pointerEvents: 'none' }}>
                           {tier.pillText}
                         </text>
                       </g>
-                    );
-                  })}
+                  ))}
 
-                  {/* X axis Title: Centered exactly at the middle of the X-axis line */}
+                  {/* X axis Title */}
                   <text x={Math.round(viewBoxW / 2)} y="490" fill="#5A6578" fontSize="11" fontWeight="500" fontFamily="Inter, sans-serif" textAnchor="middle">
                     Size (capacity)
                   </text>
@@ -1115,7 +951,7 @@ export const HomePage: React.FC = () => {
           </p>
           <div className="flex flex-wrap items-center gap-2.5 w-full">
             <SmartLink
-              to={LINKS.contact}
+              to={LINKS.services}
               className="flex-1 min-w-[140px] inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-lg px-4 py-2.5 font-semibold text-[13.5px] shadow-md hover:bg-slate-800 transition-colors text-center"
             >
               Explore Services
@@ -1131,131 +967,11 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          C.2 · WHO WE ARE (from the company profile)
-      ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-calm pt-10 md:pt-16 pb-10 md:pb-14">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-            {/* Stacked photos with depth */}
-            <div className="home-reveal relative w-full max-w-[520px] aspect-[520/500] mx-auto lg:mx-0">
-              <div className="absolute top-0 left-0 w-[72%] aspect-square rounded-3xl overflow-hidden shadow-xl ring-1 ring-black/5">
-                <img src="/images/home-about-02.jpg" alt="CITIUSCOMM technology team" className="w-full h-full object-cover" loading="lazy" />
-              </div>
-              <div className="tilt-3d absolute bottom-0 right-0 w-[64%] aspect-square rounded-3xl overflow-hidden shadow-[0_30px_70px_-20px_rgba(11,27,61,0.45)] ring-4 ring-white" data-tilt-max="10">
-                <img src="/images/home-about-01.jpg" alt="Carrier-grade network infrastructure" className="w-full h-full object-cover" loading="lazy" />
-              </div>
-              <div className="absolute left-[6%] bottom-[8%] float-badge rounded-2xl bg-[#0B1B3D] text-white px-4 py-3 shadow-2xl border border-white/10">
-                <p className="text-[11px] uppercase tracking-wider text-[#00C4CC] font-bold">Technology Aggregator</p>
-                <p className="text-[14px] font-semibold leading-tight mt-0.5">Carrier-grade solutions</p>
-              </div>
-            </div>
-
-            {/* Story */}
-            <div className="home-reveal stagger-2">
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
-                WHO WE ARE
-              </p>
-              <h2 className="text-[26px] md:text-[32px] lg:text-[40px] font-bold leading-[1.15] mb-5" style={{ color: C.headline }}>
-                Keeping You{' '}
-                <span className="bg-gradient-to-r from-[#008B94] via-[#0E7490] to-[#2563EB] bg-clip-text text-transparent">One Step Ahead</span>
-              </h2>
-              <p className="text-[15px] md:text-[16px] leading-[27px] mb-4" style={{ color: C.body }}>
-                <strong className="text-[#0B1B3D]">&ldquo;CITIUSCOMM&rdquo; a Multi-National Company</strong>, is the fastest growing Technology Aggregator and <strong className="text-[#0B1B3D]">offers carrier-grade solutions</strong> for the dynamically developing <strong className="text-[#0B1B3D]">Communications and Networking Industry</strong>.
-              </p>
-              <p className="text-[15px] md:text-[16px] leading-[27px] mb-6" style={{ color: C.body }}>
-                CITIUSCOMM is providing E2E bespoke turnkey solutions which include:
-              </p>
-              <div className="grid grid-cols-2 gap-3 mb-7">
-                {['Product', 'Service Delivery', 'NOC Operations', 'Project Management'].map((pillar, i) => (
-                  <div
-                    key={pillar}
-                    className={`home-reveal stagger-${i + 1} glow-border flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-sm`}
-                    style={{ border: `1px solid ${C.border}` }}
-                  >
-                    <span className="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-br from-[#00C4CC] to-[#2563EB] text-white flex items-center justify-center shadow-md">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3} aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    <span className="text-[14px] font-semibold" style={{ color: C.headline }}>{pillar}</span>
-                  </div>
-                ))}
-              </div>
-              <SmartLink
-                to={LINKS.companyProfile}
-                className="group inline-flex items-center gap-2 rounded-lg px-6 py-3 text-white text-sm font-semibold shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                style={{ backgroundColor: C.navy }}
-              >
-                Know more about us
-                <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-              </SmartLink>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════
-          C.3 · SOLUTIONS (links to every solution page)
-      ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-calm pt-10 md:pt-14 pb-8 md:pb-12">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          <div className="home-reveal flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-6 md:mb-8">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
-                OUR SOLUTIONS
-              </p>
-              <h2 className="text-[26px] md:text-[32px] lg:text-[36px] font-bold leading-[1.2]" style={{ color: C.headline }}>
-                Solutions
-              </h2>
-            </div>
-            <SmartLink to={LINKS.products} className="group inline-flex items-center gap-2 text-sm font-semibold text-[#0E7490] hover:text-[#2563EB]">
-              View all products
-              <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-            </SmartLink>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-5">
-            {HOME_SOLUTIONS.map((sol, idx) => (
-              <SmartLink
-                key={sol.title}
-                to={sol.href}
-                className={`solution-card tilt-3d group relative block overflow-hidden rounded-2xl h-[240px] md:h-[300px] home-reveal stagger-${(idx % 3) + 1} ${idx < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
-                  }`}
-                data-tilt-max="6"
-              >
-                <img
-                  src={sol.image}
-                  alt={sol.title}
-                  className={`absolute inset-0 w-full h-full object-cover ${sol.position || 'object-center'} transition-transform duration-700 group-hover:scale-110`}
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#060f24]/95 via-[#0B1B3D]/45 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#00C4CC]/0 to-[#2563EB]/0 group-hover:from-[#00C4CC]/20 group-hover:to-[#6366F1]/25 transition-colors duration-500" />
-                <div className="absolute left-5 right-5 bottom-5 md:left-6 md:bottom-6 text-white">
-                  <span className="inline-flex items-center rounded-full bg-white/10 backdrop-blur px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#7FF3F7] mb-2.5 border border-white/15">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className="text-[20px] md:text-[22px] font-bold leading-tight">{sol.title}</h3>
-                  <p className="text-[13px] leading-[19px] text-slate-200/90 mt-1.5 max-w-[360px] max-h-0 opacity-0 group-hover:max-h-20 group-hover:opacity-100 transition-all duration-500">
-                    {sol.desc}
-                  </p>
-                  <span className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#00C4CC]">
-                    Read more
-                    <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-                  </span>
-                </div>
-              </SmartLink>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════
           D · SUPPORT FOR EVERY BUSINESS MODEL
       ═══════════════════════════════════════════════════ */}
       <section className="section-bg section-bg-calm pt-8 md:pt-12 pb-5 md:pb-8">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          {/* Eyebrow & Title with Entrance Animation */}
+          {/* Eyebrow & Title */}
           <div className="home-reveal">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
               BUSINESS MODELS
@@ -1386,48 +1102,13 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          F.2 · FOCUS VERTICALS
-      ═══════════════════════════════════════════════════ */}
-      <section className="section-bg section-bg-calm pt-8 md:pt-12 pb-10 md:pb-14">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          <div className="home-reveal text-center mb-7 md:mb-10">
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: C.teal }}>
-              INDUSTRIES WE SERVE
-            </p>
-            <h2 className="text-[26px] md:text-[32px] lg:text-[36px] font-bold leading-[1.2]" style={{ color: C.headline }}>
-              Focus Verticals
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-            {HOME_VERTICALS.map((v, idx) => (
-              <SmartLink
-                key={v.name}
-                to={LINKS.industryApplications}
-                className={`vertical-card tilt-3d glow-border group relative flex flex-col items-center text-center rounded-2xl bg-white/90 backdrop-blur px-4 pt-7 pb-6 home-reveal stagger-${(idx % 4) + 1} ${idx === 4 ? 'col-span-2 sm:col-span-1' : ''
-                  }`}
-                style={{ border: `1px solid ${C.border}` }}
-              >
-                <span className="vertical-icon relative w-[92px] h-[92px] md:w-[104px] md:h-[104px] rounded-full flex items-center justify-center mb-4">
-                  <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#E6FAFB] to-[#EEF2FF] group-hover:from-[#CFF7F9] group-hover:to-[#E0E7FF] transition-colors" />
-                  <span className="absolute -inset-1 rounded-full border border-dashed border-[#00C4CC]/40 vertical-ring" />
-                  <img src={v.icon} alt="" className="relative w-[56px] h-[56px] md:w-[62px] md:h-[62px] object-contain transition-transform duration-500 group-hover:scale-110" loading="lazy" />
-                </span>
-                <h3 className="text-[15px] md:text-[16px] font-bold leading-snug" style={{ color: C.headline }}>{v.name}</h3>
-              </SmartLink>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════
-          G · TECHNOLOGY PARTNERS (Same UI as Our Clients: 1 Line, Auto-Scroll, Big Icons)
+          G · TECHNOLOGY PARTNERS
       ═══════════════════════════════════════════════════ */}
       <section
         id="partners"
         className="pt-10 pb-8 md:pt-14 md:pb-10 bg-white relative overflow-hidden border-t border-slate-100"
       >
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: C.teal }}>
               MULTI-OEM SOURCING ECOSYSTEM
@@ -1438,20 +1119,18 @@ export const HomePage: React.FC = () => {
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
           </div>
 
-          {/* Continuous marquee: every logo glides by in one line; pauses on hover */}
           <LogoMarquee items={uniqueByName(partnerSlides.flat())} reverse={false} />
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          G.1 · OUR CLIENTS (Full Logo & Brand Names Showcase)
+          G.1 · OUR CLIENTS
       ═══════════════════════════════════════════════════ */}
       <section
         id="clients"
         className="pt-6 pb-10 md:pt-8 md:pb-14 bg-white relative overflow-hidden border-b border-slate-100"
       >
         <div className="relative w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
-          {/* Section Heading */}
           <div className="home-reveal text-center mb-6 md:mb-8">
             <p className="text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: C.teal }}>
               TRUSTED ACROSS BROADCAST, TELECOM & DATA CENTER NETWORKS
@@ -1462,7 +1141,6 @@ export const HomePage: React.FC = () => {
             <div className="w-16 h-1 bg-gradient-to-r from-[#00C4CC] to-[#3B82F6] mx-auto mt-2.5 rounded-full" />
           </div>
 
-          {/* Continuous marquee: exact same scrolling as Technology Partners */}
           <LogoMarquee items={uniqueByName(clientSlides.flat())} reverse={false} />
         </div>
       </section>
@@ -1541,7 +1219,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════
-          J · BOTTOM CALL-TO-ACTION (Cool Navy Glow UI)
+          J · BOTTOM CALL-TO-ACTION
       ═══════════════════════════════════════════════════ */}
       <section className="section-bg section-bg-calm pt-6 pb-8 md:pt-8 md:pb-12">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
