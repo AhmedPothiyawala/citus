@@ -62,7 +62,7 @@ export const SiteHeader: React.FC = () => {
         </SmartLink>
 
         {/* Desktop Nav */}
-        <nav className="hidden xl:flex items-center gap-5 xl:gap-7" aria-label="Main">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-7" aria-label="Main">
           {SITE_NAV.map((item) => {
             const active = isActive(item.href, item.children);
             if (item.children?.length) {
@@ -129,7 +129,7 @@ export const SiteHeader: React.FC = () => {
           onClick={() => setOpen(!open)}
           aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={open}
-          className="xl:hidden p-2 text-[#0B1B3D] hover:text-[#2563EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00C4CC]/50 transition-colors"
+          className="lg:hidden p-2 text-[#0B1B3D] hover:text-[#2563EB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00C4CC]/50 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
             {open ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
@@ -141,11 +141,11 @@ export const SiteHeader: React.FC = () => {
       {open && (
         <>
           <div
-            className="xl:hidden fixed inset-0 top-[56px] md:top-[60px] bg-black/30 z-40 transition-opacity"
+            className="lg:hidden fixed inset-0 top-[56px] md:top-[60px] bg-black/30 z-40 transition-opacity"
             onClick={closeMenu}
             aria-hidden="true"
           />
-          <div className="xl:hidden fixed top-[56px] md:top-[60px] left-0 right-0 max-h-[calc(100vh-56px)] md:max-h-[calc(100vh-60px)] bg-white border-t border-slate-200 shadow-xl px-6 py-4 overflow-y-auto z-50">
+          <div className="lg:hidden fixed top-[56px] md:top-[60px] left-0 right-0 max-h-[calc(100vh-56px)] md:max-h-[calc(100vh-60px)] bg-white border-t border-slate-200 shadow-xl px-6 py-4 overflow-y-auto z-50">
             {SITE_NAV.map((item) => {
               if (item.children?.length) {
                 const isOpen = sub === item.label;

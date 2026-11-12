@@ -771,6 +771,27 @@ export const HomePage: React.FC = () => {
               <span className="inline-block w-[2.5px] sm:w-[3px] h-[0.82em] bg-[#00C4CC] ml-1 align-baseline rounded-full shadow-[0_0_8px_#00C4CC] animate-cursor-blink" />
             </span>
           </h1>
+
+          {/* Hardware line + action buttons sit directly below the heading (not on the graph) */}
+          <div className="hero-intro hidden md:block mt-4 lg:mt-5">
+            <p className="hero-intro-text max-w-[760px] text-slate-600 font-medium">
+              Hardware supply, integration and managed services for data centers of every size, from edge rooms to hyperscale campuses.
+            </p>
+            <div className="hero-intro-actions flex flex-wrap items-center">
+              <SmartLink
+                to={LINKS.services}
+                className="hero-intro-btn inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-xl font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:-translate-y-0.5 whitespace-nowrap"
+              >
+                Explore Services
+              </SmartLink>
+              <SmartLink
+                to={LINKS.contact}
+                className="hero-intro-btn inline-flex items-center justify-center border border-slate-300 text-slate-800 bg-white rounded-xl font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 shadow-sm hover:-translate-y-0.5 whitespace-nowrap"
+              >
+                Talk to an expert
+              </SmartLink>
+            </div>
+          </div>
         </div>
 
         {/* Full Capacity Graph */}
@@ -778,30 +799,6 @@ export const HomePage: React.FC = () => {
           <div className="w-full flex items-center justify-center overflow-visible select-none">
             <div ref={graphBoxRef} className="hero-graph-box relative w-full max-w-none flex items-center justify-center shrink-0 mx-auto">
               <div ref={graphSvgRef} className={`w-full${graphAnimated ? ' graph-animated' : ''}`}>
-                {/* Desktop Inside-Graph Hardware Line & Action Buttons */}
-                <div
-                  className="graph-overlay hidden md:flex flex-col items-start absolute z-20 pointer-events-auto"
-                  style={{ top: '6%', left: `${((75 + 18) / viewBoxW) * 100}%`, width: '40%', maxWidth: '520px' }}
-                >
-                  <p className="graph-overlay-text text-slate-600 font-medium">
-                    Hardware supply, integration and managed services for data centers of every size, from edge rooms to hyperscale campuses.
-                  </p>
-                  <div className="graph-overlay-actions flex items-center">
-                    <SmartLink
-                      to={LINKS.services}
-                      className="graph-overlay-btn inline-flex items-center justify-center bg-[#0B1B3D] text-white rounded-lg font-semibold hover:bg-slate-800 transition-all duration-200 shadow-md hover:shadow-cyan-500/20 hover:-translate-y-0.5 whitespace-nowrap"
-                    >
-                      Explore Services
-                    </SmartLink>
-                    <SmartLink
-                      to={LINKS.contact}
-                      className="graph-overlay-btn inline-flex items-center justify-center border border-slate-300 text-slate-800 bg-white rounded-lg font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 shadow-sm hover:-translate-y-0.5 whitespace-nowrap"
-                    >
-                      Talk to an expert
-                    </SmartLink>
-                  </div>
-                </div>
-
                 <svg
                   viewBox={`0 24 ${viewBoxW} 476`}
                   className="w-full h-auto block select-none overflow-visible"
@@ -981,11 +978,11 @@ export const HomePage: React.FC = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-4 md:gap-x-5 gap-y-0">
             {businessModels.map((model, idx) => (
               <div
                 key={model.title}
-                className={`card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 overflow-hidden home-reveal stagger-${(idx % 4) + 1}`}
+                className={`business-card card-hover-cool tilt-3d glow-border group relative rounded-2xl p-5 md:p-6 mb-4 md:mb-5 overflow-hidden home-reveal stagger-${(idx % 4) + 1}`}
                 style={{ backgroundColor: C.cardBg, border: `1px solid ${C.border}` }}
               >
                 {/* Glowing subtle gradient top border on hover */}

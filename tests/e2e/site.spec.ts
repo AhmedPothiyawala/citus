@@ -5,20 +5,17 @@ const ROUTES = [
   '/company-profile/',
   '/why-us/',
   '/leadership/',
-  '/partners/',
   '/products/',
   '/digital-services/',
   '/networking/',
   '/fttx/',
   '/server-storage/',
   '/data-center-cloud/',
-  '/industry-applications/',
   '/security-solutions/',
   '/case-studies/',
   '/rakuten-mobile/',
   '/nepal-telecom/',
   '/net-broadband/',
-  '/careers/',
   '/contact/',
 ];
 
@@ -92,9 +89,6 @@ async function verifyGlobalChromeAndAssets(page: Page, route: string, isMobile: 
     expect(headerText).toContain('HOME');
     expect(headerText).toContain('ABOUT US');
     expect(headerText).toContain('SOLUTIONS');
-    expect(headerText).toContain('INDUSTRY APPLICATIONS');
-    expect(headerText).toContain('PARTNERS');
-    expect(headerText).toContain('CAREERS');
     expect(headerText).toContain('CONTACT');
 
     // Verify header background starts transparent
@@ -264,15 +258,6 @@ test.describe('Part 2 - Deep Page Assertions (Pages 1 to 19)', () => {
     await expect(page.getByText('Warehousing Across India')).toBeVisible();
   });
 
-  test('Page 5: Partners (/partners/)', async ({ page }) => {
-    await page.goto('/partners/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Partners$/);
-    await expect(page.getByText(/Citius would like to work in areas of Next Gen/i)).toBeVisible();
-    await expect(page.getByText(/Citiuscomm have Strategic relationship with/i)).toBeVisible();
-    const partnerImages = page.locator('img[src*="/images/"]');
-    expect(await partnerImages.count()).toBeGreaterThanOrEqual(16);
-  });
-
   test('Page 6: Products (/products/)', async ({ page }) => {
     await page.goto('/products/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Products$/);
@@ -323,14 +308,6 @@ test.describe('Part 2 - Deep Page Assertions (Pages 1 to 19)', () => {
     await expect(page.getByText(/We unlock the cloud operating model/i)).toBeVisible();
   });
 
-  test('Page 12: Industry Applications (/industry-applications/)', async ({ page }) => {
-    await page.goto('/industry-applications/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Industry Applications$/);
-    await expect(page.getByRole('heading', { name: 'TELECOM' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'CABLE AND BROADBAND' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'ENTERPRISE, DATA CENTER, GOVERNMENT' })).toBeVisible();
-  });
-
   test('Page 13: Security Solutions (/security-solutions/)', async ({ page }) => {
     await page.goto('/security-solutions/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Security Solutions$/);
@@ -367,31 +344,6 @@ test.describe('Part 2 - Deep Page Assertions (Pages 1 to 19)', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Net\+ Broadband$/);
     await expect(page.getByText(/Net\+ Broadband is 100% subsidiary of Fastway/i)).toBeVisible();
     await expect(page.getByRole('link', { name: 'Nepal Telecom' })).toBeVisible();
-  });
-
-  test('Page 18: Careers (/careers/)', async ({ page }) => {
-    await page.goto('/careers/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Careers$/);
-    await expect(page.getByText(/Let us work together to solve the most challenging problems/i)).toBeVisible();
-    await expect(page.getByText(/Bring in your enthusiasm/i)).toBeVisible();
-    await expect(page.getByText(/Let[’']s build a new dynamic world together!/i)).toBeVisible();
-
-    // Interactive Accordion Test
-    for (const title of ['IP Engineers', 'Linux Enterprise Support Analyst', 'Security CoE Infrastructure Section', 'Others']) {
-      const btn = page.getByRole('button', { name: title });
-      await expect(btn).toBeVisible();
-      await btn.click();
-      await page.waitForTimeout(100);
-    }
-
-    // Interactive Apply Now Form Test
-    await page.getByPlaceholder('Your Name').fill('Applicant One');
-    await page.getByPlaceholder('Your Email').fill('applicant@citiuscomm.com');
-    await page.getByPlaceholder('Contact No.').fill('+91 9876543210');
-    await page.locator('select').selectOption({ label: 'IP Engineers' });
-    await page.getByPlaceholder('Your Message').fill('Applying for IP Engineer position.');
-    await page.getByRole('button', { name: 'SUBMIT' }).click();
-    await expect(page.getByText(/Thank you for your application/i)).toBeVisible();
   });
 
   test('Page 19: Contact (/contact/)', async ({ page }) => {

@@ -12,7 +12,7 @@ const SERVICE_OPTIONS = [
 const FAQS = [
   { q: 'How quickly will you respond to my enquiry?', a: 'Our team reviews every enquiry and aims to reply within one business day with next steps or clarifying questions.' },
   { q: 'Do you work on both new builds and existing facilities?', a: 'Yes. We support greenfield projects from the first design and brownfield upgrades, including lifecycle refresh of equipment already in service.' },
-  { q: 'Which vendors do you work with?', a: 'We source from multiple OEMs and recommend equipment that fits your project rather than a single brand. See our Partners page for the current list.' },
+  { q: 'Which vendors do you work with?', a: 'We source from multiple OEMs and recommend equipment that fits your project rather than a single brand. Our team will share the current list on request.' },
   { q: 'What should I include in my enquiry?', a: 'Capacity (racks or MW), timeline, site location and the scope you need — equipment supply, integration, managed services or a mix. Partial details are fine; we will follow up.' },
   { q: 'Can you manage power, cooling and civil work?', a: 'Power, cooling and civil scope is coordinated through specialist partners and program-managed by Citiuscomm, so you keep one point of contact.' },
 ];
@@ -139,10 +139,15 @@ export const ContactPage: React.FC = () => {
 
           {/* Quick contact */}
           <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <a href={`tel:${COMPANY_INFO.phoneFormatted}`} className="group flex items-center gap-3 rounded-2xl bg-[#F3F6FC] border border-[#E3E9F5] p-4 card-hover-cool">
-              <span className="w-10 h-10 rounded-full bg-[#14306B] text-white flex items-center justify-center"><Icon d="M3 5a2 2 0 012-2h2.3a1 1 0 01.95.68l1.1 3.3a1 1 0 01-.5 1.2L7.2 9.3a11 11 0 007.5 7.5l1.1-1.65a1 1 0 011.2-.5l3.3 1.1a1 1 0 01.7.95V19a2 2 0 01-2 2h-1C9.7 21 3 14.3 3 6V5z" /></span>
-              <span><span className="block text-[12px] text-[#64748B]">Call us</span><span className="block text-[15px] font-semibold text-[#0B1B3D]">{COMPANY_INFO.phone}</span></span>
-            </a>
+            <div className="flex items-center gap-3 rounded-2xl bg-[#F3F6FC] border border-[#E3E9F5] p-4 card-hover-cool">
+              <span className="w-10 h-10 shrink-0 rounded-full bg-[#14306B] text-white flex items-center justify-center"><Icon d="M3 5a2 2 0 012-2h2.3a1 1 0 01.95.68l1.1 3.3a1 1 0 01-.5 1.2L7.2 9.3a11 11 0 007.5 7.5l1.1-1.65a1 1 0 011.2-.5l3.3 1.1a1 1 0 01.7.95V19a2 2 0 01-2 2h-1C9.7 21 3 14.3 3 6V5z" /></span>
+              <span>
+                <span className="block text-[12px] text-[#64748B]">Call us</span>
+                {COMPANY_INFO.phones.map((ph) => (
+                  <a key={ph.tel} href={`tel:${ph.tel}`} className="block text-[15px] font-semibold text-[#0B1B3D] hover:underline">{ph.display}</a>
+                ))}
+              </span>
+            </div>
             <a href={`mailto:${COMPANY_INFO.email}`} className="group flex items-center gap-3 rounded-2xl bg-[#F3F6FC] border border-[#E3E9F5] p-4 card-hover-cool">
               <span className="w-10 h-10 rounded-full bg-[#14306B] text-white flex items-center justify-center"><Icon d="M3 7l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" /></span>
               <span><span className="block text-[12px] text-[#64748B]">Email us</span><span className="block text-[15px] font-semibold text-[#0B1B3D]">{COMPANY_INFO.email}</span></span>
@@ -232,22 +237,36 @@ export const ContactPage: React.FC = () => {
             {/* Offices + map */}
             <div className="space-y-4">
               <h2 className="text-[22px] md:text-[26px] font-bold text-[#0B1B3D]">Our offices</h2>
-              {OFFICES_LIST.map((o) => (
-                <div key={o.title} className="rounded-2xl bg-white border border-[#E3E9F5] p-4 md:p-5 card-hover-cool">
-                  <p className="text-[16px] font-bold text-[#0B1B3D]">{o.city}</p>
-                  <address className="not-italic mt-1 text-[14px] leading-[22px] text-[#4A5568]">{o.address.join(' ')}</address>
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13.5px]">
-                    {o.phone && <a href={`tel:${o.phone.replace(/\s/g, '')}`} className="text-[#14306B] font-semibold hover:underline">{o.phone}</a>}
-                    <a href={mapsUrl(o.address)} target="_blank" rel="noopener noreferrer" className="text-[#0E8A8F] font-semibold hover:underline">View on map &rarr;</a>
+              {OFFICES_LIST.map((o, i) => (
+                <React.Fragment key={o.title}>
+                  <div className="rounded-2xl bg-white border border-[#E3E9F5] p-4 md:p-5 card-hover-cool">
+                    <p className="text-[16px] font-bold text-[#0B1B3D]">{o.city}</p>
+                    {o.company && <p className="mt-1 text-[13px] font-semibold text-[#14306B]">{o.company}</p>}
+                    <address className="not-italic mt-1 text-[14px] leading-[22px] text-[#4A5568]">{o.address.join(' ')}</address>
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13.5px]">
+                      {o.phone && <a href={`tel:${o.phone.replace(/\s/g, '')}`} className="text-[#14306B] font-semibold hover:underline">{o.phone}</a>}
+                      <a href={mapsUrl(o.address)} target="_blank" rel="noopener noreferrer" className="text-[#0E8A8F] font-semibold hover:underline">View on map &rarr;</a>
+                    </div>
                   </div>
-                </div>
+                  {i === 0 && (
+                    <div className="rounded-2xl overflow-hidden border border-[#E3E9F5] bg-[#F3F6FC]">
+                      <iframe
+                        title="Map of the Citiuscomm Head Office, Mumbai"
+                        src={`https://www.google.com/maps?q=${encodeURIComponent(o.address.join(' '))}&output=embed`}
+                        className="w-full h-[280px] md:h-[320px] block border-0"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
               {CONTACT_DETAILS.businessHours && (
                 <div className="rounded-2xl bg-[#F3F6FC] border border-[#E3E9F5] p-4 text-[14px] text-[#4A5568]">
                   <span className="font-semibold text-[#0B1B3D]">Business hours: </span>{CONTACT_DETAILS.businessHours}
                 </div>
               )}
-              <img src="/images/contact.png" alt="Map showing Citiuscomm offices in Delhi, Mumbai and Kolkata" className="w-full rounded-2xl border border-[#E3E9F5]" loading="lazy" />
             </div>
           </div>
         </Container>

@@ -20,23 +20,20 @@ const ALL_ROUTES: [string, RegExp][] = [
   ['/company-profile/', /^Company Profile$/i],
   ['/why-us/', /^Why Us$/i],
   ['/leadership/', /^Leadership$/i],
-  ['/partners/', /^Partners$/i],
   ['/products/', /^Products$/i],
   ['/digital-services/', /^Digital Services$/i],
   ['/networking/', /^Networking$/i],
   ['/fttx/', /^FTTX$/i],
   ['/server-storage/', /^Server & Storage$/i],
   ['/data-center-cloud/', /^Data Center & Cloud$/i],
-  ['/industry-applications/', /^Industry Applications$/i],
   ['/security-solutions/', /^Security Solutions$/i],
   ['/case-studies/', /^Case Studies$/i],
   ['/rakuten-mobile/', /^Rakuten Mobile$/i],
   ['/nepal-telecom/', /^Nepal Telecom$/i],
   ['/net-broadband/', /^Net\+ Broadband$/i],
-  ['/careers/', /^Careers$/i],
   ['/contact/', /Plan Your Next Facility/i],
   ['/about-us/', /From First Rack to Every Refresh/i],
-  ['/services/', /Services From Network to Application/i],
+  ['/services/', /Centralised Team for Storage, Network, Security and Cloud/i],
   ['/components/', /Data Center Technical Architecture/i],
 ];
 
@@ -75,9 +72,14 @@ describe('CITIUSCOMM - All 19 Routes Render Cleanly', () => {
     );
 
     expect(screen.getByRole('heading', { level: 1, name: /Plan Your Next Facility/i })).toBeInTheDocument();
-    expect(screen.getByText('New Delhi (Head Office)')).toBeInTheDocument();
-    expect(screen.getByText('Mumbai')).toBeInTheDocument();
+    expect(screen.getByText('Mumbai (Head Office)')).toBeInTheDocument();
+    expect(screen.getByText('New Delhi')).toBeInTheDocument();
     expect(screen.getByText('Kolkata')).toBeInTheDocument();
+    expect(screen.getByText('Singapore')).toBeInTheDocument();
+    expect(screen.getByText(/1 North Bridge Road, #07-10,/)).toBeInTheDocument();
+    expect(screen.getAllByText('+91 7045908869').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('+91 9831427082').length).toBeGreaterThan(0);
+    expect(screen.getByTitle(/Map of the Citiuscomm Head Office, Mumbai/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Full name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Work email/i)).toBeInTheDocument();
   });
@@ -97,15 +99,12 @@ describe('Header & Navigation Component', () => {
     expect(screen.getByText(COMPANY_INFO.phoneFormatted)).toBeInTheDocument();
   });
 
-  it('contains all 7 primary navigation links in exact uppercase order', () => {
+  it('contains all 4 primary navigation links in exact uppercase order', () => {
     renderHeader();
     const expectedLabels = [
       'HOME',
       'ABOUT US',
       'SOLUTIONS',
-      'INDUSTRY APPLICATIONS',
-      'PARTNERS',
-      'CAREERS',
       'CONTACT',
     ];
     for (const label of expectedLabels) {
@@ -150,12 +149,13 @@ describe('Footer Component', () => {
 describe('Single Source of Truth (site.ts) Data Integrity', () => {
   it('has valid company metadata', () => {
     expect(COMPANY_INFO.email).toBe('sales@citiuscomm.com');
-    expect(COMPANY_INFO.phone).toBe('+91 11 4010 7947');
+    expect(COMPANY_INFO.phone).toBe('+91 7045908869');
+    expect(COMPANY_INFO.phones.map((x) => x.display)).toEqual(['+91 7045908869', '+91 9831427082']);
     expect(COMPANY_INFO.tagline).toBe('Keeping You One Step Ahead!');
   });
 
-  it('has 22 distinct route constants', () => {
-    expect(Object.keys(LINKS)).toHaveLength(22);
+  it('has 19 distinct route constants', () => {
+    expect(Object.keys(LINKS)).toHaveLength(19);
     for (const route of Object.values(LINKS)) {
       expect(route.startsWith('/')).toBe(true);
     }
@@ -206,11 +206,12 @@ describe('Single Source of Truth (site.ts) Data Integrity', () => {
     }
   });
 
-  it('has 3 branch office locations (Delhi, Mumbai, Kolkata)', () => {
-    expect(OFFICES_LIST).toHaveLength(3);
+  it('has 4 office locations (Mumbai head office, Delhi, Kolkata, Singapore)', () => {
+    expect(OFFICES_LIST).toHaveLength(4);
+    expect(OFFICES_LIST[0].title).toBe('Mumbai Head Office');
     const titles = OFFICES_LIST.map((o) => o.title);
     expect(titles).toContain('Delhi Office');
-    expect(titles).toContain('Mumbai Office');
+    expect(titles).toContain('Singapore Office');
     expect(titles).toContain('Kolkata Office');
   });
 });

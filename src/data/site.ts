@@ -56,6 +56,7 @@ export interface CareerOpening {
 export interface OfficeLocation {
   city: string;
   title: string;
+  company?: string;
   address: string[];
   phone?: string;
   email: string;
@@ -66,20 +67,17 @@ export const LINKS = {
   companyProfile: '/company-profile/',
   whyUs: '/why-us/',
   leadership: '/leadership/',
-  partners: '/partners/',
   products: '/products/',
   digitalServices: '/digital-services/',
   networking: '/networking/',
   fttx: '/fttx/',
   serverStorage: '/server-storage/',
   dataCenterCloud: '/data-center-cloud/',
-  industryApplications: '/industry-applications/',
   securitySolutions: '/security-solutions/',
   caseStudies: '/case-studies/',
   rakutenMobile: '/rakuten-mobile/',
   nepalTelecom: '/nepal-telecom/',
   netBroadband: '/net-broadband/',
-  careers: '/careers/',
   contact: '/contact/',
   aboutUs: '/about-us/',
   services: '/services/',
@@ -93,8 +91,13 @@ export const COMPANY_INFO = {
   tagline: 'Keeping You One Step Ahead!',
   subTagline: 'We are an engineering first company. We engineer and design solutions for your networks.',
   email: 'sales@citiuscomm.com',
-  phone: '+91 11 4010 7947',
-  phoneFormatted: '+91-1140107947',
+  phone: '+91 7045908869',
+  phoneFormatted: '+917045908869',
+  phones: [
+    { display: '+91 7045908869', tel: '+917045908869' },
+    { display: '+91 9831427082', tel: '+919831427082' },
+  ],
+  headOfficeShort: '503, Filix Tower, LBS Marg, Bhandup (West), Mumbai',
   linkedin: 'https://www.linkedin.com/company/citiuscommunications/',
   logo: '/images/citiuscomm-logo.svg',
   logoRetina: '/images/citiuscomm-logo.svg',
@@ -126,9 +129,6 @@ export const MAIN_NAV: NavLink[] = [
       { label: 'Security Solutions', href: LINKS.securitySolutions, desc: 'DDoS mitigation, DPI & firewall protection' },
     ],
   },
-  { label: 'INDUSTRY APPLICATIONS', href: LINKS.industryApplications },
-  { label: 'PARTNERS', href: LINKS.partners },
-  { label: 'CAREERS', href: LINKS.careers },
   { label: 'CONTACT', href: LINKS.contact },
 ];
 
@@ -407,23 +407,30 @@ export const CAREER_OPENINGS: CareerOpening[] = [
 
 export const OFFICES_LIST: OfficeLocation[] = [
   {
-    city: 'New Delhi (Head Office)',
+    city: 'Mumbai (Head Office)',
+    title: 'Mumbai Head Office',
+    address: ['503, Filix Tower, LBS Marg,', 'Opp. Asian Paints, Bhandup (West),', 'Mumbai – 400078, India.'],
+    phone: '022 62362154',
+    email: 'sales@citiuscomm.com',
+  },
+  {
+    city: 'New Delhi',
     title: 'Delhi Office',
     address: ['B25, Ground Floor,', 'Okhla Industrial Area, Phase-II,', 'New Delhi – 110020, India.'],
     phone: '+91 11 4010 7947',
     email: 'sales@citiuscomm.com',
   },
   {
-    city: 'Mumbai',
-    title: 'Mumbai Office',
-    address: ['503, Filix Tower, LBS Marg,', 'Opp. Asian Paints, Bhandup (West),', 'Mumbai – 400078, India.'],
-    phone: '022 62362154',
-    email: 'sales@citiuscomm.com',
-  },
-  {
     city: 'Kolkata',
     title: 'Kolkata Office',
     address: ['2, Canal Street, 1st floor, Flat#1B,', 'Near Entally Police Station,', 'Kolkata – 700014, India.'],
+    email: 'sales@citiuscomm.com',
+  },
+  {
+    city: 'Singapore',
+    title: 'Singapore Office',
+    company: 'CITIUS COMMUNICATIONS PTE. LTD.',
+    address: ['1 North Bridge Road, #07-10,', 'High Street Centre,', 'Singapore 179094.'],
     email: 'sales@citiuscomm.com',
   },
 ];
@@ -445,10 +452,7 @@ export const SITE_NAV: NavLink[] = [
       { label: 'Security Solutions', href: LINKS.securitySolutions, desc: 'DDoS mitigation, DPI & firewall protection' },
     ],
   },
-  { label: 'How We Work', href: LINKS.components },
-  { label: 'Industry Applications', href: LINKS.industryApplications },
-  { label: 'Partners', href: LINKS.partners },
-  { label: 'Careers', href: LINKS.careers },
+  { label: 'Components', href: LINKS.components },
 ];
 
 /** Contact details shown on the Contact page. Leave a value empty to hide it until it is approved. */

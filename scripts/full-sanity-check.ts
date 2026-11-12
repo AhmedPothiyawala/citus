@@ -42,20 +42,20 @@ async function runSanityCheck() {
     'CompanyProfilePage.tsx',
     'WhyUsPage.tsx',
     'LeadershipPage.tsx',
-    'PartnersPage.tsx',
+    
     'ProductsPage.tsx',
     'DigitalServicesPage.tsx',
     'NetworkingPage.tsx',
     'FttxPage.tsx',
     'ServerStoragePage.tsx',
     'DataCenterCloudPage.tsx',
-    'IndustryApplicationsPage.tsx',
+    
     'SecuritySolutionsPage.tsx',
     'CaseStudiesPage.tsx',
     'RakutenMobilePage.tsx',
     'NepalTelecomPage.tsx',
     'NetBroadbandPage.tsx',
-    'CareersPage.tsx',
+    
     'ContactPage.tsx',
   ];
 

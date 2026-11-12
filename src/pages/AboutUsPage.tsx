@@ -1,5 +1,5 @@
 import React from 'react';
-import { LINKS, COMPANY_INFO } from '../data/site';
+import { LINKS } from '../data/site';
 import { SmartLink } from '../components/SmartLink';
 
 /* ── COLOR TOKENS (matching home page design system) ── */
@@ -184,20 +184,5 @@ export const AboutUsPage: React.FC = () => (
       </div>
     </section>
 
-    {/* ═══════════════════════════════════════════════════
-        F · SIMPLE FOOTER (matching reference)
-    ═══════════════════════════════════════════════════ */}
-    <footer className="border-t border-[#E2E8F0] bg-white">
-      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
-        <span className="text-[13px] font-bold" style={{ color: C.headline }}>Citius Communication</span>
-        <div className="text-[12px] flex flex-wrap items-center justify-center md:justify-end gap-3" style={{ color: '#718096' }}>
-          <a href={`mailto:${COMPANY_INFO.email}`} className="hover:underline">{COMPANY_INFO.email}</a>
-          <span aria-hidden="true">&middot;</span>
-          <a href={`tel:${COMPANY_INFO.phoneFormatted}`} className="hover:underline">{COMPANY_INFO.phone}</a>
-          <span aria-hidden="true">&middot;</span>
-          <SmartLink to={LINKS.contact} className="hover:underline">B25, Okhla Phase-II, New Delhi</SmartLink>
-        </div>
-      </div>
-    </footer>
   </div>
 );

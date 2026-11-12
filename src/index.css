@@ -1050,17 +1050,19 @@
   }
 }
 
-/* Text + buttons inside the hero graph scale with the graph's width */
-.hero-graph-box { container-type: inline-size; }
-.graph-overlay { gap: clamp(6px, 0.9cqw, 12px); }
-.graph-overlay-text { font-size: clamp(10.5px, 1.22cqw, 17px); line-height: 1.55; }
-.graph-overlay-actions { gap: clamp(6px, 0.8cqw, 12px); }
-.graph-overlay-btn {
-  font-size: clamp(10.5px, 1.1cqw, 15px);
-  padding: clamp(5px, 0.65cqw, 10px) clamp(10px, 1.45cqw, 22px);
+/* Hardware line + buttons below the hero heading (same look as the approved reference) */
+.hero-intro-text { font-size: clamp(15px, 1.35vw, 21px); line-height: 1.6; }
+.hero-intro-actions { gap: clamp(10px, 1vw, 16px); margin-top: clamp(12px, 1.2vw, 20px); }
+.hero-intro-btn {
+  font-size: clamp(14px, 1.2vw, 19px);
+  padding: clamp(10px, 1vw, 16px) clamp(20px, 2vw, 32px);
 }
 
-/* ════════ Hero light background motion ════════ */
+/* Business-model cards: title, text, label and bullets start on the same line in every card */
+@media (min-width: 768px) {
+  .business-card { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; }
+}
+
 .hero-aurora-blobs .blob { opacity: 0.7; }
 .hero-beam {
   position: absolute;
